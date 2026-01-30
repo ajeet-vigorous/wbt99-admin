@@ -1,0 +1,14 @@
+import React from "react";
+import {Redirect, Route, Switch} from "react-router-dom";
+import asyncComponent from "util/asyncComponent";
+
+
+const Components = ({match}) => (
+  <Switch>
+    <Redirect exact from={`${match.url}/`} to={`${match.url}/anchor`}/>
+    <Route path={`${match.url}/anchor`} component={asyncComponent(() => import('./Anchor/'))}/>
+
+  </Switch>
+);
+
+export default Components;

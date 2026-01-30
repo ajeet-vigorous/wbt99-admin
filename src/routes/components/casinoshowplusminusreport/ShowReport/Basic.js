@@ -1,0 +1,2246 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Card, Spin } from "antd";
+import { useParams } from "react-router-dom";
+import BackButton from "../../Hoc/BackButton";
+import { useDispatch, useSelector } from 'react-redux';
+import { getPlusMinusCasinoDetail } from '../../../../appRedux/actions/User';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
+
+const Basic = () => {
+    const dispatch = useDispatch();
+    const [sessionList, setSessionList] = useState({});
+    const [loginUserDetails, setLoginUserDetails] = useState({});
+    const [translate, setTranslate] = useState({ x: 0, y: 0 });
+    const gridRef = useRef(null);
+    const touchDistanceRef = useRef(null);
+
+    const { marketId, matchName, date, eventArray, userType, userId } = useParams();
+    // const params = new URLSearchParams(eventArray);
+    // const eventIds = params.get('eventIds');
+
+    let parsedEventArray;
+    try {
+        parsedEventArray = JSON.parse(decodeURIComponent(eventArray));
+    } catch (e) {
+        console.error("Failed to parse eventArray:", e);
+        parsedEventArray = [];
+    }
+
+    let parsedUserIdArray;
+    try {
+        parsedUserIdArray = JSON.parse(decodeURIComponent(userId));
+    } catch (e) {
+        console.error("Failed to parse eventArray:", e);
+        parsedUserIdArray = [];
+    }
+
+
+
+    const { getplusminuscasinodetailsList, loading } = useSelector(state => state.UserReducer);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+    const zoomableElementRef = useRef(null);
+
+    const handleZoom = (event) => {
+        const zoomFactor = 0.1;
+        setZoomLevel((prevZoomLevel) => Math.max(0.1, prevZoomLevel + (event.deltaY > 0 ? -zoomFactor : zoomFactor)));
+    };
+
+    const handleMouseDown = (event) => {
+        setIsDragging(true);
+        setDragStart({ x: event.clientX - translate.x, y: event.clientY - translate.y });
+    };
+
+    const handleMouseMove = (event) => {
+        if (isDragging) {
+            setTranslate({ x: event.clientX - dragStart.x, y: event.clientY - dragStart.y });
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleTouchStart = (event) => {
+        if (event.touches.length === 2) {
+            const dist = getTouchDistance(event.touches);
+            touchDistanceRef.current = dist;
+        } else if (event.touches.length === 1) {
+            setIsDragging(true);
+            setDragStart({ x: event.touches[0].clientX - translate.x, y: event.touches[0].clientY - translate.y });
+        }
+    };
+
+    const handleTouchMove = (event) => {
+        if (event.touches.length === 2) {
+            const dist = getTouchDistance(event.touches);
+            const zoomFactor = dist / touchDistanceRef.current;
+            setZoomLevel((prevZoomLevel) => Math.max(0.1, prevZoomLevel * zoomFactor));
+            touchDistanceRef.current = dist;
+        } else if (event.touches.length === 1 && isDragging) {
+            setTranslate({ x: event.touches[0].clientX - dragStart.x, y: event.touches[0].clientY - dragStart.y });
+        }
+    };
+
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+    };
+
+    const getTouchDistance = (touches) => {
+        const [touch1, touch2] = touches;
+        return Math.sqrt(Math.pow(touch1.clientX - touch2.clientX, 2) + Math.pow(touch1.clientY - touch2.clientY, 2));
+    };
+
+    useEffect(() => {
+        const element = zoomableElementRef.current;
+        if (element) {
+            element.addEventListener('wheel', handleZoom);
+            element.addEventListener('mousedown', handleMouseDown);
+            element.addEventListener('mousemove', handleMouseMove);
+            element.addEventListener('mouseup', handleMouseUp);
+            element.addEventListener('mouseleave', handleMouseUp);
+            element.addEventListener('touchstart', handleTouchStart);
+            element.addEventListener('touchmove', handleTouchMove);
+            element.addEventListener('touchend', handleTouchEnd);
+
+            return () => {
+                element.removeEventListener('wheel', handleZoom);
+                element.removeEventListener('mousedown', handleMouseDown);
+                element.removeEventListener('mousemove', handleMouseMove);
+                element.removeEventListener('mouseup', handleMouseUp);
+                element.removeEventListener('mouseleave', handleMouseUp);
+                element.removeEventListener('touchstart', handleTouchStart);
+                element.removeEventListener('touchmove', handleTouchMove);
+                element.removeEventListener('touchend', handleTouchEnd);
+            };
+        }
+    }, [isDragging, dragStart, translate, zoomLevel]);
+
+    useEffect(() => {
+        getSessionList();
+    }, [marketId]);
+
+    useEffect(() => {
+        if (getplusminuscasinodetailsList) {
+            setSessionList(getplusminuscasinodetailsList);
+        }
+    }, [getplusminuscasinodetailsList]);
+
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('user_id'));
+        const loginDetails = userData?.data || {};
+        setLoginUserDetails(loginDetails);
+    }, []);
+
+    const getSessionList = async () => {
+        // const reqData = { marketId };
+        const reqData = {
+            "eventIdArray": parsedEventArray, // optional,
+            "downlineUserType": userType,
+            "downlineUserIdArray": parsedUserIdArray,
+            "date": date
+        }
+        dispatch(getPlusMinusCasinoDetail(reqData));
+    };
+
+    return (
+        <>
+   
+
+        
+            {/* {loading ? <Loader props={loading} /> : */}
+            <Card className="gx-card" ref={gridRef} style={{
+                height: sessionList && Object.keys(sessionList).length > 0 ? '900vh' : '',
+                overflow: 'hidden',
+                border: sessionList && Object.keys(sessionList).length > 0 ? '1px solid black' : ''
+            }}>
+                <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex" style={{ position: 'relative', zIndex: 2 }}>
+                    <span className="gx-fs-xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`Casino Plus Minus Report : (${date})`}</span>
+                    <BackButton />
+                </div>
+
+                <TransformWrapper
+            initialScale={1}
+            minScale={0.05}
+            maxScale={4}
+            limitToBounds={false}
+            wheel={{ step: 0.1 }}
+            pinch={{ step: 0.1 }}
+          
+          >
+            {({ setTransform, zoomIn, zoomOut, resetTransform, ...rest }) => (
+              <div style={{ width: "100%", height: "100%", overflow: "auto" }}>
+                <TransformComponent>
+                {loading ?
+                    <div style={{ height: 100 }} className='gx-pt-4 gx-bg-flex gx-justify-contect-start gx-pl-4'>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+                            <Spin size="large" />
+                            <span className='gx-text-primary' style={{ marginLeft: '10px' }}>Preparing Report</span>
+                        </div></div> :
+                    <>
+                        {sessionList && (
+                            <div
+                              
+                            >
+
+
+                                <div >
+                                    {sessionList && sessionList.ownerClientObject && Object.keys(sessionList.ownerClientObject).length > 0 ?
+                                        Object.keys(sessionList.ownerClientObject)?.map((ownerCLientObjectKeyData) => (
+                                            <table key={ownerCLientObjectKeyData} >
+                                                <tbody>
+                                                    {loginUserDetails.userPriority > 8 ?
+                                                        <tr className='gx-plus-minus-h text-white' style={{ gridTemplateColumns: '1fr 60fr', display: "grid" }} >
+                                                            <td className='gx-py-2 gx-px-1 text-sm uppercase'>owner</td>
+                                                            <td style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm gx-px-1 font-semibold capitalize'>
+                                                                {sessionList.ownerObject[ownerCLientObjectKeyData]['ownerUsername']}-
+                                                                {sessionList.ownerObject[ownerCLientObjectKeyData]['ownerName']}
+                                                            </td>
+                                                        </tr> : null}
+                                                    <tr className='w-full'>
+                                                        <td colSpan={2} >
+                                                            {Object.keys(sessionList.ownerClientObject[ownerCLientObjectKeyData])?.map((subownerCLientObjectKeyData) => (
+                                                                <div key={subownerCLientObjectKeyData} className={`${loginUserDetails.userPriority > 7 ? "" : ""} `}>
+                                                                    {loginUserDetails.userPriority > 7 ?
+                                                                        <div className='gx-plus-minus-h1 text-white' style={{ gridTemplateColumns: '1fr 1.1fr 59fr', display: "grid" }}>
+                                                                            <span className=' gx-py-2 text-sm uppercase'></span>
+                                                                            <span style={{ borderLeft: "1px solid white" }} className=' gx-py-2 text-sm uppercase'>subowner</span>
+                                                                            <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm font-semibold capitalize'>
+                                                                                {sessionList?.subownerObject?.[subownerCLientObjectKeyData]?.subownerUsername}-
+                                                                                {sessionList?.subownerObject?.[subownerCLientObjectKeyData]?.subownerName}
+                                                                            </span>
+                                                                        </div>
+
+                                                                        : null}
+                                                                    <div className='w-full'>
+                                                                        {Object.keys(sessionList.subownerClientObject[subownerCLientObjectKeyData])?.map((superadminCLientObjectKeyData) => (
+                                                                            <div key={superadminCLientObjectKeyData} className={`${loginUserDetails.userPriority > 6 ? "border-[1px] border-white" : ""} w-full`}>
+                                                                                {loginUserDetails.userPriority > 6 ?
+                                                                                    <div className='gx-plus-minus-h2 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '2fr 1.2fr 55fr', display: "grid" }}>
+                                                                                        <span className=' gx-py-2 text-sm uppercase'></span>
+                                                                                        <span style={{ borderLeft: "1px solid white" }} className=' gx-py-2 text-sm uppercase'>superadmin</span>
+                                                                                        <span style={{ borderLeft: "1px solid white" }} className=' gx-py-2 text-sm font-semibold capitalize'>
+                                                                                            {sessionList.superadminObject[superadminCLientObjectKeyData]['superadminUsername']}-
+                                                                                            {sessionList.superadminObject[superadminCLientObjectKeyData]['superadminName']}
+                                                                                        </span>
+
+                                                                                    </div> : null}
+
+
+
+
+
+
+
+
+
+
+
+                                                                                <div className='w-full'>
+                                                                                    {Object.keys(sessionList.superadminClientObject[superadminCLientObjectKeyData])?.map((adminCLientObjectKeyData) => (
+                                                                                        <div key={adminCLientObjectKeyData} className={`${loginUserDetails.userPriority > 5 ? "border-[1px] border-white" : ""} w-full`}>
+                                                                                            {loginUserDetails.userPriority > 5 ?
+                                                                                                <div className='gx-plus-minus-h3 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '3fr 1fr 51fr', display: "grid" }}>
+                                                                                                    <span className=' gx-py-2 text-sm uppercase'></span>
+                                                                                                    <span style={{ borderLeft: "1px solid white" }} className=' gx-py-2 text-sm uppercase'>admin</span>
+                                                                                                    <span style={{ borderLeft: "1px solid white" }} className=' gx-py-2 text-sm font-semibold capitalize'>
+                                                                                                        {sessionList.adminObject[adminCLientObjectKeyData]['adminUsername']}-
+                                                                                                        {sessionList.adminObject[adminCLientObjectKeyData]['adminName']}
+                                                                                                    </span>
+                                                                                                </div> : null}
+
+                                                                                            <div className='w-full'>
+                                                                                                {Object.keys(sessionList.adminClientObject[adminCLientObjectKeyData])?.map((subadminCLientObjectKeyData) => (
+                                                                                                    <div key={subadminCLientObjectKeyData} className={`${loginUserDetails.userPriority > 4 ? "border-[1px] border-white" : ""} w-full`}>
+                                                                                                        {loginUserDetails.userPriority > 4 ?
+                                                                                                            <div className='gx-plus-minus-h4 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '4fr 1fr 50fr', display: "grid" }}>
+                                                                                                                <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'></span>
+                                                                                                                <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'>subadmin</span>
+                                                                                                                <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm gx-font-weight-semi-bold capitalize'>
+                                                                                                                    {sessionList.subadminObject[subadminCLientObjectKeyData]['subadminUsername']}-
+                                                                                                                    {sessionList.subadminObject[subadminCLientObjectKeyData]['subadminName']}
+                                                                                                                </span>
+                                                                                                            </div> : null}
+                                                                                                        <div className='w-full'>
+                                                                                                            {Object.keys(sessionList.subadminClientObject[subadminCLientObjectKeyData])?.map((masterCLientObjectKeyData) => (
+                                                                                                                <div key={masterCLientObjectKeyData} className={`${loginUserDetails.userPriority > 3 ? "border-[1px] border-white" : ""} w-full`}>
+                                                                                                                    {loginUserDetails.userPriority > 3 ?
+                                                                                                                        <div className='gx-plus-minus-h5 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '5fr 1fr 49fr', display: "grid" }}>
+                                                                                                                            <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'></span>
+                                                                                                                            <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'>Master</span>
+                                                                                                                            <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm font-semibold capitalize'>
+                                                                                                                                {sessionList.masterObject[masterCLientObjectKeyData]['masterUsername']}-
+                                                                                                                                {sessionList.masterObject[masterCLientObjectKeyData]['masterName']}
+                                                                                                                            </span>
+                                                                                                                        </div> : null}
+                                                                                                                    <div className='w-full'>
+                                                                                                                        {Object.keys(sessionList.masterClientObject[masterCLientObjectKeyData])?.map((superAgentCLientObjectKeyData) => (
+                                                                                                                            <div key={superAgentCLientObjectKeyData} className={`${loginUserDetails.userPriority > 2 ? "border-[1px] border-white" : ""} w-full`}>
+                                                                                                                                {loginUserDetails.userPriority > 2 ?
+                                                                                                                                    <div className='gx-plus-minus-h6 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '6fr 1.2fr 49fr', display: "grid" }}>
+                                                                                                                                        <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'></span>
+                                                                                                                                        <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'>Superagent</span>
+                                                                                                                                        <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm font-semibold capitalize'>
+                                                                                                                                            {sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentUsername']}-
+                                                                                                                                            {sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentName']}
+                                                                                                                                        </span>
+                                                                                                                                    </div> : null}
+                                                                                                                                <div className='w-full'>
+                                                                                                                                    {Object.keys(sessionList.superagentClientObject[superAgentCLientObjectKeyData])?.map((agentClientObjectkey) => (
+                                                                                                                                        <div key={agentClientObjectkey} className={`${loginUserDetails.userPriority > 1 ? "border-[1px] border-white " : ""} w-full`}>
+                                                                                                                                            {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                <div className='gx-plus-minus-h7 text-white divide-x-[1px] divide-white  border-b-[1px] border-white w-full' style={{ gridTemplateColumns: '7fr 1fr 46.5fr', display: "grid" }}>
+                                                                                                                                                    <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'></span>
+                                                                                                                                                    <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm uppercase'>Agent</span>
+                                                                                                                                                    <span style={{ borderLeft: "1px solid white" }} className='gx-py-2 text-sm font-semibold capitalize'>
+                                                                                                                                                        {sessionList.agentObject[agentClientObjectkey]['agentUsername']}-
+                                                                                                                                                        {sessionList.agentObject[agentClientObjectkey]['agentName']}
+                                                                                                                                                    </span>
+                                                                                                                                                </div> : null}
+                                                                                                                                            <div className='w-full'>
+                                                                                                                                                <table className="w-full plusminusTable">
+                                                                                                                                                    <thead>
+                                                                                                                                                        <tr className='uppercase text-sm'>
+                                                                                                                                                            {loginUserDetails.userPriority === 2 ?
+                                                                                                                                                                <th colSpan={8} className=''></th> :
+                                                                                                                                                                <th colSpan={5} className=''></th>}
+                                                                                                                                                            {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead '>Agent PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 2 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Super Agent PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 3 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Master PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 4 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Subadmin PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 5 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Admin PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 6 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Superadmin PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 7 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Subowner PLUS MINUS</th> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 8 ?
+                                                                                                                                                                <th colSpan={6} className='p-1.5 text-center custom-plus-minus-thead'>Owner PLUS MINUS</th> : null}
+                                                                                                                                                        </tr>
+                                                                                                                                                        <tr className='text-[#545454] font-medium uppercase text-sm'>
+                                                                                                                                                            <th className="p-2 text-center w-20">Client</th>
+                                                                                                                                                            <th className="p-2 text-center w-20">M AMT</th>
+                                                                                                                                                            <th className="p-2 text-center w-20">Sess.</th>
+                                                                                                                                                            <th className="p-2 text-center w-20">TOT.AMT</th>
+                                                                                                                                                            {loginUserDetails.userPriority === 2 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                            {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 2 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 3 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 4 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 5 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 6 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 7 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                            {loginUserDetails.userPriority > 8 ?
+                                                                                                                                                                <>
+                                                                                                                                                                    <th className="p-2 text-center w-20">M Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">S Comm</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">T Com</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Net Amt</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">SHR</th>
+                                                                                                                                                                    <th className="p-2 text-center w-20">Final</th>
+                                                                                                                                                                </> : null}
+                                                                                                                                                        </tr>
+                                                                                                                                                    </thead>
+                                                                                                                                                    <tbody>
+                                                                                                                                                        {Object.keys(sessionList.agentClientObject[agentClientObjectkey])?.map((agentClientObjectkeyCltData) => (
+                                                                                                                                                            <tr key={agentClientObjectkeyCltData} className="bg-white border-opacity-10 text-sm">
+                                                                                                                                                                <td className="text-center w-20  text-black/70 font-semibold">
+                                                                                                                                                                    {sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["username"]}-
+                                                                                                                                                                    {sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["name"]}
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsAmount"] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionAmount"] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20 gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionAmount"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsAmount"]).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                {loginUserDetails.userPriority === 2 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsComm"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsComm"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionComm"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionComm"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td></> : null}
+
+                                                                                                                                                                <td className="text-center w-20 text-black/70 font-semibold ">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["clientNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["agentFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 2 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20 ">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superagentFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 3 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold  gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["masterFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 4 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold  gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold  gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subadminFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 5 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold  gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["adminFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 6 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["superadminFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 7 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["subownerFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 8 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerSessionComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerSessionComm"] + sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerOddsComm"]).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerNetAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerNetAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerShareAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerShareAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerFinalAmount"] ? sessionList.agentClientObject[agentClientObjectkey][agentClientObjectkeyCltData]["ownerFinalAmount"] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                            </tr>))
+                                                                                                                                                        }
+                                                                                                                                                        {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                            <tr className="bg-white text-sm">
+                                                                                                                                                                <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                                                                                                    AG. TOTAL
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                <td className="text-center w-20">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsAmount'] + sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionAmount']).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                {loginUserDetails.userPriority === 2 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsComm'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsComm'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionComm'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionComm'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalClientSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                <td className="text-center w-20 text-black/70 font-semibold gx-text-black gx-font-weight-semi-bold">
+                                                                                                                                                                    {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalClientNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                </td>
+                                                                                                                                                                {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAgentFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 2 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 3 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalMasterFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 4 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 5 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalAdminFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 6 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 7 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                                {loginUserDetails.userPriority > 8 ?
+                                                                                                                                                                    <>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerOddsComm'] + sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerNetAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerShareAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                        <td className="text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                            {Number.parseFloat(sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerFinalAmount'] ? sessionList.agentObject[agentClientObjectkey]['agentTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                                        </td>
+                                                                                                                                                                    </> : null}
+                                                                                                                                                            </tr> : null}
+                                                                                                                                                    </tbody>
+                                                                                                                                                </table>
+                                                                                                                                            </div>
+                                                                                                                                        </div>))}
+                                                                                                                                    {loginUserDetails.userPriority > 2 ?
+                                                                                                                                        <table className='w-full plusminusTable'>
+                                                                                                                                            <tbody>
+                                                                                                                                                <tr className="bg-white w-full text-sm">
+                                                                                                                                                    <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                                                                                        SA. TOTAL
+                                                                                                                                                    </td>
+                                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                                        {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientOddsAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                                                                    </td>
+                                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                                        {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientSessionAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                                                                    </td>
+                                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                                        {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientOddsAmount'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientSessionAmount']).toFixed(2)}
+                                                                                                                                                    </td>
+                                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                        {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                    </td>
+
+                                                                                                                                                    {loginUserDetails.userPriority > 1 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 2 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 3 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 4 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 5 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 6 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 7 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                    {loginUserDetails.userPriority > 8 ?
+                                                                                                                                                        <>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerOddsComm'] + sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerNetAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerShareAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                                {Number.parseFloat(sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerFinalAmount'] ? sessionList.superagentObject[superAgentCLientObjectKeyData]['superagentTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                            </td>
+                                                                                                                                                        </> : null}
+                                                                                                                                                </tr>
+                                                                                                                                            </tbody>
+                                                                                                                                        </table> : null}
+                                                                                                                                </div>
+                                                                                                                            </div>))}
+                                                                                                                        {loginUserDetails.userPriority > 3 ?
+                                                                                                                            <table className='w-ful plusminusTable'>
+                                                                                                                                <tbody>
+                                                                                                                                    <tr className="bg-white w-full text-sm">
+                                                                                                                                        <td className="w-20 p-2 text-center text-black/70 font-semibold">
+                                                                                                                                            MS. TOTAL
+                                                                                                                                        </td>
+                                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                                            {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientOddsAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                                                        </td>
+                                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                                            {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientSessionAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                                                        </td>
+                                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                                            {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientOddsAmount'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientSessionAmount']).toFixed(2)}
+                                                                                                                                        </td>
+                                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                            {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                                                        </td>
+
+                                                                                                                                        {loginUserDetails.userPriority > 1 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentOddsComm']).toFixed(2)}</td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentSessionComm']).toFixed(2)}</td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentSessionComm']).toFixed(2)}</td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 2 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 3 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 4 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 5 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 6 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminOddsComm']).toFixed(2)}</td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminSessionComm']).toFixed(2)}</td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 7 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                        {loginUserDetails.userPriority > 8 ?
+                                                                                                                                            <>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerOddsComm'] + sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerNetAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerShareAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                                    {Number.parseFloat(sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerFinalAmount'] ? sessionList.masterObject[masterCLientObjectKeyData]['masterTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                                </td>
+                                                                                                                                            </> : null}
+                                                                                                                                    </tr>
+                                                                                                                                </tbody>
+                                                                                                                            </table> : null}
+                                                                                                                    </div>
+                                                                                                                </div>))}
+                                                                                                            {loginUserDetails.userPriority > 4 ?
+                                                                                                                <table className='w-full plusminusTable'>
+                                                                                                                    <tbody>
+                                                                                                                        <tr className="bg-white w-full text-sm">
+                                                                                                                            <td className="w-20 p-2 text-center text-black/70 font-semibold">
+                                                                                                                                MA. TOTAL
+                                                                                                                            </td>
+                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientOddsAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                                            </td>
+                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientSessionAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                                            </td>
+                                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                                {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientOddsAmount'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientSessionAmount']).toFixed(2)}
+                                                                                                                            </td>
+                                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                                            </td>
+
+                                                                                                                            {loginUserDetails.userPriority > 1 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 2 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 3 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 4 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 5 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 6 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 7 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                            {loginUserDetails.userPriority > 8 ?
+                                                                                                                                <>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerOddsComm'] + sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerNetAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerShareAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                                        {Number.parseFloat(sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerFinalAmount'] ? sessionList.subadminObject[subadminCLientObjectKeyData]['subadminIdTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                                    </td>
+                                                                                                                                </> : null}
+                                                                                                                        </tr>
+                                                                                                                    </tbody>
+                                                                                                                </table> : null}
+                                                                                                        </div>
+                                                                                                    </div>))}
+                                                                                                {loginUserDetails.userPriority > 5 ?
+                                                                                                    <table className='w-full plusminusTable'>
+                                                                                                        <tbody>
+                                                                                                            <tr className="bg-white w-full">
+                                                                                                                <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                                                    AD. TOTAL
+                                                                                                                </td>
+                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                    {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientOddsAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                                </td>
+                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                    {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientSessionAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                                </td>
+                                                                                                                <td className="p-2 text-center w-20">
+                                                                                                                    {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientOddsAmount'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientSessionAmount']).toFixed(2)}
+                                                                                                                </td>
+                                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                    {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                                </td>
+
+                                                                                                                {loginUserDetails.userPriority > 1 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 2 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 3 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 4 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 5 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 6 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 7 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+
+                                                                                                                {loginUserDetails.userPriority > 8 ?
+                                                                                                                    <>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerOddsComm'] + sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerNetAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerShareAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                            {Number.parseFloat(sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerFinalAmount'] ? sessionList.adminObject[adminCLientObjectKeyData]['adminTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                                        </td>
+                                                                                                                    </> : null}
+                                                                                                            </tr>
+                                                                                                        </tbody>
+                                                                                                    </table> : null}
+                                                                                            </div>
+                                                                                        </div>))}
+
+                                                                                    {loginUserDetails.userPriority > 6 ?
+                                                                                        <table className='w-full plusminusTable'>
+                                                                                            <tbody>
+                                                                                                <tr className="bg-white w-full">
+                                                                                                    <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                                        SU. TOTAL
+                                                                                                    </td>
+                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                        {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientOddsAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                                    </td>
+                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                        {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientSessionAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                                    </td>
+                                                                                                    <td className="p-2 text-center w-20">
+                                                                                                        {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientOddsAmount'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientSessionAmount']).toFixed(2)}
+                                                                                                    </td>
+                                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                        {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                                    </td>
+
+                                                                                                    {loginUserDetails.userPriority > 1 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 2 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 3 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 4 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 5 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+                                                                                                    {loginUserDetails.userPriority > 6 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 7 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+
+                                                                                                    {loginUserDetails.userPriority > 8 ?
+                                                                                                        <>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerOddsComm'] + sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerNetAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerShareAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                                {Number.parseFloat(sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerFinalAmount'] ? sessionList.superadminObject[superadminCLientObjectKeyData]['superadminTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                            </td>
+                                                                                                        </> : null}
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table> : null}
+
+                                                                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                            </div>))}
+
+
+
+
+
+
+
+
+                                                                        {loginUserDetails.userPriority > 7 ?
+                                                                            <table className='w-full plusminusTable'>
+                                                                                <tbody>
+                                                                                    <tr className="bg-white w-full">
+                                                                                        <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                            SO. TOTAL
+                                                                                        </td>
+                                                                                        <td className="p-2 text-center w-20">
+                                                                                            {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientOddsAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-center w-20">
+                                                                                            {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientSessionAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-center w-20">
+                                                                                            {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientOddsAmount'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientSessionAmount']).toFixed(2)}
+                                                                                        </td>
+                                                                                        <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                            {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                                        </td>
+
+                                                                                        {loginUserDetails.userPriority > 1 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 2 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 3 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 4 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 5 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 6 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 7 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+
+                                                                                        {loginUserDetails.userPriority > 8 ?
+                                                                                            <>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerOddsComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerOddsComm'] + sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerSessionComm']).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerNetAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerShareAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                                <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                                    {Number.parseFloat(sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerFinalAmount'] ? sessionList.subownerObject[subownerCLientObjectKeyData]['subownerTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                                </td>
+                                                                                            </> : null}
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table> : null}
+                                                                    </div>
+                                                                </div>))}
+
+                                                            {loginUserDetails.userPriority > 8 ?
+                                                                <table className='w-full plusminusTable'>
+                                                                    <tbody>
+                                                                        <tr className="bg-white w-full">
+                                                                            <td className="p-2 w-20 text-center text-black/70 font-semibold">
+                                                                                OW. TOTAL
+                                                                            </td>
+                                                                            <td className="p-2 text-center w-20">
+                                                                                {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientOddsAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientOddsAmount'] : 0).toFixed(2)}
+                                                                            </td>
+                                                                            <td className="p-2 text-center w-20">
+                                                                                {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientSessionAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientSessionAmount'] : 0).toFixed(2)}
+                                                                            </td>
+                                                                            <td className="p-2 text-center w-20">
+                                                                                {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientOddsAmount'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientSessionAmount']).toFixed(2)}
+                                                                            </td>
+                                                                            <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalClientNetAmount'] : 0).toFixed(2)}
+                                                                            </td>
+
+                                                                            {loginUserDetails.userPriority > 1 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAgentFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 2 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperagentFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 3 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalMasterFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 4 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubadminFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 5 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalAdminFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 6 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSuperadminFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 7 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalSubownerFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+
+                                                                            {loginUserDetails.userPriority > 8 ?
+                                                                                <>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerOddsComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerOddsComm'] + sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerSessionComm']).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerNetAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerNetAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerShareAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerShareAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center w-20 text-black/70 font-semibold">
+                                                                                        {Number.parseFloat(sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerFinalAmount'] ? sessionList.ownerObject[ownerCLientObjectKeyData]['ownerTotalOwnerFinalAmount'] : 0).toFixed(2)}
+                                                                                    </td>
+                                                                                </> : null}
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table> : null}
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        )) : null}
+                                </div>
+                            </div>
+                        )}
+                    </>}
+                    </TransformComponent>
+              </div>
+            )}
+          </TransformWrapper>
+            </Card>
+            {/* } */}
+        </>
+    );
+};
+
+export default Basic;
+
+
+
