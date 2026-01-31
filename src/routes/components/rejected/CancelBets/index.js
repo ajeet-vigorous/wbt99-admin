@@ -10,7 +10,7 @@ class index extends Component {
   render() {
     return (
       <Row justify={"center"}>
-        <Col lg={22}>
+        <Col lg={24}>
           <Basic/>
         </Col>
 

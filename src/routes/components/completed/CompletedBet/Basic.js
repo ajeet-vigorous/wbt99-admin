@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Card,
   Col,
   Input,
@@ -195,59 +196,79 @@ const Basic = () => {
 
   const columns = [
     {
-      title: "username",
-      dataIndex: "clientName",
-      render: (value, row) => `${row.clientName} (${row.clientCode})`,
-    },
-    {
-      title: "Date",
+      title: "Place Time",
       dataIndex: "createdAt",
       render: (createdAt) =>
         moment(createdAt).utcOffset("+05:30").format("DD MMM hh:mm:ss A"),
     },
     {
-      title: "F. Name",
+      title: "runner Name",
       dataIndex: "sessionName",
       render: renderContent,
     },
     {
-      title: 'Rate',
-      dataIndex: 'odds',
-      key: 'rate',
-      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text * 100).toFixed(2)}</div>,
+      title: "username",
+      dataIndex: "clientName",
+      render: (value, row) => `${row.clientName} (${row.clientCode})`,
     },
+
     {
-      title: "Value",
+      title: "Bet Type",
+      dataIndex: "type",
+      render: (value) => (
+        <span className={`${value === "Yes" ? "ant-tag gx-rounded-xs ant-tag-blue" : "ant-tag gx-rounded-xs ant-tag-red"}`}>
+          {value === "Yes" ? "Yes" : "Not"}
+        </span>
+      ),
+    },
+
+    {
+      title: "Price",
       dataIndex: "run",
       render: renderContent,
     },
+
+
+
+
     {
-      title: "Back/Lay",
-      dataIndex: "type",
-      render: renderContent,
-    },
-    {
-      title: "Result",
-      dataIndex: "decisionRun",
-      render: renderContent,
-    },
-   
-  
-    {
-      title: "Creator",
-      dataIndex: "creatorName",
-      render: renderContent,
-    },
-    {
-      title: "Stake",
+      title: "Amount",
       dataIndex: "amount",
       render: renderContent,
     },
+
     {
-      title: "pnl",
-      dataIndex: "profitLoss",
-      render: (value) => <span>{Math.abs(value).toFixed(2)}</span>,
+      title: "Status",
+      dataIndex: "status",
+      render: renderContent,
     },
+
+    // {
+    //   title: 'Rate',
+    //   dataIndex: 'odds',
+    //   key: 'rate',
+    //   render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text * 100).toFixed(2)}</div>,
+    // },
+
+
+    // {
+    //   title: "Result",
+    //   dataIndex: "decisionRun",
+    //   render: renderContent,
+    // },
+
+
+    // {
+    //   title: "Creator",
+    //   dataIndex: "creatorName",
+    //   render: renderContent,
+    // },
+
+    // {
+    //   title: "pnl",
+    //   dataIndex: "profitLoss",
+    //   render: (value) => <span>{Math.abs(value).toFixed(2)}</span>,
+    // },
   ];
   const { Option } = Select;
 
@@ -357,86 +378,22 @@ const Basic = () => {
 
   return (
     <>
-      {/* <UserList marketId={marketId}/> */}
-      <Card className="gx-card gx-w-100">
-        <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-          <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`Fancy Profit and Loss`}</span>
-          <BackButton />
-        </div>
-        <Row gutter={20} justify={"center"} className="gx-px-1 gx-py-1 gx-gap-3">
-          <Col>
-            {/* <Select className="gx-mb-2" placeholder="All User" onChange={handleChange2} style={{ width: 300 }} 
-         filterOption={(input, option) =>
-          option.children
-            .toString()
-            .toLowerCase()
-            .indexOf(input.toLowerCase()) >= 0
-        }
-          showSearch
-          getPopupContainer={trigger => trigger.parentElement}>
-            <Option value="">All user</Option>
-            {filterDatafinal && finalUserList && finalUserList?.map((item, index) => (
-              <Option key={index} value={item.clientCode}>
-              
-                {item.clientCode} [{item.clientName}]
-              </Option>
-            ))}
-          </Select> */}
-            {/* <Select
-            className="gx-mb-2"
-            placeholder="All Users"
-            value={selectedUser}
-            onChange={handleUserChange}
-            style={{ width: 300 }}
-            filterOption={(input, option) =>
-              option.children.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            showSearch
-          // getPopupContainer={trigger => trigger.parentElement}
-          >
-            <Option value="">All users</Option>
-            {clientListByMarketId?.map((item, index) => (
-              <Option key={index} value={item?.clientId}>
-                {item?.userInfo?.name} [{item?.userInfo?.username}]
-              </Option>
-            ))}
-          </Select> */}
+      <div className="gx-bg-grey gx-px-3 gx-bg-flex gx-align-items-center">
+        <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-py-3   gx-pt-1 gx-text-uppercase">
+          Completed Bets
+        </span>
+        <BackButton />
+      </div>
+      <Card className="gx-card gx-w-100 gx-px-2">
 
+        <Row gutter={12} className="gx-px-4 gx-text-uppercase gx-fs-md gx-font-weight-bold">
+          <Col xs={24} className="">
+            <div className="gx-mb-1">Sessions<span className="gx-text-red">*</span></div>
             <Select
-              showSearch
-              placeholder={` Select User`}
-              optionFilterProp="children"
-              onChange={handleUserChange}
-              onSearch={onSearch}
-              filterOption={filterOption}
-              // className='gx-py-2'
-              style={{ width: 300 }}
-            >
-
-              {filteredOptions && filteredOptions.length > 0 ? filteredOptions.map(user => (
-                <Option key={user.userId} value={user.userId} label={`${user?.username} ${user?.name} `}>
-                  {user?.username} ({user?.name})
-                </Option>
-              )) : null}
-            </Select>
-          </Col>
-          <Col>
-            {/* <Select className="gx-mb-2" placeholder="All Fancies" onChange={handleChange} style={{ width: 300 }} getPopupContainer={trigger => trigger.parentElement}>
-            {sessionList?.map((item, index) =>
-              item.sessionNames?.map((session, sessionIndex) => (
-                <Option key={`${index}-${sessionIndex}`} value={session}>
-                  {session}
-                </Option>
-              ))
-            )}
-          </Select> */}
-            <Select
-              className="gx-mb-2"
+              className="gx-bg-flex gx-justify-content-start "
               placeholder="All Fancies"
               value={selectedFancy}
               onChange={handleFancyChange}
-              style={{ width: 300 }}
-            // getPopupContainer={trigger => trigger.parentElement}
             >
               <Option value="">All Fancies</Option>
               {sessionList?.map((item, index) =>
@@ -447,70 +404,69 @@ const Basic = () => {
                 ))
               )}
             </Select>
-
-            {/* <Select className="gx-mb-2" placeholder="All User" onChange={handleChange2} style={{ width: 300 }} 
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          showSearch
-          getPopupContainer={trigger => trigger.parentElement}>
-            <Option value="">All user</Option>
-            {filterDatafinal && finalUserList && finalUserList?.map((item, index) => (
-              <Option key={index} value={item}>
-              
-                {item}
-              </Option>
-            ))}
-          </Select> */}
           </Col>
-          <Col>
+
+          <Col md={8} xs={24} className="gx-py-sm-3 gx-text-uppercase">
+            <div className="gx-mb-2">Client<span className="gx-text-red">*</span></div>
+            <div className="gx-d-flex gx-align-items-center">
+              <Select
+                showSearch
+                placeholder={` Select User`}
+                className="gx-bg-flex gx-justify-content-start "
+                optionFilterProp="children"
+                onChange={handleUserChange}
+                onSearch={onSearch}
+                filterOption={filterOption}
+              >
+
+                {filteredOptions && filteredOptions.length > 0 ? filteredOptions.map(user => (
+                  <Option key={user.userId} value={user.userId} label={`${user?.username} ${user?.name} `}>
+                    {user?.username} ({user?.name})
+                  </Option>
+                )) : null}
+              </Select>
+
+              <Button
+                className="gx-ml-3"
+                type="primary"
+                onClick={() => {
+                  setSelectedUser('');
+                  getSportsBetsListFun();
+                }}
+              >
+                Reset
+              </Button>
+            </div>
+          </Col>
+
+
+          {/* <Col>
             <div className="gx-bg-flex gx-font-weight-semi-bold gx-pt-2 gx-fs-xl gx-align-items-center gx-justify-content-center gx-pb-2">
               Total P/L:
               <span className={`gx-mx-2 ${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>
                 {Number.parseFloat(Math.abs(totalProfitLoss) || 0).toFixed(2)}
               </span>
             </div>
+          </Col> */}
+
+        </Row>
+        <Row className="gx-px-4 gx-text-uppercase gx-fs-md gx-font-weight-bold">
+          <Col xs={24} className="">
+            <Table
+              className="gx-table-responsive gx-text-uppercase gx-fs-md gx-font-weight-semi-bold"
+              columns={columns}
+              dataSource={userLists}
+              bordered
+              pagination={false}
+              size="small"
+            // rowClassName={(row, index) =>
+            //   row.profitLoss > 0 ? "gx-bg-green-0 gx-text-white completedBetsYes" : "gx-bg-red gx-text-white completedBetsNo"
+            // }
+            />
+            <TablePagination currentPage={currentPage} totalItems={sportsBetsList?.data?.totalFancyCount} pageSize={pageSize} onPageChange={handlePageChange} />
           </Col>
         </Row>
-        {/* <Row justify="start gx-px-5">
-        <Col span={20} className=" gx-pt-2 gx-pb-1 ">
-          <div className="gx-bg-flex gx-justify-content-start gx-gap-3" style={{ gap: "30px" }}>
-            <Select className="gx-mb-2" placeholder="All Fancies" onChange={handleChange}>
-              {sessionList.map((item, index) =>
-                item.sessionNames.map((session, sessionIndex) => (
-                  <Option key={`${index}`} value={`${session}`}>
-                    {session}
-                  </Option>
-                ))
-              )}
-            </Select>
-            <Select className="gx-mb-2 " placeholder="All User" onChange={handleChange2}>
-              <Option value={""} >All user</Option>
-              {filterDatafinal && finalUserList && finalUserList?.map((item, index) => (
-                <Option key={`${index}`} value={item}>
-                  {item}
-                </Option>
-              ))}
-            </Select>
-            <div className=" gx-bg-flex  gx-fs-xl gx-align-items-center gx-justify-content-center gx-pb-2">
-              {" "}
-              Total P/L:
-              <span className={`gx-mx-2 ${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>  {Number.parseFloat(totalProfitLoss ? Math.abs(totalProfitLoss) : 0).toFixed(2)}</span>
-            </div>
-          </div>
-        </Col>
-      </Row> */}
 
-        <Table
-          className="gx-table-responsive"
-          columns={columns}
-          dataSource={userLists}
-          bordered
-          pagination={false}
-          size="small"
-          rowClassName={(row, index) =>
-            row.profitLoss > 0 ? "gx-bg-green-0 gx-text-white completedBetsYes" : "gx-bg-red gx-text-white completedBetsNo"
-          }
-        />
-         <TablePagination currentPage={currentPage} totalItems={sportsBetsList?.data?.totalFancyCount} pageSize={pageSize} onPageChange={handlePageChange} />
       </Card>
     </>
   );

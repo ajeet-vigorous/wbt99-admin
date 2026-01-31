@@ -167,9 +167,9 @@ const Basic = () => {
         const updatedAtFormatted = moment(row.updatedAt).utcOffset("+05:30").format("DD MMM hh:mm:ss A");
 
         return createdAtFormatted !== updatedAtFormatted ? (
-          <span className="gx-px-2">{` ${row.remark}`} - ({`Updated Time: ${updatedAtFormatted}`})</span>
+          <span className="gx-px-2 gx-text-nowrap">{` ${row.remark}`} - ({`Updated Time: ${updatedAtFormatted}`})</span>
         ) : (
-          <span className="gx-px-2">{` ${row.remark}`}</span>
+          <span className="gx-px-2 gx-text-nowrap">{` ${row.remark}`}</span>
         );
       },
     },
@@ -195,6 +195,26 @@ const Basic = () => {
         </span>
       ),
     },
+    {
+      title: "Comm+",
+      dataIndex: "commissionPlus",
+      render: (value) => (
+        <span className={`gx-text-green-0`}>
+          0
+        </span>
+      ),
+    },
+
+    {
+      title: "Comm-",
+      dataIndex: "commissionMinus",
+      render: (value) => (
+        <span className={`gx-text-red`}>
+          0
+        </span>
+      ),
+    },
+
     {
       title: "Balance",
       dataIndex: "newAmount",
@@ -236,82 +256,28 @@ const Basic = () => {
     <>
       {loading ? <Loader props={loading} /> :
         <Card className="gx-card">
-          <div className="gx-bg-grey gx-px-3 gx-py-3 gx-bg-flex">
-            <span className="gx-fs-lf gx-text-nowrap gx-font-weight-bold gx-text-white gx-align-items-center  gx-text-uppercase ">
+          <div className="gx-bg-grey gx-px-3 gx-py-3 gx-bg-flex  gx-align-items-center ">
+            <span className="gx-fs-lg gx-text-nowrap gx-font-weight-bold gx-text-white gx-text-uppercase ">
 
               Statement
             </span>
             <BackButton />
           </div>
 
-          {/* <RangePicker
-            className="gx-border-redius0 gx-pb-2"
-            ranges={{
-              Today: [moment(), moment()],
-              Yesterday: [
-                moment().subtract(1, "days"),
-                moment().subtract(1, "days"),
-              ],
-              "This Week": [moment().startOf("week"), moment().endOf("week")],
-              "Last Week": [
-                moment().subtract(1, "week").startOf("week"),
-                moment().subtract(1, "week").endOf("week"),
-              ],
-              "This Month": [
-                moment().startOf("month"),
-                moment().endOf("month"),
-              ],
-              "Last Month": [
-                moment().subtract(1, "month").startOf("month"),
-                moment().subtract(1, "month").endOf("month"),
-              ],
-            }}
-            onChange={onChange}
-            value={dates}
-          /> */}
+
           <Row className=" gx-bg-flex  gx-align-items-center gx-w-100 gx-py-3 "
           >
-            {/* <Col className="gx-mt-3 gx-py-md-0 gx-py-2 gx-px-4" sm={8} xs={24}>
-              <RangePicker
-                className="gx-border-redius0 gx-ml-2 gx-w-100"
-                ranges={{
-                  Today: [moment(), moment()],
-                  Yesterday: [
-                    moment().subtract(1, "days"),
-                    moment().subtract(1, "days"),
-                  ],
-                  "This Week": [
-                    moment().startOf("week"),
-                    moment().endOf("week"),
-                  ],
-                  "Last Week": [
-                    moment().subtract(1, "week").startOf("week"),
-                    moment().subtract(1, "week").endOf("week"),
-                  ],
-                  "This Month": [
-                    moment().startOf("month"),
-                    moment().endOf("month"),
-                  ],
-                  "Last Month": [
-                    moment().subtract(1, "month").startOf("month"),
-                    moment().subtract(1, "month").endOf("month"),
-                  ],
-                }}
-                onChange={onChange}
-                style={{ width: 300 }}
-                value={dates}
-              />
-            </Col> */}
+
             <Col
               className=" gx-mb-2 gx-text-white gx-fs-md  gx-py-md-0 gx-py-2 gx-bg-flex gx-align-items-center gx-justify-content-end "
               xs={24}
             >
               <div className="gx-bg-flex gx-justify-content-center gx-flex-nowrap gx-px-1 " style={{ gap: "6px" }}>
-                <div onClick={() => handleTabClick(1)} className={` gx-px-2 gx-border gx-rounded-xs gx-py-2 ${activeTab === 1 ? "gx-bg-primary" : " gx-text-black"
+                <div onClick={() => handleTabClick(1)} className={` gx-px-3 gx-border gx-rounded-xs gx-py-2 ${activeTab === 1 ? "gx-bg-primary" : " gx-text-black"
                   }`}>
                   All
                 </div>
-                <div onClick={() => handleTabClick(2)} className={` gx-px-2 gx-border gx-rounded-xs gx-py-2 ${activeTab === 2 ? "gx-bg-primary" : " gx-text-black"
+                <div onClick={() => handleTabClick(2)} className={` gx-px-3 gx-border gx-rounded-xs gx-py-2 ${activeTab === 2 ? "gx-bg-primary" : " gx-text-black"
                   }`}>
                   P&L
                 </div>

@@ -71,29 +71,28 @@ const menu = (matchList) => (
   <Menu >
 
 
-
+{/* 
     <Menu.Item key="1" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase">
       {matchList?.status === 'INPLAY' ?
         <a href={`/components/matchviewdetail/match-view-details/${matchList.marketId}/${matchList.eventId}`} // Optional: for accessibility
-        // className=" gx-px-2 gx-py-2 gx-my-2 gx-w-100 gx-bg-grey gx-flex-column  gx-rounded-xxl gx-font-weight-semi-bold gx-text-white bg-gx-flex gx-justify-content-center gx-align-items-center"
+        
         >
           Match and Session Position
-          {/* <Link to={`/components/matchviewdetail/match-view-details/${matchList.marketId}/${matchList.eventId}`}>Match and Session Position</Link> */}
+         
         </a>
         :
         <span className="link-button gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase " onClick={() => alert('MATCH WILL BE STARTED SOON')}>
           Match and Session Position
         </span>}
 
-    </Menu.Item>
+    </Menu.Item> */}
 
-    <Menu.Item key="2" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/plusminusreport/plus-minus-report/${matchList.marketId}/${matchList.matchName}`}>Match and Session Plus Minus</Link></Menu.Item>
-    <Menu.Item key="7" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchplusminus/plus-minus-report/${matchList.marketId}/${matchList.matchName}`}>Match and Session Plus Minus 2</Link></Menu.Item>
-    <Menu.Item key="3" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchbet/displaymatchbets/${matchList.marketId}`}>Display Match Bets</Link></Menu.Item>
-    <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/displaysession/displaysessionbet/${matchList.marketId}`}>Display Session Bets</Link></Menu.Item>
-    <Menu.Item key="8" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchsessionbet/match-sessionbet/${matchList.marketId}`}>Match And Session Bet</Link></Menu.Item>
+    {/* <Menu.Item key="2" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/plusminusreport/plus-minus-report/${matchList.marketId}/${matchList.matchName}`}>Match and Session Plus Minus</Link></Menu.Item>
+    <Menu.Item key="7" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchplusminus/plus-minus-report/${matchList.marketId}/${matchList.matchName}`}>Match and Session Plus Minus 2</Link></Menu.Item> */}
+    <Menu.Item key="3" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchbet/displaymatchbets/${matchList.marketId}`}>Match Bets</Link></Menu.Item>
+    <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/displaysession/displaysessionbet/${matchList.marketId}`}>Session Bets</Link></Menu.Item>
+    {/* <Menu.Item key="8" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchsessionbet/match-sessionbet/${matchList.marketId}`}>Match And Session Bet</Link></Menu.Item> */}
     <Menu.Item key="5" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/completed/completedbets/${matchList.marketId}`}>Completed Fancies</Link></Menu.Item>
-    {settings?.domainName !== "RACEX9" && (
       <>
         <Menu.Item key="6" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase">
           <Link to={`/components/rejected/cancelBets/${matchList.marketId}`}>Rejected Bets</Link>
@@ -102,10 +101,9 @@ const menu = (matchList) => (
           <Link to={`/components/rejected/cancelmatchoddsBets/${matchList.marketId}`}>Rejected Match Bets</Link>
         </Menu.Item>
       </>
-    )}
     {/* <Menu.Item key="6" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/rejected/cancelBets/${matchList.marketId}`}> Rejected Bets</Link></Menu.Item>
     <Menu.Item key="10" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/rejected/cancelmatchoddsBets/${matchList.marketId}`}> Rejected Match Bets</Link></Menu.Item> */}
-    <Menu.Item key="9" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/agent/agent-list/${matchList.marketId}/${matchList.matchName}`}>Agent Plus Minus</Link></Menu.Item>
+    {/* <Menu.Item key="9" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/agent/agent-list/${matchList.marketId}/${matchList.matchName}`}>Agent Plus Minus</Link></Menu.Item> */}
   </Menu>
 );
 

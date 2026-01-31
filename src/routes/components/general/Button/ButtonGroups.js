@@ -151,7 +151,7 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
 
   const handleDeposit = (record) => {
     const newRecord = {
-      userId: record.key,
+      userId: record,
       coins: record.coins,
     };
     setDepositMenu({
@@ -161,7 +161,7 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
   };
   const handleWithdrawal = (record) => {
     const newRecord = {
-      userId: record.key,
+      userId: record,
       coins: record.coins,
     };
     setWithdrawalMenu({
@@ -171,7 +171,7 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
   };
   const handleResetPassword = (record) => {
     const newRecord = {
-      userId: record.key,
+      userId: record,
       password: record.passwordShow,
       username: record.username,
       otp: record?.otp
@@ -463,26 +463,30 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
     return (
       <Menu >
         {/* <Menu.Item key="0" onClick={() => alert('1')}> INT Casino </Menu.Item> */}
-        <Menu.Item key="1" className="gx-fs-md gx-font-weight-bold gx-py-2 gx-text-light-black" onClick={() => handleDeposit(record)}> Deposit </Menu.Item>
-        <Menu.Item key="2" className="gx-fs-md gx-font-weight-bold gx-py-2 gx-text-light-black" onClick={() => handleWithdrawal(record)}> Withdrawn</Menu.Item>
-        <Menu.Item key="3" onClick={() => handleStatus(record)}> {record.status === 0 ? "Active" : "Inactive"}</Menu.Item>
+        <Menu.Item key="1" className="gx-fs-md gx-font-weight-bold gx-text-uppercase gx-py-2 gx-text-light-black" onClick={() => handleDeposit(record)}> Deposit </Menu.Item>
+        <Menu.Item key="2" className="gx-fs-md gx-font-weight-bold gx-text-uppercase gx-py-2 gx-text-light-black" onClick={() => handleWithdrawal(record)}> Withdrawn</Menu.Item>
+        <Menu.Item key="9" className="gx-text-uppercase" ><Link to={`/components/feedBack/alert/${record.key}`}> Login Report </Link></Menu.Item>
+        <Menu.Item key="8" className="gx-text-uppercase" ><Link to={`/components/statement/account-operations/${record.key}`}>Account Operations</Link></Menu.Item>
+
+
+
+
+        <Menu.Item key="3" className="gx-text-uppercase" onClick={() => handleStatus(record)}> {record.status === 0 ? "Active" : "Inactive"}</Menu.Item>
         {/* {record?.userType === "client" && (<> */}
-        <Menu.Item key="4" onClick={() => handleBetBlock(record)}>{record.betStatus ? "Block Betting" : "UnBlock Betting"}</Menu.Item>
-        <Menu.Item key="5" onClick={() => handleCasinoBlock(record)}>{record.casinoStatus ? "Block Casino" : "UnBlock Casino"}</Menu.Item>
+        <Menu.Item key="4" className="gx-text-uppercase" onClick={() => handleBetBlock(record)}>{record.betStatus ? "Block Betting" : "UnBlock Betting"}</Menu.Item>
+        <Menu.Item key="5" className="gx-text-uppercase" onClick={() => handleCasinoBlock(record)}>{record.casinoStatus ? "Block Casino" : "UnBlock Casino"}</Menu.Item>
         {internationalCasino === true && (
-          <Menu.Item key="12" onClick={() => handleINTCasinoBlock(record)}>{record.intCasinoStatus ? "Block IntCasino" : "UnBlock IntCasino"}</Menu.Item>)}
+          <Menu.Item key="12" className="gx-text-uppercase" onClick={() => handleINTCasinoBlock(record)}>{record.intCasinoStatus ? "Block IntCasino" : "UnBlock IntCasino"}</Menu.Item>)}
         {/* </>)} */}
 
-        <Menu.Item key="6" > <Link to={`/components/edit/edit-account/${record.key}`}>Edit</Link></Menu.Item>
-        <Menu.Item key="7" ><Link to={`/components/statement/transaction/${record.key}`}> Statement </Link></Menu.Item>
-        <Menu.Item key="8" ><Link to={`/components/statement/account-operations/${record.key}`}>Account Operations</Link></Menu.Item>
-        <Menu.Item key="9"  ><Link to={`/components/feedBack/alert/${record.key}`}> Login Report </Link></Menu.Item>
+        <Menu.Item key="6" className="gx-text-uppercase"> <Link to={`/components/edit/edit-account/${record.key}`}>Edit</Link></Menu.Item>
+        <Menu.Item key="7" className="gx-text-uppercase"><Link to={`/components/statement/transaction/${record.key}`}> Statement </Link></Menu.Item>
         {record?.userType !== "client" && (<>
-          <Menu.Item key="10" ><Link to={`/components/general/button-${downlineUserType}/${record.key}/${Number(record.userPriority) - 1}`}>Downline</Link></Menu.Item>
+          <Menu.Item key="10" className="gx-text-uppercase"><Link to={`/components/general/button-${downlineUserType}/${record.key}/${Number(record.userPriority) - 1}`}>Downline</Link></Menu.Item>
           {/* // <Link to={`/components/general/button-${downlineUserType}/${record.key}/${record.userPriority}`}></Link> */}
         </>)}
         {/* <Menu.Item key="11" onClick={() => handleSendLoginDetails(record)}>Send Login Details</Menu.Item> */}
-        <Menu.Item onClick={() => handleResetPassword(record)} key="11"> Reset Password</Menu.Item>
+        <Menu.Item onClick={() => handleResetPassword(record)} key="11" className="gx-text-uppercase"> Reset Password</Menu.Item>
       </Menu>
     );
   };

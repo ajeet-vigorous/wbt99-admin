@@ -147,6 +147,7 @@ const Basic = () => {
 
   };
 
+
   const renderContent = (value, row, index) => {
     const obj = {
       children: value,
@@ -158,17 +159,17 @@ const Basic = () => {
 
   const menu = (filteredData) => (
     <Menu>
-      <Menu.Item key="1" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/plusminusreport/plus-minus-report/${filteredData.marketId}/${filteredData.matchName}`}>Match and Session Plus Minus</Link></Menu.Item>
-      <Menu.Item key="2" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchplusminus/plus-minus-report/${filteredData.marketId}/${filteredData.matchName}`}>Match and Session Plus Minus 2</Link></Menu.Item>
-      <Menu.Item key="3" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchbet/displaymatchbets/${filteredData.marketId}`}>Display Match Bets</Link></Menu.Item>
-      <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/displaysession/displaysessionbet/${filteredData.marketId}`}>Display Session Bets</Link></Menu.Item>
-      <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchsessionbet/match-sessionbet/${filteredData.marketId}`}>Match And Session Bet</Link></Menu.Item>
+      <Menu.Item key="1" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/plusminusreport/plus-minus-report/${filteredData.marketId}/${filteredData.matchName}`}>Match and Session Pl Report</Link></Menu.Item>
+      <Menu.Item key="2" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchplusminus/plus-minus-report/${filteredData.marketId}/${filteredData.matchName}`}>Match and Session Pl</Link></Menu.Item>
+      <Menu.Item key="3" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchbet/displaymatchbets/${filteredData.marketId}`}> Match Bets</Link></Menu.Item>
+      <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/displaysession/displaysessionbet/${filteredData.marketId}`}> Session Bets</Link></Menu.Item>
+      {/* <Menu.Item key="4" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/matchsessionbet/match-sessionbet/${filteredData.marketId}`}>Match And Session Bet</Link></Menu.Item> */}
 
       {/* <Menu.Item key="4">Display Session Bets</Menu.Item> */}
 
 
-      <Menu.Item key="5" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/completed/completedbets/${filteredData.marketId}`}>Completed Fancies</Link></Menu.Item>
-      <Menu.Item key="6" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/agent/agent-list/${filteredData.marketId}/${filteredData.matchName}`}>Agent Plus Minus</Link></Menu.Item>
+      <Menu.Item key="5" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/completed/completedbets/${filteredData.marketId}`}>Completed Session</Link></Menu.Item>
+      {/* <Menu.Item key="6" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/agent/agent-list/${filteredData.marketId}/${filteredData.matchName}`}>Agent Plus Minus</Link></Menu.Item> */}
       {settings?.domainName !== "RACEX9" && (<>
         <Menu.Item key="7" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/rejected/cancelBets/${filteredData.marketId}`}> Rejected Bets</Link></Menu.Item>
         <Menu.Item key="10" className="gx-font-weight-light gx-fs-md gx-py-2 gx-text-uppercase"><Link to={`/components/rejected/cancelmatchoddsBets/${filteredData.marketId}`}> Rejected Match Bets</Link></Menu.Item></>)}
@@ -176,7 +177,7 @@ const Basic = () => {
   );
   const columns = [
     {
-      title: "",
+      title: "#",
       dataIndex: "kk",
       key: "kk",
       render: (text, filteredData) => (
@@ -187,6 +188,18 @@ const Basic = () => {
         </Dropdown>
       ),
     },
+    {
+      title: "Date",
+      dataIndex: "matchDate",
+      key: "matchDate",
+      render: (text, record) => (
+        <span>
+          {moment(record.matchDate, "DD-MM-YYYY HH:mm:ss").format("DD MMM YYYY")}
+          {console.log(record, "recordrecordrecord")}
+        </span>
+      ),
+    },
+
 
     // {
     //   title: "Code",
@@ -201,26 +214,21 @@ const Basic = () => {
       render: renderContent,
     },
 
-    {
-      title: "Time",
-      dataIndex: "matchDate",
-      key: "matchDate",
-      render: renderContent,
-    },
-    {
-      title: "Declared Date",
-      dataIndex: "declaredDate",
-      key: "declaredDate",
-      render: (text, record) => (
-        <span>{moment(text).format("DD-MM-YYYY hh:mm A")}</span>
-      ),
-    },
-    {
-      title: "Competition",
-      dataIndex: "matchType",
-      key: "matchType",
-      render: renderContent,
-    },
+
+    // {
+    //   title: "Declared Date",
+    //   dataIndex: "declaredDate",
+    //   key: "declaredDate",
+    //   render: (text, record) => (
+    //     <span>{moment(text).format("DD-MM-YYYY hh:mm A")}</span>
+    //   ),
+    // },
+    // {
+    //   title: "Competition",
+    //   dataIndex: "matchType",
+    //   key: "matchType",
+    //   render: renderContent,
+    // },
 
     // {
     //   title: "Declared",
@@ -229,11 +237,30 @@ const Basic = () => {
     //   render: renderContent,
     // },
     {
-      title: "Won By",
+      title: "Winner",
       dataIndex: "wonTeamName",
       key: "wonTeamName",
       render: renderContent,
     },
+
+    {
+      title: "Comm+",
+      dataIndex: "commissionPlus",
+      key: "commissionPlus",
+      render: (value) => (
+        <span className="gx-text-green-0">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
+      ),
+    },
+
+    {
+      title: "Comm-",
+      dataIndex: "commissionMinus",
+      key: "commissionMinus",
+      render: (value) => (
+        <span className="gx-text-red">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
+      ),
+    },
+
 
     {
       title: "P/L",
@@ -261,8 +288,8 @@ const Basic = () => {
     <>
       {/* {loading ? <Loader props={loading} /> : */}
       <Card className="gx-card gx-w-100 ">
-        <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex">
-          <span className="gx-fs-xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-2 gx-text-capitalize">{`Completed Games Detail`}</span>
+        <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center">
+          <span className="gx-fs-xl gx-font-weight-normal gx-text-white   gx-text-capitalize">{`Completed Games Detail`}</span>
           <BackButton />
         </div>
         <Row gutter={12} className="gx-px-4">

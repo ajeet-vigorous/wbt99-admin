@@ -27,12 +27,22 @@ const Basic = () => {
 
   const columns = [
     {
-      title: "COUNTRY",
-      dataIndex: "country",
-      key: "country",
+      title: "DATE",
+      dataIndex: "loginDate",
+      key: "loginDate",
+    },
+        {
+      title: "IP",
+      dataIndex: "ipAddress",
+      key: "ipAddress",
     },
     {
-      title: "REGION",
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "State",
       dataIndex: "region",
       key: "region",
     },
@@ -41,16 +51,8 @@ const Basic = () => {
       dataIndex: "isp",
       key: "isp",
     },
-    {
-      title: "IP-ADDRESS",
-      dataIndex: "ipAddress",
-      key: "ipAddress",
-    },
-    {
-      title: "LOGIN DATE",
-      dataIndex: "loginDate",
-      key: "loginDate",
-    },
+
+
   ];
 
 
@@ -72,10 +74,10 @@ const Basic = () => {
   return (
     <>
       {loading ? <Loader props={loading} /> :
-        <Card className="gx-card gx-w-100">
-          <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">
-              Login Report
+        <Card className="gx-card gx-px-2 gx-w-100">
+          <div className="gx-bg-grey gx-p-3  gx-bg-flex gx-align-items-center ">
+            <span className="gx-fs-lg gx-font-weight-bold gx-text-white  gx-text-uppercase">
+              Login Details
             </span>
             <BackButton />
           </div>

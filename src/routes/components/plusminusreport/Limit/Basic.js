@@ -85,14 +85,14 @@ const Basic = () => {
     useEffect(() => {
         const allKeys = clientList?.map(item => item.key);
         setSelectedClientKeys(allKeys);
-  
+
         const allKeys1 = sessionListDataFinal?.map(item => item.key);
         setSelectedSessionKeys(allKeys1);
 
         const allKeys2 = oddsData?.map(item => item.key);
         setSelectedClientKeys1(allKeys2);
-      }, [clientList, sessionListDataFinal]);
-  
+    }, [clientList, sessionListDataFinal]);
+
 
     useEffect(() => {
         if (userListItems) {
@@ -145,7 +145,7 @@ const Basic = () => {
         },
     ];
 
-  
+
     const columns1 = [
         {
             title: 'Session',
@@ -164,7 +164,7 @@ const Basic = () => {
             title: 'Client',
             dataIndex: 'name',
             render: (value, row) => `${row.username} (${row.name})`,
-            
+
         },
     ];
 
@@ -211,8 +211,10 @@ const Basic = () => {
         <>
             {loading ? <Loader props={loading} /> :
                 <Card className="gx-card">
-                    <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-                        <span className="gx-fs-xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`${matchName}`}</span>
+                    <div className="gx-bg-grey gx-px-3 gx-bg-flex gx-align-items-center">
+                        <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-py-3   gx-pt-1 gx-text-uppercase">
+                            {`${matchName}`}
+                        </span>
                         <div className="gx-bg-flex  ">
                             <Link to={`/components/showplusminusreport/show-plus-minus-report/${marketId}/${matchName}`} className='gx-px-1'>
                                 <Button type='primary' className=""> Show</Button>
@@ -220,50 +222,51 @@ const Basic = () => {
                             <BackButton />
                         </div>
                     </div>
-                    <div className="gx-bg-flex gx-py-2 gx-px-2 gx-justify-content-start"> </div>
-                    <Table
-                        className="gx-table-responsive gx-pb-5"
-                        columns={columns}
-                        dataSource={oddsData}
-                        bordered
-                        pagination={false}
-                        size="large"
-                        rowSelection={{
-                            type: selectionType,
-                            ...rowSelection2,
-                        }}
-                    />
-                    <Row>
-                        <Col md={12} sm={12} xs={24}>
-                            <Table
-                                className="gx-table-responsive gx-pb-5"
-                                dataSource={sessionListDataFinal}
-                                columns={columns1}
-                                bordered
-                         
-                                pagination={false}
-                                size="large"
-                                rowSelection={{
-                                    type: selectionType,
-                                    ...rowSelection1,
-                                }}
-                            />
-                        </Col>
-                        <Col md={12} sm={12} xs={24}>
-                            <Table
-                                className="gx-table-responsive gx-pb-5"
-                                columns={columns2}
-                                dataSource={clientList}
-                                bordered
-                                pagination={false}
-                                size="large"
-                                rowSelection={{
-                                    type: selectionType,
-                                    ...rowSelection3,
-                                }}
-                            />
-                        </Col>
-                    </Row>
+                    <div className="gx-p-3">
+                        <Table
+                            className="gx-table-responsive"
+                            columns={columns}
+                            dataSource={oddsData}
+                            bordered
+                            pagination={false}
+                            size="small"
+                            rowSelection={{
+                                type: selectionType,
+                                ...rowSelection2,
+                            }}
+                        />
+                        <Row>
+                            <Col md={12} sm={12} xs={24}>
+                                <Table
+                                    className="gx-table-responsive"
+                                    dataSource={sessionListDataFinal}
+                                    columns={columns1}
+                                    bordered
+
+                                    pagination={false}
+                                    size="small"
+                                    rowSelection={{
+                                        type: selectionType,
+                                        ...rowSelection1,
+                                    }}
+                                />
+                            </Col>
+                            <Col md={12} sm={12} xs={24}>
+                                <Table
+                                    className="gx-table-responsive"
+                                    columns={columns2}
+                                    dataSource={clientList}
+                                    bordered
+                                    pagination={false}
+                                    size="small"
+                                    rowSelection={{
+                                        type: selectionType,
+                                        ...rowSelection3,
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
                 </Card>
             }
         </>

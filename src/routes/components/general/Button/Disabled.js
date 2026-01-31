@@ -259,10 +259,10 @@ const Disabled = () => {
           <BackButton />
         </div>
         <div className="gx-px-3 gx-py-3 gx-bg-flex gx-justify-content-around ">
-          <button type="button"  class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
+          <button type="button" class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
             <Link to={`/components/account/create-account/${userType}/${userId}/${userPriority}`} className="gx-text-white gx-py-2"><PlusOutlined /> Create </Link>
           </button>
-          <button type="button"  class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
+          <button type="button" class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
             <Link to={`/components/plusminus/limitplusminus/${userType}/${userId}/${userPriority}`} className="gx-text-white gx-py-3"><PlusOutlined /> Update </Link>
           </button>
 

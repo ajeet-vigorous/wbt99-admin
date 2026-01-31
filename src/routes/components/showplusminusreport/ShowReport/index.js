@@ -7,7 +7,7 @@ import BasicCopy from "./BasicCopy";
 const PlusMinus = () => {
     return (
         <Row justify={"center"}>
-            <Col lg={24} xs={22}>
+            <Col xs={24}>
                 <>
                     {/* <Basic /> */}
                     <BasicCopy/>

@@ -21,7 +21,7 @@ const Basic = () => {
   useEffect(() => {
     if (sportsBetsList && sportsBetsList.data && sportsBetsList?.data?.oddsBetData) {
       console.log(sportsBetsList?.data?.oddsBetData, "sportsBetsList?.data?.oddsBetData");
-      
+
       const filteredData = sportsBetsList?.data?.oddsBetData?.map((item, index) => ({
         key: `${index}`,
         odds: item.odds,
@@ -120,32 +120,33 @@ const Basic = () => {
     <>
       {loading ? <Loader props={loading} /> :
         <Card className="gx-card">
-          <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`REJECTED And CANCELLED Bets`}</span>
+          <div className="gx-bg-grey gx-px-3 gx-bg-flex gx-align-items-center">
+            <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-py-3   gx-pt-1 gx-text-uppercase">
+              Rejected Bets
+            </span>
             <BackButton />
           </div>
-          <Row justify="start gx-px-5">
-            <Col span={20} className=" gx-pt-2 gx-pb-1 ">
-              <div
-                className="gx-bg-flex gx-justify-content-start gx-gap-3"
-                style={{ gap: "30px" }}
+          <Row gutter={12} className="gx-px-1 gx-text-uppercase gx-fs-md gx-font-weight-bold">
+
+
+            <Col md={8} xs={24} className="gx-mb-1 gx-text-uppercase">
+              <div className="gx-mb-2">Client<span className="gx-text-red">*</span></div>
+
+              <Select
+                className="gx-mb-2 gx-bg-flex"
+                placeholder="All"
+                onChange={handleChange}
+              // getPopupContainer={trigger => trigger.parentElement}
               >
-                <Select
-                  className="gx-mb-2 "
-                  placeholder="All"
-                  onChange={handleChange}
-                  style={{width: 300}}
-                  // getPopupContainer={trigger => trigger.parentElement}
-                >
-                  <Option value="jack">All</Option>
-                  {/* <Option value="lucy">Lucy</Option>
+                <Option value="jack">All</Option>
+                {/* <Option value="lucy">Lucy</Option>
                   <Option value="lucy1">Lucy</Option>
                   <Option value="lucy2">Lucy</Option> */}
 
 
-                </Select>
-              </div>
+              </Select>
             </Col>
+
           </Row>
           <Table
             className="gx-table-responsive"

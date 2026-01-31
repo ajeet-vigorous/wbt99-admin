@@ -86,41 +86,13 @@ const Basic = () => {
         <>
             {loading ? <Loader props={loading} /> :
                 <Card className="gx-card ">
-                    <div className="gx-bg-grey gx-px-5 gx-py-3 gx-bg-flex">
-                        <span className="gx-fs-lg gx-w-75 gx-font-weight-bold gx-text-white gx-align-items-center  gx-text-uppercase">
+                    <div className="gx-bg-grey gx-px-5 gx-py-3 gx-bg-flex gx-align-items-center">
+                        <span className="gx-fs-lg gx-w-75 gx-font-weight-bold gx-text-white   gx-text-uppercase">
                             Account Operation
                         </span>
                         <BackButton />
                     </div>
-                    {/* <div className="gx-bg-flex gx-py-2 gx-justify-content-center"> ext-overflow: ellipsis   */}
-                    {/* <RangePicker
-                        className=" gx-border-redius0"
 
-                        ranges={{
-                            Today: [moment(), moment()],
-                            Yesterday: [
-                                moment().subtract(1, "days"),
-                                moment().subtract(1, "days"),
-                            ],
-                            "This Week": [moment().startOf("week"), moment().endOf("week")],
-                            "Last Week": [
-                                moment().subtract(1, "week").startOf("week"),
-                                moment().subtract(1, "week").endOf("week"),
-                            ],
-                            "This Month": [
-                                moment().startOf("month"),
-                                moment().endOf("month"),
-                            ],
-                            "Last Month": [
-                                moment().subtract(1, "month").startOf("month"),
-                                moment().subtract(1, "month").endOf("month"),
-                            ],
-                        }}
-                        onChange={onChange}
-                        style={{ width: 320 }}
-                    /> */}
-
-                    {/* </div> */}
                     <div className="gx-p-4 gx-mb-5">
                         <Table
                             className="gx-table-responsive gx-text-uppercase gx-fs-md gx-font-weight-bold"

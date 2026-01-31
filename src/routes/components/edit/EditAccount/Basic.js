@@ -73,8 +73,8 @@ const Basic = () => {
   useEffect(() => {
     setParentDetails({})
 
-    
-   getclientFlatShare(userId)
+
+    getclientFlatShare(userId)
     const getUserDetails = async () => {
       let reqData = { userId };
       try {
@@ -183,7 +183,7 @@ const Basic = () => {
       userFlatSharePermission: values?.shareType === "fixed" ? true : false
     };
 
-    
+
     if (userDetails.userType === 'client') {
       userUpdateData.matchFlatShare = values.masterMobileShare
     }
@@ -238,76 +238,63 @@ const Basic = () => {
   return (
     <>
       {loader ? <Loader props={loader} /> :
-        <Card className="gx-card">
-          <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">Update {userDetails?.userType ? "mini admin" : userDetails?.userType}</span>
-            <BackButton />
-          </div>
-          <Form
-            className="gx-py-4 gx-px-2 gx-text-capitalize"
-            {...formItemLayout}
-            form={form}
-            name="register"
-            onFinish={onFinish}
-            scrollToFirstError
-          >
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
+        <div className=" gx-p-2">
+          <div className="gx-card">
+            <div className="gx-bg-grey gx-px-5 gx-py-3 gx-bg-flex gx-align-items-center">
+              <span className="gx-fs-lg gx-font-weight-bold gx-text-white  gx-text-uppercase">Edit {userDetails?.userType}</span>
+              <BackButton />
+            </div>
+            <Form
+              className="gx-py-4 gx-px-4 gx-text-uppercase gx-w-100"
+              {...formItemLayout}
+              form={form}
+              name="register"
+              onFinish={onFinish}
+              scrollToFirstError
+            >
+              <Row className="gx-bg-flex">
+                <Col xs={12}>
+                  <div className="gx-py-3">Name<span className="gx-text-red">*</span></div>
+                  <Form.Item
+                    wrapperCol={{ span: 23 }}
+                    name="name"
+                    labelAlign="left"
+                    initialValue={userDetails.name}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your name!",
+                      },
+                    ]}
+                  >
+                    <Input disabled={true} className="gx-border-redius" />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={12}>
+                  <div className="gx-py-3">Reference<span className="gx-text-red">*</span></div>
+                  <Form.Item
+                    wrapperCol={{ span: 23 }}
+                    name="reference"
+                    labelAlign="left"
+                    initialValue={userDetails.reference}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your reference!",
+                      },
+                    ]}
+                  >
+                    <Input className="gx-border-redius" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <div class="ant-divider css-1v5z42l ant-divider-horizontal" role="separator"></div>
+              <h5 class="ant-typography css-1v5z42l">Match And Share Info</h5>
+              {/* <Row className="gx-bg-flex">
+              <Col xs={12}>
                 <Form.Item
-                  name="username"
-                  label="User Name"
-                  labelAlign="left"
-                  initialValue={userDetails.username}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your name!",
-                    },
-                  ]}
-                >
-                  <Input disabled={true} className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="name"
-                  label="Name"
-                  labelAlign="left"
-                  initialValue={userDetails.name}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your name!",
-                    },
-                  ]}
-                >
-                  <Input disabled={true} className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="reference"
-                  label="Reference"
-                  labelAlign="left"
-                  initialValue={userDetails.reference}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your reference!",
-                    },
-                  ]}
-                >
-                  <Input className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-            </Row>
-            {/* <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
+                wrapperCol={{ span: 23 }}
                   name="mobile"
                   label="Contact No."
                   labelAlign="left"
@@ -319,57 +306,60 @@ const Basic = () => {
                     },
                   ]}
                 >
-                  <Input className="gx-border-redius0" />
+                  <Input className="gx-border-redius" />
                 </Form.Item>
               </Col>
             </Row> */}
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="passwordShow"
-                  label="Password"
-                  labelAlign="left"
-                  initialValue={userDetails.passwordShow}
-                  // initialValue={'******'}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your name!",
-                    },
-                  ]}
-                >
-                  <Input disabled className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="status"
-                  label="Status"
-                  labelAlign="left"
-                  initialValue={userDetails.status === 1 ? 'active' : 'inactive'}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select your status!",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Select status" className="gx-border-redius0"
-                  // getPopupContainer={trigger => trigger.parentElement}
-                  >
-                    <Option value="active">Active</Option>
-                    <Option value="inactive">Inactive</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-
-            {/* {userDetails.userType !== "subowner" ? null : <>
-              <Row className="gx-bg-flex">
-                <Col md={12} xs={24}>
+              {/* <Row className="gx-bg-flex">
+                <Col xs={12}>
                   <Form.Item
+                  wrapperCol={{ span: 23 }}
+                    name="passwordShow"
+                    label="Password"
+                    labelAlign="left"
+                    initialValue={userDetails.passwordShow}
+                    // initialValue={'******'}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your name!",
+                      },
+                    ]}
+                  >
+                    <Input disabled className="gx-border-redius" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row className="gx-bg-flex">
+                <Col xs={12}>
+                  <Form.Item
+                  wrapperCol={{ span: 23 }}
+                    name="status"
+                    label="Status"
+                    labelAlign="left"
+                    initialValue={userDetails.status === 1 ? 'active' : 'inactive'}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select your status!",
+                      },
+                    ]}
+                  >
+                    <Select placeholder="Select status" className="gx-border-redius"
+                    // getPopupContainer={trigger => trigger.parentElement}
+                    >
+                      <Option value="active">Active</Option>
+                      <Option value="inactive">Inactive</Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row> */}
+
+              {/* {userDetails.userType !== "subowner" ? null : <>
+              <Row className="gx-bg-flex">
+                <Col xs={12}>
+                  <Form.Item
+                  wrapperCol={{ span: 23 }}
                     name="commissionChangeType"
                     label="Share Change Type"
                     labelAlign="left"
@@ -381,7 +371,7 @@ const Basic = () => {
                       },
                     ]}
                   >
-                    <Select placeholder="Select share type" className="gx-border-redius0"
+                    <Select placeholder="Select share type" className="gx-border-redius"
                       onChange={(value) => handleInputChange('commissionChangeType', value)}
                     // getPopupContainer={trigger => trigger.parentElement} 
                     >
@@ -394,483 +384,526 @@ const Basic = () => {
 
               {fieldsUser?.commissionChangeType === "" || fieldsUser?.commissionChangeType === "fixed" ? null :
                 <Row className="gx-bg-flex">
-                  <Col md={12} xs={24}>
+                  <Col xs={12}>
                     <Form.Item
+                    wrapperCol={{ span: 23 }}
                       name="maxCommValue"
                       label="Maximum Commission value: "
                       labelAlign="left"
                       rules={[{ required: true, message: "Please input your Maximum Commission value!" }]}
                     >
-                      <Input className="gx-border-redius0" />
+                      <Input className="gx-border-redius" />
                     </Form.Item>
                   </Col>
                 </Row>
               }
             </>} */}
 
-            {/* //domain setting  */}
+              {/* //domain setting  */}
 
-            {userDetails.userType === "client" ? null
-              :
-              <>
-                <Row className="gx-bg-flex">
+              {/* {userDetails.userType === "client" ? null
+                :
+                <>
+                  <Row className="gx-bg-flex">
 
-                  {userDetails.userType !== "subowner" ? null :
-                    <Col md={12} xs={24}>
-                      <Form.Item
-                        name="selectDomain"
-                        label="Select Domain"
-                        labelAlign="left"
-                        rules={[{ required: true, message: "Please select Domains!" }]}
-                      >
-
-                        <Select
-                          // mode="multiple"
-                          // placeholder="Select"
-                          mode="tags" // Allows both selection and text entry
-                          placeholder="Select or Enter"
-                          className="gx-border-redius0"
-                        // getPopupContainer={trigger => trigger.parentElement}
+                    {userDetails.userType !== "subowner" ? null :
+                      <Col xs={12}>
+                        <Form.Item
+                        wrapperCol={{ span: 23 }}
+                          name="selectDomain"
+                          label="Select Domain"
+                          labelAlign="left"
+                          rules={[{ required: true, message: "Please select Domains!" }]}
                         >
-                           {domainListData?.map((item, index) => (
-                              <Option key={index} value={item?.domainUrl} className="gx-border-redius0">
+
+                          <Select
+                            // mode="multiple"
+                            // placeholder="Select"
+                            mode="tags" // Allows both selection and text entry
+                            placeholder="Select or Enter"
+                            className="gx-border-redius"
+                          // getPopupContainer={trigger => trigger.parentElement}
+                          >
+                            {domainListData?.map((item, index) => (
+                              <Option key={index} value={item?.domainUrl} className="gx-border-redius">
                                 {item?.domainUrl}
                               </Option>
                             ))}
-                        </Select>
+                          </Select>
+                        </Form.Item>
+                      </Col>}
+
+
+                  </Row>
+
+
+                </>
+              } */}
+
+
+              {/* {userDetails?.userType === "client" ? null :
+                <Row className="gx-bg-flex">
+                  <Col xs={12}>
+                    <Form.Item
+                    wrapperCol={{ span: 23 }}
+                      name="shareType"
+                      label="Share Change Type"
+                      labelAlign="left"
+                      initialValue={userDetails.userFlatSharePermission === true ? 'fixed' : 'changed'}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select your share type!",
+                        },
+                      ]}
+                    >
+                      <Select placeholder="Select share type" className="gx-border-redius"
+                        onChange={(value) => handleInputChange('shareType', value)}
+                      // getPopupContainer={trigger => trigger.parentElement} 
+                      // disabled={parentDetails.shareType == 'fixed'}
+                      >
+                        <Option value="fixed">Fixed</Option>
+                        <Option value="changed">Change</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+              } */}
+
+
+
+
+              {parentDetails.userFlatSharePermission == true ? null :
+                <Row className="gx-bg-flex">
+                  {userDetails.userType === "client" ? null :
+                    <Col xs={12}>
+                      <div className="gx-py-3">{`${parentDetails.userType} Match Share(%)`}<span className="gx-text-red">*</span></div>
+                      <Form.Item
+                        wrapperCol={{ span: 23 }}
+                        name="parentMobileShare"
+                        labelAlign="left"
+                        initialValue={parentDetails.userMatchShare}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input parent mobile share!",
+                          },
+                        ]}
+                      >
+                        <Input disabled={true} className="gx-border-redius" />
                       </Form.Item>
                     </Col>}
 
-
-                </Row>
-
-
-              </>
-            }
-
-
-             {userDetails?.userType === "client" ? null :
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="shareType"
-                  label="Share Change Type"
-                  labelAlign="left"
-                  initialValue={userDetails.userFlatSharePermission === true ? 'fixed' : 'changed'}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select your share type!",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Select share type" className="gx-border-redius0"
-                    onChange={(value) => handleInputChange('shareType', value)}
-                  // getPopupContainer={trigger => trigger.parentElement} 
-                  // disabled={parentDetails.shareType == 'fixed'}
-                  >
-                    <Option value="fixed">Fixed</Option>
-                    <Option value="changed">Change</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-}
-
-
-
-            <h1>Match Share and Comm</h1>
-
-            {parentDetails.userFlatSharePermission == true ? null :
-            <Row className="gx-bg-flex">
-            {userDetails.userType === "client" ? null :  <Col md={12} xs={24}>
-                <Form.Item
-                  name="parentMobileShare"
-                  label={`${parentDetails.userType} Match Share(%)`}
-                  labelAlign="left"
-                  initialValue={parentDetails.userMatchShare}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input parent mobile share!",
-                    },
-                  ]}
-                >
-                  <Input disabled={true} className="gx-border-redius0" />
-                </Form.Item>
-                </Col>}
-
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="masterMobileShare"
-                  label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType === "client" ? 'agent' : userDetails.userType} Match Share(%)`}
-                  labelAlign="left"
-                  initialValue={userDetails?.userType === "client" ? flatShareDetails.agentMatchShare : userDetails.userMatchShare}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input master Match share!",
-                    },
-                    { validator: validateCoins(parentDetails.userMatchShare, " Match Share(%)") },
-                  ]}
-                >
-                  <Input className="gx-border-redius0" disabled={parentDetails.userFlatSharePermission == true} />
-                  {/* disabled={parentDetails.shareType == 'fixed'} */}
-                </Form.Item>
-              </Col>
-            </Row>
-            }
-
-
-
-
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="parentCommType"
-                  label={`${parentDetails.userType} Comm Type`}
-                  labelAlign="left"
-                  initialValue={parentDetails.userCommissionType}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input parent commission type!",
-                    },
-                  ]}
-                >
-                  <Input disabled={true} className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="userCommissionType"
-                  label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Comm Type`}
-                  labelAlign="left"
-                  initialValue={userDetails.userCommissionType}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select master commission type!",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Commission Type" className="gx-border-redius0"
-                    onChange={(value) => handleInputChange('userCommissionType', value)}
-                  // getPopupContainer={trigger => trigger.parentElement}
-                  >
-                    <Option value="NoCommission">No Comm</Option>
-                    <Option value="BetByBet">Bet by Bet</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-
-            {fieldsUser?.userCommissionType !== "BetByBet" ? null :
-              <>
-                <Row className="gx-bg-flex">
-                  <Col md={12} xs={24}>
+                  <Col xs={12}>
+                    <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType === "client" ? 'agent' : userDetails.userType} Match Share(%)`}<span className="gx-text-red">*</span></div>
                     <Form.Item
-                      name="parentMatchComm"
-                      label={`${parentDetails.userType} Match Comm(%)`}
+                      wrapperCol={{ span: 23 }}
+                      name="masterMobileShare"
                       labelAlign="left"
-                      initialValue={parentDetails.userMatchCommission}
+                      initialValue={userDetails?.userType === "client" ? flatShareDetails.agentMatchShare : userDetails.userMatchShare}
                       rules={[
                         {
                           required: true,
-                          message: "Please input parent match commission!",
+                          message: "Please input master Match share!",
                         },
+                        { validator: validateCoins(parentDetails.userMatchShare, " Match Share(%)") },
                       ]}
                     >
-                      <Input disabled={true} className="gx-border-redius0" />
-                    </Form.Item>
-                  </Col>
-                  <Col md={12} xs={24}>
-                    <Form.Item
-                      name="masterMatchComm"
-                      label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Match Comm(%)`}
-                      labelAlign="left"
-                      initialValue={userDetails.userMatchCommission}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input master match commission!",
-                        },
-                        { validator: validateCoins(parentDetails.userMatchCommission, "Match Comm(%)") },
-                      ]}
-                    >
-                      <Input className="gx-border-redius0" />
+                      <Input className="gx-border-redius" disabled={parentDetails.userFlatSharePermission == true} />
+                      {/* disabled={parentDetails.shareType == 'fixed'} */}
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row className="gx-bg-flex">
-                  <Col md={12} xs={24}>
-                    <Form.Item
-                      name="parentSessComm"
-                      label={`${parentDetails.userType} Sess Comm(%)`}
-                      labelAlign="left"
-                      initialValue={parentDetails.userSessionCommission}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input parent session commission!",
-                        },
-                      ]}
-                    >
-                      <Input disabled={true} className="gx-border-redius0" />
-                    </Form.Item>
-                  </Col>
-                  <Col md={12} xs={24}>
-                    <Form.Item
-                      name="masterSessComm"
-                      label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Sess Comm(%)`}
-                      labelAlign="left"
-                      initialValue={userDetails.userSessionCommission}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input master session commission!",
+              }
 
-                        },
-                        { validator: validateCoins(parentDetails.userSessionCommission, "Sess Comm(%)") },
-                      ]}
-                    >
-                      <Input className="gx-border-redius0" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </>
 
-            }
-            <h1>Casino Share and Commission</h1>
-            <Form.Item
-              name="toggle"
-              initialValue={toggleStatus}
-              valuePropName="checked"
-            >
-              <Switch
-                onChange={handleToggle}
-                checkedChildren="ON"
-                unCheckedChildren="OFF"
-                className="gx-mx-3 gx-my-1 gx-px-1"
-                style={{ backgroundColor: toggleStatus ? "green" : "red", transform: "scale(1.3)" }}
-              />
-            </Form.Item>
 
-            {userDetails.userType === "client" ? null :
+
               <Row className="gx-bg-flex">
-                <Col md={12} xs={24}>
+                <Col xs={12}>
+                  <div className="gx-py-3">{`${parentDetails.userType} Comm Type`}<span className="gx-text-red">*</span></div>
                   <Form.Item
-                    name="parentCasinoShare"
-                    label={`${parentDetails.userType} Casino Share(%)`}
+                    wrapperCol={{ span: 23 }}
+                    name="parentCommType"
                     labelAlign="left"
-                    initialValue={parentDetails.userCasinoShare}
+                    initialValue={parentDetails.userCommissionType}
                     rules={[
                       {
                         required: true,
-                        message: "Please input parent casino share!",
+                        message: "Please input parent commission type!",
                       },
                     ]}
                   >
-                    <Input disabled={true} className="gx-border-redius0" />
+                    <Input disabled={true} className="gx-border-redius" />
                   </Form.Item>
                 </Col>
-
-                <Col md={12} xs={24}>
+                <Col xs={12}>
+                  <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Comm Type`}<span className="gx-text-red">*</span></div>
                   <Form.Item
-                    name="masterCasinoShare"
-                    label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Casino Share(%)`}
+                    wrapperCol={{ span: 23 }}
+                    name="userCommissionType"
                     labelAlign="left"
-                    initialValue={userDetails.userCasinoShare}
+                    initialValue={userDetails.userCommissionType}
                     rules={[
                       {
                         required: true,
-                        message: "Please input master casino share!",
+                        message: "Please select master commission type!",
                       },
-                      { validator: validateCoins(parentDetails.userCasinoShare, "Casino Share(%)") },
                     ]}
                   >
-                    <Input className="gx-border-redius0" disabled={parentDetails.userFlatSharePermission == true} />
+                    <Select placeholder="Commission Type" className="gx-border-redius"
+                      onChange={(value) => handleInputChange('userCommissionType', value)}
+                    // getPopupContainer={trigger => trigger.parentElement}
+                    >
+                      <Option value="NoCommission">No Comm</Option>
+                      <Option value="BetByBet">Bet by Bet</Option>
+                    </Select>
                   </Form.Item>
                 </Col>
-              </Row>}
-            <Row className="gx-bg-flex">
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="parentCasinoComm"
-                  label={`${parentDetails.userType} Casino Comm(%)`}
-                  labelAlign="left"
-                  initialValue={parentDetails.userCasinoCommission}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input parent casino commission!",
-                    },
-                  ]}
-                >
-                  <Input disabled={true} className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-              <Col md={12} xs={24}>
-                <Form.Item
-                  name="masterCasinoComm"
-                  label={`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Casino Comm(%)`}
-                  labelAlign="left"
-                  initialValue={userDetails.userCasinoCommission}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input master casino commission!",
-                    },
-                    { validator: validateCoins(parentDetails.userCasinoCommission, "Casino Commission ") },
-                  ]}
-                >
-                  <Input className="gx-border-redius0" />
-                </Form.Item>
-              </Col>
-            </Row>
+              </Row>
 
-
-            {/* interNetinaol casino  */}
-
-            {userDetails.userType === 'client' ? null : <>
-              {internationalCasino === true && (
+              {fieldsUser?.userCommissionType !== "BetByBet" ? null :
                 <>
-                  <h1><span style={{ textTransform: "capitalize" }}>  </span>International Casino Share</h1>
-                  <Form.Item
-                    name="intCasinoStatus"
-                    initialValue={toggleStatusIntCasino}
-                    valuePropName="checked"
-                  >
-                    <Switch
-                      onChange={handleToggleIntCasino}
-                      checkedChildren="ON"
-                      unCheckedChildren="OFF"
-                      className="gx-mx-3 gx-my-1 gx-px-1"
-                      style={{ backgroundColor: toggleStatusIntCasino ? "green" : "red", transform: "scale(1.3)" }}
-                    />
-                  </Form.Item>
-
                   <Row className="gx-bg-flex">
-                    <Col md={12} xs={24}>
+                    <Col xs={12}>
+                      <div className="gx-py-3">{`${parentDetails.userType} Match Comm(%)`}<span className="gx-text-red">*</span></div>
                       <Form.Item
-                        name="myintcasinoshare"
-                        label="Internatinol Casino Share"
+                        wrapperCol={{ span: 23 }}
+                        name="parentMatchComm"
                         labelAlign="left"
-                        initialValue={parentDetails?.intCasinoShare}
-                        rules={[{ required: true, message: "Please input your casino commission!", }]}
+                        initialValue={parentDetails.userMatchCommission}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input parent match commission!",
+                          },
+                        ]}
                       >
-                        <Input disabled className="gx-border-redius0" />
+                        <Input disabled={true} className="gx-border-redius" />
                       </Form.Item>
                     </Col>
-
-
-                    <Col md={12} xs={24}>
+                    <Col xs={12}>
+                      <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Match Comm(%)`}<span className="gx-text-red">*</span></div>
                       <Form.Item
-                        name="intCasinoShare"
-                        label="Internatinol Casino %"
+                        wrapperCol={{ span: 23 }}
+                        name="masterMatchComm"
                         labelAlign="left"
-                        initialValue={userDetails.intCasinoShare}
+                        initialValue={userDetails.userMatchCommission}
                         rules={[
-                          { validator: validateCoins(parentDetails?.intCasinoShare, "Casino Commission ") },
-                          { required: true, message: "Please input your casino commission!" },]}
+                          {
+                            required: true,
+                            message: "Please input master match commission!",
+                          },
+                          { validator: validateCoins(parentDetails.userMatchCommission, "Match Comm(%)") },
+                        ]}
                       >
-                        <Input placeholder={`internetional casino Commission`} className="gx-border-redius0" disabled={parentDetails.userFlatSharePermission == true} />
+                        <Input className="gx-border-redius" />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row className="gx-bg-flex">
+                    <Col xs={12}>
+                      <div className="gx-py-3">{`${parentDetails.userType} Sess Comm(%)`}<span className="gx-text-red">*</span></div>
+                      <Form.Item
+                        wrapperCol={{ span: 23 }}
+                        name="parentSessComm"
+                        labelAlign="left"
+                        initialValue={parentDetails.userSessionCommission}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input parent session commission!",
+                          },
+                        ]}
+                      >
+                        <Input disabled={true} className="gx-border-redius" />
+                      </Form.Item>
+                    </Col>
+                    <Col xs={12}>
+                      <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Sess Comm(%)`}<span className="gx-text-red">*</span></div>
+                      <Form.Item
+                        wrapperCol={{ span: 23 }}
+                        name="masterSessComm"
+                        labelAlign="left"
+                        initialValue={userDetails.userSessionCommission}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input master session commission!",
+
+                          },
+                          { validator: validateCoins(parentDetails.userSessionCommission, "Sess Comm(%)") },
+                        ]}
+                      >
+                        <Input className="gx-border-redius" />
                       </Form.Item>
                     </Col>
                   </Row>
                 </>
-              )}</>
-            }
-            {userDetails.userType === 'client' ? null : <>
-              {matkaVisible === true && (
-                <>
-                  <h1><span style={{ textTransform: "capitalize" }}>  </span>Matka Share And Comm</h1>
+
+              }
+
+
+              {userDetails.userType === "client" ? null :
+                <Row className="gx-bg-flex">
+                  <Col xs={12}>
+                    <div className="gx-py-3">{`${parentDetails.userType} Casino Share(%)`}<span className="gx-text-red">*</span></div>
+                    <Form.Item
+                      wrapperCol={{ span: 23 }}
+                      name="parentCasinoShare"
+                      labelAlign="left"
+                      initialValue={parentDetails.userCasinoShare}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input parent casino share!",
+                        },
+                      ]}
+                    >
+                      <Input disabled={true} className="gx-border-redius" />
+                    </Form.Item>
+                  </Col>
+
+                  <Col xs={12}>
+                    <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Casino Share(%)`}<span className="gx-text-red">*</span></div>
+                    <Form.Item
+                      wrapperCol={{ span: 23 }}
+                      name="masterCasinoShare"
+                      labelAlign="left"
+                      initialValue={userDetails.userCasinoShare}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input master casino share!",
+                        },
+                        { validator: validateCoins(parentDetails.userCasinoShare, "Casino Share(%)") },
+                      ]}
+                    >
+                      <Input className="gx-border-redius" disabled={parentDetails.userFlatSharePermission == true} />
+                    </Form.Item>
+                  </Col>
+                </Row>}
+              <Row className="gx-bg-flex">
+                <Col xs={12}>
+                  <div className="gx-py-3">{`${parentDetails.userType} Casino Comm(%)`}<span className="gx-text-red">*</span></div>
                   <Form.Item
-                    name="matkaStatus"
-                    initialValue={toggleStatusMatka}
+                    wrapperCol={{ span: 23 }}
+                    name="parentCasinoComm"
+                    labelAlign="left"
+                    initialValue={parentDetails.userCasinoCommission}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input parent casino commission!",
+                      },
+                    ]}
+                  >
+                    <Input disabled={true} className="gx-border-redius" />
+                  </Form.Item>
+                </Col>
+                <Col xs={12}>
+                  <div className="gx-py-3">{`${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Casino Comm(%)`}<span className="gx-text-red">*</span></div>
+                  <Form.Item
+                    wrapperCol={{ span: 23 }}
+                    name="masterCasinoComm"
+                    labelAlign="left"
+                    initialValue={userDetails.userCasinoCommission}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input master casino commission!",
+                      },
+                      { validator: validateCoins(parentDetails.userCasinoCommission, "Casino Commission ") },
+                    ]}
+                  >
+                    <Input className="gx-border-redius" />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+
+              {/* interNetinaol casino  */}
+
+              {userDetails.userType === 'client' ? null : <>
+                {internationalCasino === true && (
+                  <>
+
+                    <Row className="gx-bg-flex">
+                      <Col xs={12}>
+                        <div className="gx-py-3">{`Int Casino Share`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="myintcasinoshare"
+                          labelAlign="left"
+                          initialValue={parentDetails?.intCasinoShare}
+                          rules={[{ required: true, message: "Please input your casino commission!", }]}
+                        >
+                          <Input disabled className="gx-border-redius" />
+                        </Form.Item>
+                      </Col>
+
+
+                      <Col xs={12}>
+                        <div className="gx-py-3">{`Internatinol Casino %`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="intCasinoShare"
+                          labelAlign="left"
+                          initialValue={userDetails.intCasinoShare}
+                          rules={[
+                            { validator: validateCoins(parentDetails?.intCasinoShare, "Casino Commission ") },
+                            { required: true, message: "Please input your casino commission!" },]}
+                        >
+                          <Input placeholder={`internetional casino Commission`} className="gx-border-redius" disabled={parentDetails.userFlatSharePermission == true} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </>
+                )}</>
+              }
+              {userDetails.userType === 'client' ? null : <>
+                {matkaVisible === true && (
+                  <>
+
+                    <Row className="gx-bg-flex">
+                      <Col xs={12}>
+                        <div className="gx-py-3">{`${parentDetails.userType} Matka Share`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="mymatkashare"
+                          labelAlign="left"
+                          initialValue={parentDetails?.userMatkaShare}
+                        // rules={[{ required: true, message: "Please input your matka share!", }]}
+                        >
+                          <Input disabled className="gx-border-redius" />
+                        </Form.Item>
+                      </Col>
+
+
+                      <Col xs={12}>
+                        <div className="gx-py-3">{` ${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Matka share %`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="matkaShare"
+                          labelAlign="left"
+                          initialValue={userDetails?.userMatkaShare}
+                          rules={[
+                            { validator: validateCoins(parentDetails?.userMatkaShare, "Matka Share ") },
+                            { required: true, message: "Please input your casino Share!" },]}
+                        >
+                          <Input placeholder={`Matka Share`} className="gx-border-redius" disabled={parentDetails.userFlatSharePermission == true} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                    <Row className="gx-bg-flex">
+                      <Col xs={12}>
+                        <div className="gx-py-3">{`${parentDetails.userType} Matka Commission`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="mymatkaCommission"
+                          labelAlign="left"
+                          initialValue={parentDetails?.userMatkaCommission}
+                        // rules={[{ required: true, message: "Please input your matka Commission!", }]}
+                        >
+                          <Input disabled className="gx-border-redius" />
+                        </Form.Item>
+                      </Col>
+
+
+                      <Col xs={12}>
+                        <div className="gx-py-3">{` ${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Matka Commission %`}<span className="gx-text-red">*</span></div>
+                        <Form.Item
+                          wrapperCol={{ span: 23 }}
+                          name="matkaCommission"
+                          labelAlign="left"
+                          initialValue={userDetails?.userMatkaCommission}
+                          rules={[
+                            { validator: validateCoins(parentDetails?.userMatkaCommission, "Matka Commission ") },
+                            { required: true, message: "Please input your casino commission!" },]}
+                        >
+                          <Input placeholder={`Matka Commission`} className="gx-border-redius" />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </>
+                )}</>}
+
+              {/* <Row className="gx-bg-flex">
+                <Col xs={12}>
+                  {userDetails.userType === 'client' ? null : <>
+                    {matkaVisible === true && (
+
+                      <Form.Item
+                      wrapperCol={{ span: 23 }}
+                        name="matkaStatus"
+                        initialValue={toggleStatusMatka}
+                        valuePropName="checked"
+                      >
+                        <div>Matka Status</div>
+                        <Switch
+                          onChange={handleToggleMatka}
+                          checkedChildren="ON"
+                          unCheckedChildren="OFF"
+                          className="gx-mx-1 gx-my-1 gx-px-1"
+                          style={{ backgroundColor: toggleStatusMatka ? "green" : "red", transform: "scale(1.3)" }}
+                        />
+                      </Form.Item>
+                    )}</>}
+
+                  {userDetails.userType === 'client' ? null : <>
+                    {internationalCasino !== true && (
+                      <Form.Item
+                      wrapperCol={{ span: 23 }}
+                        name="intCasinoStatus"
+                        initialValue={toggleStatusIntCasino}
+                        valuePropName="checked"
+                      >
+                        <div>IntCasino Status</div>
+                        <Switch
+                          onChange={handleToggleIntCasino}
+                          checkedChildren="ON"
+                          unCheckedChildren="OFF"
+                          className="gx-mx-1 gx-my-1 gx-px-1"
+                          style={{ backgroundColor: toggleStatusIntCasino ? "green" : "red", transform: "scale(1.3)" }}
+                        />
+                      </Form.Item>
+                    )}</>}
+
+
+                  <Form.Item
+                  wrapperCol={{ span: 23 }}
+                    name="toggle"
+                    initialValue={toggleStatus}
                     valuePropName="checked"
                   >
+                    <div>Casino Status</div>
                     <Switch
-                      onChange={handleToggleMatka}
+                      onChange={handleToggle}
                       checkedChildren="ON"
                       unCheckedChildren="OFF"
-                      className="gx-mx-3 gx-my-1 gx-px-1"
-                      style={{ backgroundColor: toggleStatusMatka ? "green" : "red", transform: "scale(1.3)" }}
+                      className="gx-mx-1 gx-my-1 gx-px-1"
+                      style={{ backgroundColor: toggleStatus ? "green" : "red", transform: "scale(1.3)" }}
                     />
                   </Form.Item>
 
-                  <Row className="gx-bg-flex">
-                    <Col md={12} xs={24}>
-                      <Form.Item
-                        name="mymatkashare"
-                        label={`${parentDetails.userType} Matka Share`}
-                        labelAlign="left"
-                        initialValue={parentDetails?.userMatkaShare}
-                      // rules={[{ required: true, message: "Please input your matka share!", }]}
-                      >
-                        <Input disabled className="gx-border-redius0" />
-                      </Form.Item>
-                    </Col>
+
+                </Col>
+              </Row> */}
 
 
-                    <Col md={12} xs={24}>
-                      <Form.Item
-                        name="matkaShare"
-                        label={` ${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Matka share %`}
-                        labelAlign="left"
-                        initialValue={userDetails?.userMatkaShare}
-                        rules={[
-                          { validator: validateCoins(parentDetails?.userMatkaShare, "Matka Share ") },
-                          { required: true, message: "Please input your casino Share!" },]}
-                      >
-                        <Input placeholder={`Matka Share`} className="gx-border-redius0" disabled={parentDetails.userFlatSharePermission == true} />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row className="gx-bg-flex">
-                    <Col md={12} xs={24}>
-                      <Form.Item
-                        name="mymatkaCommission"
-                        label={`${parentDetails.userType} Matka Commission`}
 
 
-                        labelAlign="left"
-                        initialValue={parentDetails?.userMatkaCommission}
-                      // rules={[{ required: true, message: "Please input your matka Commission!", }]}
-                      >
-                        <Input disabled className="gx-border-redius0" />
-                      </Form.Item>
-                    </Col>
-
-
-                    <Col md={12} xs={24}>
-                      <Form.Item
-                        name="matkaCommission"
-
-                        label={` ${userDetails.userType === 'subadmin' ? 'mini admin' : userDetails.userType} Matka Commission %`}
-                        labelAlign="left"
-                        initialValue={userDetails?.userMatkaCommission}
-                        rules={[
-                          { validator: validateCoins(parentDetails?.userMatkaCommission, "Matka Commission ") },
-                          { required: true, message: "Please input your casino commission!" },]}
-                      >
-                        <Input placeholder={`Matka Commission`} className="gx-border-redius0" />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </>
-              )}</>}
-
-
-            <Row className="gx-bg-flex gx-px-3 gx-justify-content-end">
-              <Form.Item>
-                <Button type="primary" htmlType="submit" className="gx-border-redius0">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Row>
-          </Form>
-        </Card >
+              <Row className="gx-bg-flex gx-px-3 gx-justify-content-start">
+                <Form.Item
+                  wrapperCol={{ span: 23 }}>
+                  <Button type="primary" htmlType="submit" className="gx-border-redius btn">
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Row>
+            </Form>
+          </div >
+        </div>
       }
     </>
   );

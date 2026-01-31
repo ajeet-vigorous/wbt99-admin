@@ -7,7 +7,7 @@ class index extends Component {
 
   render() {
     return (
-      <Row  className="">
+      <Row justify={"center"}>
         <Col xl={24}>
           {/* <UserList/> */}
           <Basic />

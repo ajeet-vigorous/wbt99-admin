@@ -20,9 +20,9 @@ const getUPDownlineUserType = (param) => {
 
     switch (downlineUserPriority) {
         case 10:
-        downlineUserType = "owner";
-        downlineUserPriority = 10;
-        break;
+            downlineUserType = "owner";
+            downlineUserPriority = 10;
+            break;
         case 9:
             downlineUserType = "owner";
             downlineUserPriority = 9;
@@ -80,7 +80,7 @@ const Basic = () => {
     const parsedDate = moment(date, "DD-MM-YYYY");
     const featchUserList = async (data) => {
 
-     
+
 
         const downlineUserType = getUPDownlineUserType(data?.userPriority);
         const resolvedUserId = userId ?? data?.parentId ?? data?.userId;
@@ -95,7 +95,7 @@ const Basic = () => {
 
         };
 
-       
+
 
         dispatch(getProfitLossPos(reqData));
         return setUserLists([]);
@@ -163,7 +163,7 @@ const Basic = () => {
 
     const columns = [
         {
-            title: 'Code',
+            title: 'username',
             dataIndex: 'username',
             render: (value, row) => {
                 // Check if row.downlineUserType exists and render accordingly
@@ -207,7 +207,7 @@ const Basic = () => {
 
         },
         {
-            title: 'Total',
+            title: 'Total Amount',
             dataIndex: 'clientMatchSessionAmt',
             render: (value) => (
                 <span className={`gx-font-weight-bold  ${value >= 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>
@@ -270,11 +270,11 @@ const Basic = () => {
 
         // },
 
-        {
-            title: 'M.App',
-            dataIndex: 'n',
-            render: (value, row) => `0.00`,
-        },
+        // {
+        //     title: 'M.App',
+        //     dataIndex: 'n',
+        //     render: (value, row) => `0.00`,
+        // },
         {
             title: 'Net Amount',
             dataIndex: 'userLedgerAmt',
@@ -292,13 +292,16 @@ const Basic = () => {
         <>
             {/* {loading ? <Loader props={loading} /> : */}
             <Card className="gx-card ">
-                <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                    <span className="gx-fs-xxl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">Company Report<br />
-                        <p className="gx-fs-lg">{matchName}</p></span>
+                <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center">
+                    <span className="gx-fs-lg gx-font-weight-bold gx-text-white  gx-text-uppercase">{`Company Report`}
+                        {/* <p className="gx-fs-lg">{matchName}</p> */}
+                        </span>
                     <BackButton />
                 </div>
-                <div>
-                    <Table
+
+
+                <div className="gx-p-3 gx-mb-2">
+                    <Table className="gx-responsive-table gx-text-uppercase"
                         columns={columns}
                         dataSource={userLists}
                         scroll={{ x: true }}
@@ -368,9 +371,9 @@ const Basic = () => {
                                         <Table.Summary.Cell index={9}>
                                             <Text className={`gx-font-weight-bold ${totaluserMyComm >= 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>{totaluserMyComm.toFixed(2)}</Text>
                                         </Table.Summary.Cell>
-                                        <Table.Summary.Cell index={10}>
+                                        {/* <Table.Summary.Cell index={10}>
                                             <Text className={`gx-font-weight-bold ${'gx-text-green-0'}`}>0.00</Text>
-                                        </Table.Summary.Cell>
+                                        </Table.Summary.Cell> */}
 
                                         <Table.Summary.Cell index={11}>
                                             <Text className={`gx-font-weight-bold ${totalLedgerAmt >= 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>{totalLedgerAmt.toFixed(2)}</Text>

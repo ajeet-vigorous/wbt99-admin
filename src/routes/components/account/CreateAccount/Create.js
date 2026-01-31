@@ -396,6 +396,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-mb-1">Name <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="name"
                         labelAlign="left"
                         rules={[{ required: true, message: "Please input your name!", },
@@ -410,6 +411,7 @@ const Create = () => {
 
                     <Col md={12} xs={12}>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="reference"
                         labelAlign="left"
                         rules={[{ required: true, message: "Please input your reference!" },
@@ -424,6 +426,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">My Coins <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="mycoins"
                         labelAlign="left"
                         initialValue={parentDetails?.coins?.toFixed(2)}
@@ -438,6 +441,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">Coins <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="coins"
                         labelAlign="left"
                         rules={[
@@ -454,6 +458,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">Password <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="password"
                         labelAlign="left"
                         rules={[{ required: true, message: "Please input your Password", }]}
@@ -472,6 +477,7 @@ const Create = () => {
                           <Col md={12} xs={12}>
                             <label className="gx-py-2">Select Domain <span className="gx-text-red">*</span></label>
                             <Form.Item
+                              wrapperCol={{ span: 23 }}
                               name="selectDomain"
                               labelAlign="left"
                               rules={[{ required: true, message: "Please select Domains!" }]}
@@ -495,6 +501,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">Share Type <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="commissionChangeType"
                             labelAlign="left"
                             rules={[{ required: true, message: "Please select your share type!", }]}
@@ -522,6 +529,7 @@ const Create = () => {
                       <Col md={12} xs={12}>
                         <label className="gx-py-2">My Match Share  <span className="gx-text-red">*</span></label>
                         <Form.Item
+                          wrapperCol={{ span: 23 }}
                           name="myShowMatchShare"
                           labelAlign="left"
                           initialValue={parentDetails?.userMatchShare}
@@ -535,6 +543,7 @@ const Create = () => {
                       <Col md={12} xs={12}>
                         <label className="gx-py-2">Match Share (%) <span className="gx-text-red">*</span></label>
                         <Form.Item
+                          wrapperCol={{ span: 23 }}
                           name="userMatchShare"
                           labelAlign="left"
                           rules={[
@@ -550,6 +559,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">My Comm Type <span className="gx-text-red">*</span> </label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="mycommissionType"
                         labelAlign="left"
                         initialValue={parentDetails?.userCommissionType}
@@ -563,6 +573,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">Comm Type <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="commissionType"
                         labelAlign="left"
                         rules={[{ required: true, message: "Please select your commission type!" }]}
@@ -584,6 +595,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">My Match Comm(%) <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="mymatchCommission"
                             labelAlign="left"
                             initialValue={parentDetails?.userMatchCommission}
@@ -596,6 +608,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">Match Comm (%) <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="matchCommission"
                             labelAlign="left"
                             rules={[
@@ -610,6 +623,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">My Sess Comm(%) <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="mySessCommission"
                             labelAlign="left"
                             initialValue={parentDetails?.userSessionCommission}
@@ -621,6 +635,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">Sess Comm(%) <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="sessionCommission"
                             labelAlign="left"
                             rules={[
@@ -640,6 +655,7 @@ const Create = () => {
                       <Col md={12} xs={12}>
                         <label className="gx-py-2">My Casino Share (%) <span className="gx-text-red">*</span></label>
                         <Form.Item
+                          wrapperCol={{ span: 23 }}
                           name="mycasinoshare"
                           labelAlign="left"
                           initialValue={parentDetails?.userCasinoShare}
@@ -653,6 +669,7 @@ const Create = () => {
                       <Col md={12} xs={12}>
                         <label className="gx-py-2">Casino Share (%) <span className="gx-text-red">*</span></label>
                         <Form.Item
+                          wrapperCol={{ span: 23 }}
                           name="userCasinoShare"
                           labelAlign="left"
                           rules={[
@@ -668,6 +685,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">My Casino Comm (%) <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="mycasinocomm"
                         labelAlign="left"
                         initialValue={parentDetails?.userCasinoCommission}
@@ -681,6 +699,7 @@ const Create = () => {
                     <Col md={12} xs={12}>
                       <label className="gx-py-2">Casino Comm (%) <span className="gx-text-red">*</span></label>
                       <Form.Item
+                        wrapperCol={{ span: 23 }}
                         name="casinoCommission"
                         labelAlign="left"
                         rules={[
@@ -701,6 +720,7 @@ const Create = () => {
                           <Col md={12} xs={12}>
                             <label className="gx-py-2">Int Casino Share <span className="gx-text-red">*</span></label>
                             <Form.Item
+                              wrapperCol={{ span: 23 }}
                               name="myintcasinoshare"
                               labelAlign="left"
                               initialValue={parentDetails?.intCasinoShare}
@@ -714,6 +734,7 @@ const Create = () => {
                           <Col md={12} xs={12}>
                             <label className="gx-py-2">Int Casino (%) <span className="gx-text-red">*</span></label>
                             <Form.Item
+                              wrapperCol={{ span: 23 }}
                               name="intCasinoShare"
                               labelAlign="left"
                               rules={[
@@ -739,6 +760,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">My Matka Comm <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="mymatkaCommission"
                             labelAlign="left"
                             initialValue={parentDetails?.userMatkaCommission}
@@ -752,6 +774,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <label className="gx-py-2">Matka Commission % <span className="gx-text-red">*</span></label>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="matkaCommission"
                             labelAlign="left"
                             rules={[
@@ -767,6 +790,7 @@ const Create = () => {
                         <Col md={12} xs={12}>
                           <p className="gx-text-uppercase gx-fs-sm"><span> {userType === "subadmin" ? "mini admin" : userType} </span>Matka Status</p>
                           <Form.Item
+                            wrapperCol={{ span: 23 }}
                             name="matkaStatus"
                             initialValue={parentDetails?.matkaStatus}
                             valuePropName="checked"
@@ -789,6 +813,7 @@ const Create = () => {
                             <Col md={12} xs={12}>
                               <label className="gx-py-2">Matka Share<span className="gx-text-red">*</span></label>
                               <Form.Item
+                                wrapperCol={{ span: 23 }}
                                 name="mymatkashare"
                                 labelAlign="left"
                                 initialValue={parentDetails?.userMatkaShare}
@@ -802,6 +827,7 @@ const Create = () => {
                             <Col md={12} xs={12}>
                               <label className="gx-py-2">Matka share %<span className="gx-text-red">*</span></label>
                               <Form.Item
+                                wrapperCol={{ span: 23 }}
                                 name="matkaShare"
                                 labelAlign="left"
                                 rules={[
@@ -816,6 +842,7 @@ const Create = () => {
                             <Col md={12} xs={12}>
                               <label className="gx-py-2">My Matka Comm<span className="gx-text-red">*</span></label>
                               <Form.Item
+                                wrapperCol={{ span: 23 }}
                                 name="mymatkaCommission"
                                 labelAlign="left"
                                 initialValue={parentDetails?.userMatkaCommission}
@@ -829,6 +856,7 @@ const Create = () => {
                             <Col md={12} xs={12}>
                               <label className="gx-py-2">Matka Commission %<span className="gx-text-red">*</span></label>
                               <Form.Item
+                                wrapperCol={{ span: 23 }}
                                 name="matkaCommission"
                                 labelAlign="left"
                                 rules={[
@@ -843,6 +871,7 @@ const Create = () => {
                             <Col md={12} xs={12}>
                               <p className="gx-text-uppercase gx-fs-sm"><span> {userType === "subadmin" ? "mini admin" : userType} </span>Matka Status</p>
                               <Form.Item
+                                wrapperCol={{ span: 23 }}
                                 name="matkaStatus"
                                 initialValue={parentDetails?.matkaStatus}
                                 valuePropName="checked"
@@ -868,6 +897,7 @@ const Create = () => {
                           <Col md={12} xs={12}>
                             <p className="gx-text-uppercase gx-fs-sm"><span > {userType === "subadmin" ? "mini admin" : userType} </span>Int Casino status</p>
                             <Form.Item
+                              wrapperCol={{ span: 23 }}
                               name="intCasinoStatus"
                               initialValue={parentDetails?.intCasinoStatus}
                               valuePropName="checked"
@@ -883,7 +913,8 @@ const Create = () => {
                           </Col>
                         </Row></>)} </>}
                   <Row className="gx-bg-flex gx-px-3 gx-justify-content-center">
-                    <Form.Item>
+                    <Form.Item
+                      wrapperCol={{ span: 23 }}>
                       <Button htmlType="submit" size="small" className={`${!isFormValid ? "gx-border-redius btn" : "gx-border-redius btn gx-bg-primary"} `} disabled={!isFormValid}>
                         Submit
                       </Button>

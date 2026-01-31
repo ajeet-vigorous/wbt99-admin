@@ -10,7 +10,7 @@ const BackButton = () => {
   };
 
   return (
-    <Button onClick={handleBack} type="primary" className="gx-px-2">Back</Button>
+    <Button onClick={handleBack} type="default" className="gx-px-2 gx-text-black">Back</Button>
   );
 };
 

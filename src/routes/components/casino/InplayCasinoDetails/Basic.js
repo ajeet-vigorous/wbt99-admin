@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card,  Table,  Tag } from "antd";
+import { Card, Table, Tag } from "antd";
 import moment from "moment";
 import BackButton from "../../Hoc/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,32 +67,32 @@ const Basic = () => {
 
     const columns = [
         {
-            title: ' S no.',
+            title: '',
             dataIndex: 'key',
             render: renderContent,
         },
         {
-            title: 'Game ID',
+            title: 'Event ID',
             dataIndex: 'gameId',
             render: renderContent,
         },
         {
-            title: ' Started AT',
+            title: 'Open Date',
             dataIndex: 'date',
-            render: (createdAt) =><span className="gx-text-nowrap"> {moment(createdAt).format("DD MMM hh:mm A")}</span>,
+            render: (createdAt) => <span className="gx-text-nowrap"> {moment(createdAt).format("DD MMM hh:mm A")}</span>,
         },
-        // {
-        //     title: 'Winner',
-        //     dataIndex: 'action',
-        //     render: renderContent,
-
-        // },
         {
-            title: 'Plus/Minus',
+            title: 'Winner',
+            dataIndex: 'action',
+            render: renderContent,
+
+        },
+        {
+            title: 'P/L',
             dataIndex: 'profitLoss',
             render: (value, row) => (
                 <span className={`${row.profitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}>
-                    { row.profitLoss}
+                    {row.profitLoss}
                 </span>
             ),
 
@@ -120,17 +120,27 @@ const Basic = () => {
         <>
             {loader ? <Loader props={loader} /> :
                 <Card className="gx-card">
-                    <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                        <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`${name}`}</span>
-                     <BackButton />
-                    </div>
-                    <div className="gx-bg-flex gx-px-5 gx-py-4 gx-justify-content-center gx-gap-3" >
-                        <div className="gx-fs-xxl">Total : <span className={`${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}> {totalProfitLoss ? totalProfitLoss.toFixed(2) : '0.00'}</span></div>
-                    </div>
-                    <div>
-                        <Table className="gx-table-responsive" columns={columns} dataSource={matchLedger} bordered pagination={false} size="small" />
+                    <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center">
+                        <span className="gx-fs-lg gx-font-weight-bold gx-text-white  gx-text-uppercase">{`${name}`}</span>
+                        <BackButton />
                     </div>
 
+                    <div className="gx-p-4">
+                        <div style={{ marginBottom: '8px', backgroundColor: '#f0f2f5', padding: '14px', borderRadius: '8px' }}>
+                            <div className="ant-row css-1v5z42l" style={{ marginLeft: '-8px', marginRight: '-8px' }}>
+                                <div className="ant-col ant-col-8 css-1v5z42l" style={{ paddingLeft: '8px', paddingRight: '8px' }}>
+                                    <div className="ant-statistic css-1v5z42l">
+                                        <div className="ant-statistic-title gx-text-dark">Total</div>
+                                        <div className="ant-statistic-content" style={{ color: '#f5222d' }}>
+                                            <span className="ant-statistic-content-value">
+                                                <span className={`${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}> {totalProfitLoss ? totalProfitLoss.toFixed(2) : '0.00'}</span>
+                                            </span>
+
+                                        </div></div></div></div></div>
+                        <div>
+                            <Table className="gx-table-responsive gx-text-uppercase" columns={columns} dataSource={matchLedger} bordered pagination={false} size="small" />
+                        </div>
+                    </div>
                 </Card>
             }
         </>

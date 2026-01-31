@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Col, Row} from "antd";
+import React, { Component } from "react";
+import { Col, Row } from "antd";
 
 
 import Basic from "./Basic";
@@ -10,8 +10,8 @@ class index extends Component {
   render() {
     return (
       <Row justify={"center"}>
-        <Col lg={22}>
-          <Basic/>
+        <Col xs={24}>
+          <Basic />
         </Col>
 
       </Row>

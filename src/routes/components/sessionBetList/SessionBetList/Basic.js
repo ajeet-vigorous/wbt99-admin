@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Card,
   Col,
   Input,
@@ -122,8 +123,8 @@ const Basic = () => {
         clientName: item.userInfo.clientName,
         creatorName: item.userInfo.creatorName,
         // createdAt: item.createdAt,
-        createdAt: moment(item?.createdAt).format('DD MMM hh:mm:ss A'),
-        decisionRun: item?.isDeclare === 0 ? "Decision Pending" : item?.decisionRun,
+        createdAt: moment(item?.createdAt).format('DD-MM-YYYY hh:mm:ss'),
+        decisionRun: item?.isDeclare === 0 ? "Pending" : item?.decisionRun,
         deletedRemark: item.deletedRemark,
         profit: item.profit,
         loss: item.loss,
@@ -185,36 +186,7 @@ const Basic = () => {
 
   const columns = [
     {
-      title: 'Run',
-      dataIndex: 'run',
-      key: 'run',
-
-      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text).toFixed(2)}</div>,
-    },
-    {
-      title: 'Rate',
-      dataIndex: 'odds',
-      key: 'rate',
-      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text * 100).toFixed(2)}</div>,
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Session',
-      dataIndex: 'sessionName',
-      key: 'team',
-      render: (text) => <div >{text}</div>,
-    },
-    {
-      title: 'Client Name',
+      title: 'username',
       dataIndex: 'clientName',
       key: 'client',
       render: (text, record) => (
@@ -224,28 +196,65 @@ const Basic = () => {
       ),
     },
     {
-      title: 'Creator Name',
-      dataIndex: 'creatorName',
-      key: 'agent',
-      render: (text) => <div className="gx-text-nowrap">{text}</div>,
+      title: 'Runner name',
+      dataIndex: 'sessionName',
+      key: 'team',
+      render: (text) => <div >{text}</div>,
     },
+    {
+      title: "Bet Type",
+      dataIndex: "type",
+      render: (value) => (
+        <span className={`${value === "Yes" ? "ant-tag gx-rounded-xs ant-tag-blue" : "ant-tag gx-rounded-xs ant-tag-red"}`}>
+          {value === "Yes" ? "Yes" : "Not"}
+        </span>
+      ),
+    },
+    {
+      title: 'Bet price',
+      dataIndex: 'run',
+      key: 'run',
+
+      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text)}</div>,
+    },
+
+    {
+      title: 'Bet Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+    },
+
+
+    // {
+    //   title: 'Loss',
+    //   dataIndex: 'profit',
+    //   key: 'profit',
+    //   render: (text) => <div className="gx-text-nowrap">{Math.abs(text)}</div>,
+    // },
+    // {
+    //   title: 'Profit',
+    //   dataIndex: 'loss',
+    //   key: 'loss',
+    //   render: (text) => <div className="gx-text-nowrap">{Math.abs(text)}</div>,
+    // },
+    {
+      title: 'Status',
+      dataIndex: 'Status',
+      key: 'Status',
+      // render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: 'Winner',
+      dataIndex: 'decisionRun',
+      key: 'decisionRun',
+      // render: (text) => new Date(text).toLocaleDateString(),
+    },
+
     {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'date',
       // render: (text) => new Date(text).toLocaleDateString(),
-    },
-    {
-      title: 'Loss',
-      dataIndex: 'profit',
-      key: 'profit',
-      render: (text) => <div className="gx-text-nowrap">{Math.abs(text)}</div>,
-    },
-    {
-      title: 'Profit',
-      dataIndex: 'loss',
-      key: 'loss',
-      render: (text) => <div className="gx-text-nowrap">{Math.abs(text)}</div>,
     },
   ];
 
@@ -281,102 +290,20 @@ const Basic = () => {
 
   return (
     <Card className="gx-card gx-w-100">
-      <div className="gx-bg-grey gx-px-5 gx-pt-3 gx-bg-flex">
-        <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">
-          Fancy Bets
+      <div className="gx-bg-grey gx-px-5 gx-bg-flex gx-align-items-center">
+        <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-py-3   gx-pt-1 gx-text-uppercase">
+          Filter Bets
         </span>
         <BackButton />
       </div>
-      {/* <Row gutter={20} className="gx-px-1 gx-py-1 gx-gap-3">
-      <Col>
+      <Row gutter={12} className="gx-px-4 gx-text-uppercase gx-fs-md gx-font-weight-bold">
+        <Col xs={24} className="">
+          <div className="gx-mb-1">Sessions<span className="gx-text-red">*</span></div>
           <Select
-            className="gx-mb-2"
-            placeholder="All Users"
-            onChange={handleUserChange}
-            style={{ width: 300 }}
-            filterOption={(input, option) =>
-              option.children.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            showSearch
-            getPopupContainer={trigger => trigger.parentElement}
-          >
-            <Option value="">All users</Option>
-            {clientListByMarketId?.map((item, index) => (
-              <Option key={index} value={item?.clientId}>
-                {item?.userInfo?.name} [{item?.userInfo?.username}]
-              </Option>
-            ))}
-          </Select>
-        </Col>
-        <Col>
-          <Select
-            className="gx-mb-2"
-            placeholder="All Fancies"
-            onChange={handleFancyChange}
-            style={{ width: 300 }}
-            getPopupContainer={trigger => trigger.parentElement}
-          >
-            <Option key={`pp`} value={""}>
-            All Fancies
-                </Option>
-            {sessionList?.map((item, index) =>
-              item.sessionNames?.map((session, sessionIndex) => (
-                <Option key={`${index}-${sessionIndex}`} value={item.selectionId}>
-                  {session}
-                </Option>
-              ))
-            )}
-          </Select>
-        </Col>
-       
-      </Row> */}
-      <Row gutter={20} className="gx-px-1 gx-py-1 gx-gap-3">
-        <Col>
-          {/* <Select
-            className="gx-mb-2"
-            placeholder="All Users"
-            value={selectedUser}
-            onChange={handleUserChange}
-            style={{ width: 300 }}
-            filterOption={(input, option) =>
-              option.children.toString().toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            showSearch
-          // getPopupContainer={trigger => trigger.parentElement}
-          >
-            <Option value="">All users</Option>
-            {clientListByMarketId?.map((item, index) => (
-              <Option key={index} value={item?.clientId}>
-                {item?.userInfo?.name} [{item?.userInfo?.username}]
-              </Option>
-            ))}
-          </Select> */}
-
-          <Select
-            showSearch
-            placeholder={` Select User`}
-            optionFilterProp="children"
-            onChange={handleUserChange}
-            onSearch={onSearch}
-            filterOption={filterOption}
-            // className='gx-py-2'
-            style={{ width: 300 }}
-          >
-
-            {filteredOptions && filteredOptions.length > 0 ? filteredOptions.map(user => (
-              <Option key={user.userId} value={user.userId} label={`${user?.username} ${user?.name} `}>
-                {user?.username} ({user?.name})
-              </Option>
-            )) : null}
-          </Select>
-        </Col>
-        <Col>
-          <Select
-            className="gx-mb-2"
+            className="gx-bg-flex gx-justify-content-start "
             placeholder="All Fancies"
             value={selectedFancy}
             onChange={handleFancyChange}
-            style={{ width: 300 }}
           // getPopupContainer={trigger => trigger.parentElement}
           >
             <Option value="">All Fancies</Option>
@@ -389,20 +316,70 @@ const Basic = () => {
             )}
           </Select>
         </Col>
-      </Row>
-      <Table
-        className="gx-table-responsive"
-        columns={columns}
-        dataSource={userLists}
-        bordered
-        pagination={false}
-        size="small"
-        rowClassName={(row) =>
-          row.type === "Yes" ? "matchdtailsYesBackground gx-text-black completedBetsYes" : "matchdtailsNoBackground gx-text-black completedBetsNo"
-        }
-      />
+        <Col md={8} xs={24} className="gx-py-sm-3 gx-text-uppercase">
+          <div className="gx-mb-2">Client<span className="gx-text-red">*</span></div>
+          <div className="gx-d-flex gx-align-items-center">
+            <Select
+              className="gx-flex-1"
+              showSearch
+              placeholder="Select User"
+              optionFilterProp="children"
+              onChange={handleUserChange}
+              onSearch={onSearch}
+              filterOption={filterOption}
+              value={selectedUser}
+            >
+              {filteredOptions?.map(user => (
+                <Option
+                  key={user.userId}
+                  value={user.userId}
+                  label={`${user?.username} ${user?.name}`}
+                >
+                  {user?.username} ({user?.name})
+                </Option>
+              ))}
+            </Select>
 
-<TablePagination currentPage={currentPage} totalItems={sportsBetsList?.data?.totalFancyCount} pageSize={pageSize} onPageChange={handlePageChange} />
+            <Button
+              className="gx-ml-3"
+              type="primary"
+              onClick={() => {
+                setSelectedUser('');
+                setSelectedFancy('');
+                getSportsBetsListFun();
+              }}
+            >
+              Reset
+            </Button>
+          </div>
+        </Col>
+
+
+
+      </Row>
+
+
+
+
+
+
+
+      <Row gutter={12} className="gx-px-2">
+        <Col xs={24}>      <Table
+          className="gx-table-responsive gx-text-uppercase"
+          columns={columns}
+          dataSource={userLists}
+          bordered
+          pagination={false}
+          size="small"
+        // rowClassName={(row) =>
+        //   row.type === "Yes" ? "matchdtailsYesBackground gx-text-black completedBetsYes" : "matchdtailsNoBackground gx-text-black completedBetsNo"
+        // }
+        />
+
+          <TablePagination currentPage={currentPage} totalItems={sportsBetsList?.data?.totalFancyCount} pageSize={pageSize} onPageChange={handlePageChange} />
+        </Col>
+      </Row>
     </Card>
   );
 };
