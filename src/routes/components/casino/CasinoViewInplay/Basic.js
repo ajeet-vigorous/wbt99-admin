@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table } from "antd";
+import { Card, Col, Row, Table } from "antd";
 import moment from "moment";
 import BackButton from "../../Hoc/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -250,34 +250,38 @@ const Basic = () => {
         <>
             {/* {loader ? <Loader props={loader} /> : */}
                 <>
-                    <Card className="gx-card">
-                   <div className="gx-bg-grey gx-px-5 gx-mb-4 gx-pt-3 gx-bg-flex">
-            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`${gameName}`}</span>
-                          <BackButton />
-                        </div>
-                        <Auxiliary className="">
-                            <CasinoIframeResult diamondcasinobyeventid={diamondcasinobyeventid} eventId={eventId} betLists={casinoBetList?.casinoBetData} />
-                            <Card className="gx-card">
-                                <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                                    <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`NonDeclare Bets - [ ${casinoBetList?.totalCasinoCount} ]`}</span>
-                                </div>
-                                <div>
-                                    <Table className="gx-table-responsive" columns={columns2} dataSource={userLists} bordered pagination={false} size="small" />
-                                    <TablePagination currentPage={currentPage} totalItems={casinoBetList?.totalCasinoCount} pageSize={pageSize} onPageChange={handlePageChange} />
+                    <Card className="gx-card ">
+                        {/* <div className="gx-bg-grey gx-px-5 gx-mb-4 gx-py-3 gx-bg-flex">
+                            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`${gameName}`}</span>
+                                <BackButton />
+                        </div> */}
+                        <Row style={{display:'flex'}} className='gx-d-flex gx-px-4 gx-w-full'>
+                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <CasinoIframeResult diamondcasinobyeventid={diamondcasinobyeventid} gameName={gameName} eventId={eventId} betLists={casinoBetList?.casinoBetData} />
+                            </Col>
+                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
+                                <Card className="gx-card">
+                                    <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
+                                        <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`NonDeclare Bets - [ ${casinoBetList?.totalCasinoCount} ]`}</span>
+                                    </div>
+                                    <div>
+                                        <Table className="gx-table-responsive" columns={columns2} dataSource={userLists} bordered pagination={false} size="small" />
+                                        <TablePagination currentPage={currentPage} totalItems={casinoBetList?.totalCasinoCount} pageSize={pageSize} onPageChange={handlePageChange} />
 
-                                </div>
-                            </Card>
-                            <Card className="gx-card">
-                                <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                                    <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`${gameName}`}</span>
-                                    <div className="gx-fs-xxl "><span className="gx-text-white">Total : </span><span className={`${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}> {totalProfitLoss ? totalProfitLoss.toFixed(2) : '0.00'}</span></div>
-                                </div>
-                                <div>
-                                    <Table className="gx-table-responsive" columns={columns} dataSource={matchLedger} bordered pagination={false} size="small" />
-                                </div>
+                                    </div>
+                                </Card>
+                                <Card className="gx-card">
+                                    <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
+                                        <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`${gameName}`}</span>
+                                        <div className="gx-fs-xxl "><span className="gx-text-white">Total : </span><span className={`${totalProfitLoss > 0 ? 'gx-text-green-0' : 'gx-text-red'}`}> {totalProfitLoss ? totalProfitLoss.toFixed(2) : '0.00'}</span></div>
+                                    </div>
+                                    <div>
+                                        <Table className="gx-table-responsive" columns={columns} dataSource={matchLedger} bordered pagination={false} size="small" />
+                                    </div>
 
-                            </Card>
-                        </Auxiliary>
+                                </Card>
+                            </Col>
+                        </Row>
 
                     </Card>
 
