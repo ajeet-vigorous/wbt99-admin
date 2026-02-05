@@ -31,10 +31,10 @@ const SidebarLogo = ({sidebarCollapsed, setSidebarCollapsed}) => {
 
       <Link to="/main/dashboard/crm" className="gx-site-logo">
         {navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR && width >= TAB_SIZE ?
-          <img alt="lo" src={settings?.logo}/> :
+          <img alt="lo" src={settings?.logo} /> :
           themeType === THEME_TYPE_LITE ?
-           <img alt="logo1" src={settings?.logo}/> :
-            <img alt="logo2" src={settings?.logo} />}
+           <img alt="logo1" src={settings?.logo} /> :
+            <img alt="logo2" src={settings?.logo} width={150}/>}
       </Link>
     </div>
   );

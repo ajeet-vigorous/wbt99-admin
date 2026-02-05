@@ -127,7 +127,7 @@ const SignIn = () => {
                     onChange={inputChange}
                     className="gx-border-redius0"
                     disabled={loginChek}
-                    prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} className="gx-fs-lg" />}
+                    prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.75)' }} className="gx-fs-lg" />}
                   />
                 </Form.Item>
                 <Form.Item
@@ -145,8 +145,8 @@ const SignIn = () => {
                     onChange={inputChange}
                     className="gx-border-redius0"
                     disabled={loginChek}
-                    prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} className="gx-fs-lg" />}
-                    suffix={passwordVisible ? <EyeOutlined onClick={() => setPasswordVisible(!passwordVisible)} style={{ color: 'rgba(0, 0, 0, 0.25)' }} className="gx-fs-lg" /> : <EyeInvisibleOutlined onClick={() => setPasswordVisible(!passwordVisible)} style={{ color: 'rgba(0, 0, 0, 0.25)' }} className="gx-fs-lg" />}
+                    prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.75)' }} className="gx-fs-lg" />}
+                    suffix={passwordVisible ? <EyeOutlined onClick={() => setPasswordVisible(!passwordVisible)} style={{ color: 'rgba(0, 0, 0, 0.75)' }} className="gx-fs-lg" /> : <EyeInvisibleOutlined onClick={() => setPasswordVisible(!passwordVisible)} style={{ color: 'rgba(0, 0, 0, 0.75)' }} className="gx-fs-lg" />}
                   />
                 </Form.Item>
 
@@ -163,7 +163,7 @@ const SignIn = () => {
                         value={fieldslogin.otp}
                         onChange={inputChange}
                         className="gx-border-redius0"
-                        prefix={<SafetyCertificateOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                        prefix={<SafetyCertificateOutlined style={{ color: 'rgba(0, 0, 0, 0.75)' }} />}
                       />
                     </Form.Item>
 

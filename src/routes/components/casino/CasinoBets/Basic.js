@@ -52,7 +52,7 @@ const Basic = () => {
                 amount: item.amount,
                 profit: item.profit,
                 loss: item.loss,
-                profitLoss: item.profitLoss ,
+                profitLoss: item.profitLoss,
                 resultDetails: item.resultDetails,
                 odds: item.odds,
                 betType: item.betType
@@ -77,7 +77,6 @@ const Basic = () => {
             props: {},
         };
         const profitLoss = row.profitLoss;
-
         if (profitLoss > 0) {
             obj.props.style = { backgroundColor: "#10BF35", color: "black" };
         } else if (profitLoss < 0) {
@@ -175,22 +174,22 @@ const Basic = () => {
 
     const handleClose = () => {
         setInfoMenu({
-          visible: false,
+            visible: false,
         });
-      };
+    };
 
 
     return (
         <>
             {loading ? <Loader props={loading} /> :
                 <Card className="gx-card">
-                    <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex">
-                        <span className="gx-fs-xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-2 gx-text-capitalize">{`All Bets: ${gameId}`}</span>
+                    <div className="gx-bg-grey gx-px-3 gx-py-2 gx-bg-flex">
+                        <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-align-items-center gx-pt-2 gx-text-uppercase">{`All Bets: ${gameId}`}</span>
                         <BackButton />
                     </div>
                     <div className="">
                         <Table
-                            className="gx-table-responsive "
+                            className="gx-table-responsive gx-text-uppercase"
                             columns={columns}
                             dataSource={ShowUserLists}
                             bordered
@@ -199,10 +198,10 @@ const Basic = () => {
                         />
                     </div>
                     <DemoResult
-            data={infoMenu.data}
-            visible={infoMenu.visible}
-            handleClose={handleClose}
-          />
+                        data={infoMenu.data}
+                        visible={infoMenu.visible}
+                        handleClose={handleClose}
+                    />
 
                 </Card>}
         </>

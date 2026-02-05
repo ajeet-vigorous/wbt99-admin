@@ -10,7 +10,7 @@ const balaji12Settings = {
   matkaVisible: true,
   websiteName2: "",
   socketDomain: "wbt99.com",
-  "--nav-dark-bg": "#b7862f",
+  "--nav-dark-bg": "#1571CD",
   "--nav-dark-text-color": "#fff",
   "--white-color": "#fff",
   noFancyMatchDetails: false,

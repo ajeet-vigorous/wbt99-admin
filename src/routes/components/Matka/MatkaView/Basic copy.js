@@ -392,39 +392,21 @@ const Basic = () => {
         // },
     ];
 
-    // const getMatkaPosition = (cardNumber, gameType) => {
-    //     const bets = matkaBetList.filter((betItem) => betItem.betNumber === cardNumber && betItem.gameType === gameType);
-    //     if (bets.length > 0) {
-    //         const totalProfit = bets.reduce((sum, bet) => sum + bet.profit, 0);
-    //         const totalAmount = bets.reduce((sum, bet) => sum + bet.amount, 0);
-    //         return totalProfit > 0 ? totalProfit : totalAmount;
-    //     } else {
-    //         const totalAmountForGameType = matkaBetList
-    //             .filter((betItem) => betItem.gameType === gameType)
-    //             .reduce((sum, bet) => sum + bet.amount, 0);
-
-    //         return -totalAmountForGameType;
-    //     }
-    // };
-
-    const getMatkaPosition = (cardNumber, gameType, matkaName) => {
-        console.log(cardNumber, gameType, matkaName);
-
-        const bets = matkaBetList.filter((betItem) => betItem.betNumber == cardNumber && betItem.gameType == gameType && betItem.matkaName == matkaName[0]);
-
+    const getMatkaPosition = (cardNumber, gameType) => {
+        const bets = matkaBetList.filter((betItem) => betItem.betNumber === cardNumber && betItem.gameType === gameType);
         if (bets.length > 0) {
-            let totalBetAmount = 0;
-            matkaBetList.filter((betItem) => betItem.gameType == gameType && betItem.matkaName == matkaName[0]).forEach((bet) => { totalBetAmount += Number(bet.amount) });
             const totalProfit = bets.reduce((sum, bet) => sum + bet.profit, 0);
             const totalAmount = bets.reduce((sum, bet) => sum + bet.amount, 0);
-            return totalProfit > 0 ? totalProfit - totalBetAmount : totalAmount;
+            return totalProfit > 0 ? totalProfit : totalAmount;
         } else {
-            let totalAmountForGameType = 0;
-            matkaBetList.filter((betItem) => betItem.gameType == gameType && betItem.matkaName == matkaName[0]).forEach((bet) => { totalAmountForGameType += Number(bet.amount) });
+            const totalAmountForGameType = matkaBetList
+                .filter((betItem) => betItem.gameType === gameType)
+                .reduce((sum, bet) => sum + bet.amount, 0);
 
             return -totalAmountForGameType;
         }
     };
+
 
 
 
