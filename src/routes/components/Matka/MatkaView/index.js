@@ -7,7 +7,7 @@ import Basic from "./Basic";
 const MatkaView = () => {
   return (
     <Row justify={"center"}>
-      <Col xl={22} md={24} xs={24}>
+      <Col xs={24}>
         <Basic />
       </Col>
     </Row>

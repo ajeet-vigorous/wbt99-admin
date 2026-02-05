@@ -108,8 +108,8 @@
 //                 let userMatchSessionComm = item.userOddsComm + item.userSessionComm
 //                 let userTotalAmountAndComm = clientMatchSessionAmt - userMatchSessionComm;
 //                 let userMyComm = item.userData.userType !== 'client' ? clientMatchSessionAmt - ( item.userLedgerAmt): userTotalAmountAndComm - Number(item.userLedgerAmt) ;
-               
-            
+
+
 
 //                 return {
 //                     key: item._id,
@@ -305,12 +305,12 @@
 //                             let totalLedgerAmt = 0;
 //                             let totaluserMyComm = 0;
 //                             let totalAmount = 0;
-                
+
 //                             userLists?.forEach((data, key) => {
 
-                                
+
 //                                 let clientMatchSessionAmt =  data.clientOddsAmount - (-1 * data.clientSessionAmount)
-                             
+
 //                                 let userMatchSessionComm = data.userOddsComm + data.userSessionComm
 //                                 let userTotalAmountAndComm = clientMatchSessionAmt - userMatchSessionComm
 //                                 // let totaluserMyCommData =  clientMatchSessionAmt -  data.userLedgerAmt;
@@ -490,9 +490,9 @@ const MatkaDetails = () => {
                 let clientMatchSessionAmt = item.userData.userType != 'client' ? (-1 * item.clientOddsAmount) - (item.userOddsComm) : Number(item.clientOddsAmount) + Number(item.userOddsComm);
                 let userMatchSessionComm = item.userOddsComm + item.userSessionComm
                 let userTotalAmountAndComm = clientMatchSessionAmt - userMatchSessionComm;
-                let userMyComm = item.userData.userType !== 'client' ? clientMatchSessionAmt - ( item.userLedgerAmt): userTotalAmountAndComm - Number(item.userLedgerAmt) ;
-               
-            
+                let userMyComm = item.userData.userType !== 'client' ? clientMatchSessionAmt - (item.userLedgerAmt) : userTotalAmountAndComm - Number(item.userLedgerAmt);
+
+
 
                 return {
                     key: item._id,
@@ -504,10 +504,10 @@ const MatkaDetails = () => {
                     downlineUserType: item.downlineUserType,
                     clientNetAmount: item.clientNetAmount,
                     clientOddsAmount: item.userData.userType !== 'client' ? -1 * item.clientOddsAmount : item.clientOddsAmount,
-                    clientSessionAmount: item.userData.userType !== 'client' ?  -1 * item.userOddsComm : item.userOddsComm,
+                    clientSessionAmount: item.userData.userType !== 'client' ? -1 * item.userOddsComm : item.userOddsComm,
                     userOddsComm: item.userOddsComm,
                     userSessionComm: item.userSessionComm,
-                    userLedgerAmt: item.userData.userType !== 'client' ?  item.userLedgerAmt : item.clientNetAmount,
+                    userLedgerAmt: item.userData.userType !== 'client' ? item.userLedgerAmt : item.clientNetAmount,
                     userTotalAmountAndComm: userTotalAmountAndComm,
                     userMatchSessionComm: userMatchSessionComm,
                     clientMatchSessionAmt: clientMatchSessionAmt,
@@ -664,9 +664,8 @@ const MatkaDetails = () => {
         <>
             {/* {loading ? <Loader props={loading} /> : */}
             <Card className="gx-card ">
-                <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                    <span className="gx-fs-xxl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">Company Matka Report<br />
-                        <p className="gx-fs-lg">{matchName}</p></span>
+                <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center gx-align-items-center">
+                    <span className="gx-fs-lg gx-font-weight-normal gx-text-white  gx-text-uppercase">{`Company Matka Report`}</span>
                     <BackButton />
                 </div>
                 <div>
@@ -688,12 +687,12 @@ const MatkaDetails = () => {
                             let totalLedgerAmt = 0;
                             let totaluserMyComm = 0;
                             let totalAmount = 0;
-                
+
                             userLists?.forEach((data, key) => {
 
-                                
-                                let clientMatchSessionAmt =  data.clientOddsAmount - (-1 * data.clientSessionAmount)
-                             
+
+                                let clientMatchSessionAmt = data.clientOddsAmount - (-1 * data.clientSessionAmount)
+
                                 let userMatchSessionComm = data.userOddsComm + data.userSessionComm
                                 let userTotalAmountAndComm = clientMatchSessionAmt - userMatchSessionComm
                                 // let totaluserMyCommData =  clientMatchSessionAmt -  data.userLedgerAmt;

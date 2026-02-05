@@ -33,8 +33,7 @@ const MatkaDayWiseReport = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log(getMatkaListData, "getMatkaListDatagetMatkaListDatagetMatkaListData")
-
+  
     if (getMatkaListData && matkaBetsCount) {
       const sortedSessions = getMatkaListData.sort((a, b) => a.priority - b.priority);
       const filteredData = sortedSessions.filter(item => item.matkaStatus === true).map((item, index) => {
@@ -89,6 +88,8 @@ const MatkaDayWiseReport = () => {
 
   useEffect(() => {
     if (matkaDayWise) {
+      console.log(matkaDayWise, "matkaDayWisematkaDayWisematkaDayWise");
+      
       const groupedData = {};
       matkaDayWise.forEach((item) => {
         const dateKey = moment(parseInt(item._id.date)).format("YYYY-MM-DD");
@@ -344,8 +345,7 @@ const MatkaDayWiseReport = () => {
 
           return (
             <div className="gx-bg-flex gx-justify-content-end">
-              {console.log(record, "recordrecordrecordrecord")
-              }
+             
 
               <Button type="primary" className="gx-border-redius0">
                 <Link to={`/components/matka/matkaviewdetails/${record?.key}/${record?.dataKeyPalyloadData}`}>
@@ -410,8 +410,8 @@ const MatkaDayWiseReport = () => {
         <Loader props={loading} />
       ) : (
         <Card className="">
-          <div className="gx-bg-grey gx-px-3 gx-py-3 gx-bg-flex gx-align-items-center">
-            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-uppercase">{`Matka`}</span>
+          <div className="gx-bg-grey gx-px-3 gx-py-2 gx-bg-flex gx-align-items-center">
+            <span className="gx-fs-lg gx-font-weight-normal gx-text-white gx-align-items-center gx-text-uppercase">{`Matka`}</span>
             <BackButton />
           </div>
 

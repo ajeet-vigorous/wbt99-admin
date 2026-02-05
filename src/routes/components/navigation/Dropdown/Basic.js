@@ -243,23 +243,23 @@ const Basic = () => {
       render: renderContent,
     },
 
-    {
-      title: "Comm+",
-      dataIndex: "commissionPlus",
-      key: "commissionPlus",
-      render: (value) => (
-        <span className="gx-text-green-0">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
-      ),
-    },
+    // {
+    //   title: "Comm+",
+    //   dataIndex: "commissionPlus",
+    //   key: "commissionPlus",
+    //   render: (value) => (
+    //     <span className="gx-text-green-0">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
+    //   ),
+    // },
 
-    {
-      title: "Comm-",
-      dataIndex: "commissionMinus",
-      key: "commissionMinus",
-      render: (value) => (
-        <span className="gx-text-red">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
-      ),
-    },
+    // {
+    //   title: "Comm-",
+    //   dataIndex: "commissionMinus",
+    //   key: "commissionMinus",
+    //   render: (value) => (
+    //     <span className="gx-text-red">{Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}</span>
+    //   ),
+    // },
 
 
     {
@@ -289,7 +289,7 @@ const Basic = () => {
       {/* {loading ? <Loader props={loading} /> : */}
       <Card className="gx-card gx-w-100 ">
         <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center">
-          <span className="gx-fs-xl gx-font-weight-normal gx-text-white   gx-text-capitalize">{`Completed Games Detail`}</span>
+          <span className="gx-fs-lg gx-font-weight-normal gx-text-white   gx-text-uppercase">{`Completed Games Detail`}</span>
           <BackButton />
         </div>
         <Row gutter={12} className="gx-px-4">
@@ -326,7 +326,7 @@ const Basic = () => {
 
 
         <div className="gx-px-4">
-          <div className="gx-mb-3 gx-p-4 gx-bg-light-grey gx-rounded-sm">
+          {/* <div className="gx-mb-3 gx-p-4 gx-bg-light-grey gx-rounded-sm">
             <div className="gx-bg-flex gx-flex-md-row gx-flex-column">
               <div className="gx-px-2"
               >
@@ -363,7 +363,7 @@ const Basic = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <Table
             className="gx-table-responsive gx-text-uppercase gx-font-weight-bold"

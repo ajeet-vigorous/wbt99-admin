@@ -250,14 +250,10 @@ const Basic = () => {
         <>
             {/* {loader ? <Loader props={loader} /> : */}
                 <>
-                    <Card className="gx-card ">
-                        {/* <div className="gx-bg-grey gx-px-5 gx-mb-4 gx-py-3 gx-bg-flex">
-                            <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-pt-1 gx-text-capitalize">{`${gameName}`}</span>
-                                <BackButton />
-                        </div> */}
-                        <Row style={{display:'flex'}} className='gx-d-flex gx-px-4 gx-w-full'>
-                            <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                                <CasinoIframeResult diamondcasinobyeventid={diamondcasinobyeventid} gameName={gameName} eventId={eventId} betLists={casinoBetList?.casinoBetData} />
+                    <Card className="gx-card gx-p-2">
+                        <Row >
+                            <Col xl={12} lg={12} md={12} sm={24} xs={24} >
+                             <CasinoIframeResult diamondcasinobyeventid={diamondcasinobyeventid} gameName={gameName} eventId={eventId} betLists={casinoBetList?.casinoBetData} />
                             </Col>
                             <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                                 <Card className="gx-card">

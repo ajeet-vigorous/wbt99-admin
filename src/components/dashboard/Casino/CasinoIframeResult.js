@@ -56,7 +56,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
         };
     }
   };
-  
+
   const getTagStyle1 = (result) => {
     switch (result) {
       case "31": // D
@@ -65,21 +65,21 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
           borderColor: "#FF4D4F",
           color: "#FF4D4F",
         };
-  
+
       case "11": // T
         return {
           backgroundColor: "#F6FFED",
           borderColor: "#52C41A",
           color: "#52C41A",
         };
-  
+
       case "21": // L
         return {
           backgroundColor: "#E6F7FF",
           borderColor: "#1890FF",
           color: "#1890FF",
         };
-  
+
       default:
         return {
           backgroundColor: "#F5F5F5",
@@ -88,7 +88,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
         };
     }
   };
-  
+
   // useEffect(() => {
   //   casinoByEventIdList();
   // }, [diamondcasinobyeventid]); // Add diamondcasinobyeventid to dependency array if needed
@@ -254,7 +254,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
     {
       title: 'Player Name',
       dataIndex: 'name',
-      align: 'center', 
+      align: 'center',
       render: (values, row) => <div>
         <div> {row?.name}</div>
         <div className={`gx-fs-md gx-font-weight-bold ${row?.pos > 0 ? 'gx-text-green-0' : row?.pos < 0 ? 'gx-text-red' : 'gx-text-black'}`}>{row?.pos ? row?.pos : 0}</div>
@@ -518,50 +518,54 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
       <Row className="">
         <Col xl={24} lg={24} md={24} sm={24} xs={24}>
           <div className="gx-news-itemgnn">
-            <div className="gx-news-contenttt">
-              <div style={{gap:'5px'}} className="gx-bg-flex gx-justify-content-between gx-bg-grey gx-px-2 gx-py-3">
+            <div className="gx-news-contenttt ">
+              <div className="gx-bg-flex gx-justify-content-between gx-px-3 gx-bg-grey  gx-py-2">
                 <span className="gx-text-white">{gameName}</span>
                 <span className="gx-text-white">{`ROUNDED ID: ${t1?.mid}`}</span>
                 <span className="timer">
-                  {/* <ClockCircleOutlined /> */}
                   {t1?.autotime}</span>
               </div>
-              <div style={{marginTop:'150px'}} className="gx-news-tags-row gx-px-4">
+              <div style={{ marginTop: '150px' }} className="gx-news-tags-row gx-px-4">
                 <iframe src={selectedVideoUrl} title=" " style={{ height: 300, position: 'relative' }} className="gx-reletive gx-w-100" />
 
                 {eventId == 3056 && (
-                  <div className="gx-pl-3" style={{ position: 'absolute', top:'80px', left:'50%' , transform: 'translateX(-50%)'}}>
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '80px', left: '50%', transform: 'translateX(-50%)' }}>
                     <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="" height={62} width={50} />
                   </div>
                 )}
 
                 {eventId == 3035 && (
-                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute', top:'80px', left:'50%' , transform: 'translateX(-50%)', gap:'8px' }}>
-                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={62} width={50} />
-                    <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={62} width={50} />
+                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute', top: '60px', left: '50%', transform: 'translateX(-50%)', gap: '8px' }}>
+                    <div>
+                      <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={82} width={60} />
+                      <div className="gx-mt-1"><span class="ant-tag ant-tag-red css-1v5z42l">Dragon</span></div>
+                    </div>
+                    <div> <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={82} width={60} />
+                      <div className="gx-mt-1 gx-px-2"><span class="ant-tag ant-tag-green css-1v5z42l">Tiger</span></div>
+                    </div>
                   </div>
                 )}
 
                 {eventId == 3031 && (
-                  <div className="gx-pl-3" style={{ position: 'absolute' , top:'80px', left:'50%' , transform: 'translateX(-50%)'}}>
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '60px', left: '50%', transform: 'translateX(-50%)' }}>
                     {/* <span className="gx-text-blue"> Player A</span> */}
-                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
-                    <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
-                    <img src={`/cards/${t1 && t1.C3 ? t1.C3 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
+                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
+                    <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
+                    <img src={`/cards/${t1 && t1.C3 ? t1.C3 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
                     <br />
                     {/* Player B: */}
-                    <img src={`/cards/${t2 && t2.C1 ? t2.C1 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
-                    <img src={`/cards/${t2 && t2.C2 ? t2.C2 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
-                    <img src={`/cards/${t2 && t2.C3 ? t2.C3 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={45} width={35} />
+                    <img src={`/cards/${t2 && t2.C1 ? t2.C1 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
+                    <img src={`/cards/${t2 && t2.C2 ? t2.C2 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
+                    <img src={`/cards/${t2 && t2.C3 ? t2.C3 : 1}.png`} alt="card" className="gx-border gx-border-yellow" height={55} width={35} />
                   </div>
                 )}
 
                 {eventId == 3030 && (
                   <div className="">
                     <div className="gx-pl-3" >
-                      <div style={{ position: 'absolute' , transform: 'translateX(-50%)', gap:'8px'}} className="playerA gx-d-flex">
+                      <div style={{ position: 'absolute', transform: 'translateX(-50%)', gap: '8px' }} className="playerA gx-d-flex">
                         <div>PLAYER A</div>
-                        <div style={{gap:'5px'}} className="gx-d-flex">
+                        <div style={{ gap: '5px' }} className="gx-d-flex">
                           <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
                           <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
                           <img src={`/cards/${t1 && t1.C3 ? t1.C3 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
@@ -569,9 +573,9 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                       </div>
                       <br />
                       {/* Player B: */}
-                      <div style={{ position: 'absolute', transform: 'translateX(-50%)', gap:'8px'}} className="playerB gx-d-flex">
+                      <div style={{ position: 'absolute', transform: 'translateX(-50%)', gap: '8px' }} className="playerB gx-d-flex">
                         <div>PLAYER B</div>
-                        <div style={{gap:'5px'}} className="gx-d-flex">
+                        <div style={{ gap: '5px' }} className="gx-d-flex">
                           <img src={`/cards/${t2 && t2.C1 ? t2.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
                           <img src={`/cards/${t2 && t2.C2 ? t2.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
                           <img src={`/cards/${t2 && t2.C3 ? t2.C3 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={45} width={35} />
@@ -582,7 +586,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                 )}
 
                 {eventId == 3054 && (
-                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute',  top:'80px', left:'20%' , transform: 'translateX(-50%)', gap:'8px' }}>
+                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute', top: '80px', left: '20%', transform: 'translateX(-50%)', gap: '8px' }}>
                     <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="" height={45} width={35} />
                     <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="" height={45} width={35} />
                     <img src={`/cards/${t1 && t1.C3 ? t1.C3 : 1}.png`} alt="card" className="" height={45} width={35} />
@@ -590,16 +594,21 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                   </div>
                 )}
                 {eventId == 3059 && (
-                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute', top:'80px', left:'50%' , transform: 'translateX(-50%)', gap:'8px' }}>
-                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={62} width={50} />
-                    <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={62} width={50} />
+                  <div className="gx-pl-3 gx-d-flex" style={{ position: 'absolute', top: '60px', left: '50%', transform: 'translateX(-50%)', gap: '8px' }}>
+                    <div>
+                      <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={82} width={60} />
+                      <div className="gx-mt-1"><span class="ant-tag ant-tag-red css-1v5z42l">Dragon</span></div>
+                    </div>
+                    <div> <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="gx-border-yellow gx-border-2" height={82} width={60} />
+                      <div className="gx-mt-1 "><span class="ant-tag gx-px-2 ant-tag-green css-1v5z42l">Tiger</span></div>
+                    </div>
                   </div>
                 )}
 
                 {/* new Casino  */}
                 {eventId == 3032 && (
-                  <div className="gx-pl-3" style={{  position: 'absolute', top:'80px', left:'50%' , transform: 'translateX(-50%)', gap:'8px' }}>
-                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="" height={62} width={50} />
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '80px', left: '50%', transform: 'translateX(-50%)', gap: '8px' }}>
+                    <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="" height={62} width={40} />
 
                     {/* <img src={`/cards/${t1 && t1.C2 ? t1.C2 : 1}.png`} alt="card" className="" height={45} width={35} /> */}
                   </div>
@@ -607,7 +616,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
 
 
                 {eventId == 3043 && (
-                  <div className="gx-pl-3" style={{ position: 'absolute', top:'52px', left:'32%' , transform: 'translateX(-50%)', gap:'8px' }}>
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '52px', left: '32%', transform: 'translateX(-50%)', gap: '8px' }}>
                     {/* <img src={`/cards/${t1 && t1.C1 ? t1.C1 : 1}.png`} alt="card" className="" height={45} width={35} />
                     <img src={`/cards/${image && image[2] ? image[2] : "1"}.png`}
                       alt="card"
@@ -615,155 +624,155 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                       height={45} width={35}
                     /> */}
                     {/* <div className="h-full p-2 gx-d-flex gx-justify-content-center"> */}
-                      <Row
-                        className="gx-d-flex gx-align-items-center"
-                      >
-                        {/* First column: Card with number 9 (left side) */}
-                        <Col xs={4} md={4} className="">
-                          <img
-                            src={`/cards/${t1 && t1.C1 ? t1.C1 : "1"}.png`}
-                            alt="card"
-                            style={{border:'1px solid yellow'}}
-                            className=""
-                            height={62} width={50}
-                          />
-                        </Col>
+                    <Row
+                      className="gx-d-flex gx-align-items-center"
+                    >
+                      {/* First column: Card with number 9 (left side) */}
+                      <Col xs={4} md={4} className="">
+                        <img
+                          src={`/cards/${t1 && t1.C1 ? t1.C1 : "1"}.png`}
+                          alt="card"
+                          style={{ border: '1px solid yellow' }}
+                          className=""
+                          height={62} width={50}
+                        />
+                      </Col>
 
-                        {/* Second column: Andar and Bahar cards */}
-                        <Col xs={18} md={18} className="">
-                          {/* Andar row */}
-                          <div className="gx-mb-2">
-                            {/* <Col className=" gx-pr-2 gx-bg-flex gx-justify-content-center gx-align-items-center"> */}
-                            <div className="gx-text-black gx-font-weight-semi-bold lg:text-base gx-fs-sm">
-                              Andar
-                            </div>
-                            {/* </Col> */}
-                            <div
-                              className="gx-d-flex"
-                            >
-                              <img
-                                src={`/cards/${image && image[2] ? image[2] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[4] ? image[4] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[6] ? image[6] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[8] ? image[8] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[10] ? image[10] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[12] ? image[12] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-
-                            </div>
+                      {/* Second column: Andar and Bahar cards */}
+                      <Col xs={18} md={18} className="">
+                        {/* Andar row */}
+                        <div className="gx-mb-2">
+                          {/* <Col className=" gx-pr-2 gx-bg-flex gx-justify-content-center gx-align-items-center"> */}
+                          <div className="gx-text-black gx-font-weight-semi-bold lg:text-base gx-fs-sm">
+                            Andar
                           </div>
+                          {/* </Col> */}
+                          <div
+                            className="gx-d-flex"
+                          >
+                            <img
+                              src={`/cards/${image && image[2] ? image[2] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[4] ? image[4] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[6] ? image[6] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[8] ? image[8] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[10] ? image[10] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[12] ? image[12] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
 
-                          {/* Bahar row */}
-                          <div className="">
-                            {/* <Col className="gx-bg-flex gx-pr-2 gx-justify-content-center gx-align-items-center"> */}
-                            <div className="gx-text-black gx-font-weight-semi-bold lg:text-base gx-fs-sm">
-                              Bahar
-                            </div>
-                            {/* </Col> */}
-                            <div
-                              className="gx-d-flex"
-                            >
-                              <img
-                                src={`/cards/${image && image[1] ? image[1] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-
-                              <img
-                                src={`/cards/${image && image[3] ? image[3] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[5] ? image[5] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[7] ? image[7] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[9] ? image[9] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-                              <img
-                                src={`/cards/${image && image[11] ? image[11] : "1"
-                                  }.png`}
-                                alt="card"
-                                style={{border:'1px solid yellow'}}
-                                className=""
-                                height={43} width={35}
-                              />
-
-                            </div>
                           </div>
-                        </Col>
-                      </Row>
+                        </div>
+
+                        {/* Bahar row */}
+                        <div className="">
+                          {/* <Col className="gx-bg-flex gx-pr-2 gx-justify-content-center gx-align-items-center"> */}
+                          <div className="gx-text-black gx-font-weight-semi-bold lg:text-base gx-fs-sm">
+                            Bahar
+                          </div>
+                          {/* </Col> */}
+                          <div
+                            className="gx-d-flex"
+                          >
+                            <img
+                              src={`/cards/${image && image[1] ? image[1] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+
+                            <img
+                              src={`/cards/${image && image[3] ? image[3] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[5] ? image[5] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[7] ? image[7] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[9] ? image[9] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+                            <img
+                              src={`/cards/${image && image[11] ? image[11] : "1"
+                                }.png`}
+                              alt="card"
+                              style={{ border: '1px solid yellow' }}
+                              className=""
+                              height={43} width={35}
+                            />
+
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
                     {/* </div> */}
 
                   </div>
                 )}
 
                 {eventId == 3034 && (
-                  <div className="gx-pl-3" style={{ position: 'absolute', top:'50px', left:'10%' , transform: 'translateX(-50%)', gap:'8px' }}>
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '50px', left: '10%', transform: 'translateX(-50%)', gap: '8px' }}>
 
                     <Row gutter={[16, 8]} className="gx-pt-2">
                       <div className="gx-w-100 gx-px-1 lg:space-y-1 space-y-0">
@@ -1196,7 +1205,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                 )}
 
                 {eventId == 3048 && (
-                  <div className="gx-pl-3 gx-w-full" style={{width:'100%', position: 'absolute', top:'50px', left:'20%' , transform: 'translateX(-50%)', gap:'8px'  }}>
+                  <div className="gx-pl-3 gx-w-full" style={{ width: '100%', position: 'absolute', top: '50px', left: '20%', transform: 'translateX(-50%)', gap: '8px' }}>
                     <Row gutter={[16, 8]} className="gx-pt-2 gx-w-full">
                       {/* <Col>
                         <Text className="gx-text-black" strong> TIGER </Text>
@@ -1204,36 +1213,36 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                       <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Row gutter={[8, 8]} className="gx-d-flex gx-flex-column gx-align-items-center">
                           <Text className="gx-text-black" strong> TIGER </Text>
-                            <div className="gx-d-flex">
-                              {[t1?.C1, t1?.C2, t1?.C3]?.map((card, index) => (
-                                <Col key={index}>
-                                  <img src={`/cards/${card || 1}.png`} alt="card" className="" style={{ height: "44px" }} />
-                                </Col>
-                              ))}
-                            </div>
+                          <div className="gx-d-flex">
+                            {[t1?.C1, t1?.C2, t1?.C3]?.map((card, index) => (
+                              <Col key={index}>
+                                <img src={`/cards/${card || 1}.png`} alt="card" className="" style={{ height: "44px" }} />
+                              </Col>
+                            ))}
+                          </div>
                         </Row>
                       </Col>
                       <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Row gutter={[8, 8]} className="gx-d-flex gx-flex-column gx-align-items-center">
-                        <Text className="gx-text-black" strong> LION</Text>
-                        <div className="gx-d-flex">
+                          <Text className="gx-text-black" strong> LION</Text>
+                          <div className="gx-d-flex">
                             {[t1?.C4, t1?.C5, t1?.C6]?.map((card, index) => (
                               <Col key={index}>
                                 <img src={`/cards/${card || 1}.png`} alt="card" className="" style={{ height: "44px" }} />
                               </Col>
                             ))}
-                        </div>
+                          </div>
                         </Row>
                       </Col>
                       <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                         <Row gutter={[8, 8]} className="gx-d-flex gx-flex-column gx-align-items-center">
-                        <Text className="gx-text-black" strong> DRAGON</Text>
-                        <div className="gx-d-flex">
-                          {[t1?.C7, t1?.C8, t1?.C9]?.map((card, index) => (
-                            <Col key={index}>
-                              <img src={`/cards/${card || 1}.png`} alt="card" className="" style={{ height: "44px" }} />
-                            </Col>
-                          ))}
+                          <Text className="gx-text-black" strong> DRAGON</Text>
+                          <div className="gx-d-flex">
+                            {[t1?.C7, t1?.C8, t1?.C9]?.map((card, index) => (
+                              <Col key={index}>
+                                <img src={`/cards/${card || 1}.png`} alt="card" className="" style={{ height: "44px" }} />
+                              </Col>
+                            ))}
                           </div>
                         </Row>
                       </Col>
@@ -1242,7 +1251,7 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                 )}
 
                 {eventId == 3055 && (
-                  <div className="gx-pl-3" style={{ position: 'absolute', top:'50px', left:'14%' , transform: 'translateX(-50%)', gap:'8px'  }}>
+                  <div className="gx-pl-3" style={{ position: 'absolute', top: '50px', left: '14%', transform: 'translateX(-50%)', gap: '8px' }}>
                     <Row gutter={[16, 8]} className="gx-pt-2">
                       <div className="gx-w-100 gx-px-1 lg:space-y-1 space-y-0">
                         <div>
@@ -1679,317 +1688,13 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                 {/* <div>Last 10 winners:</div> */}
                 {eventId == 3032 && (
                   <>
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Divider orientation="left" className="custom-divider">
-                      LAST WINNERS
-                    </Divider>
-                    <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
-                        casinoData?.result.map((element, index) => (
-                          <div key={index}>
-                            <Tag style={{
-                                borderRadius: 0,
-                                borderWidth: 1,
-                                borderStyle: "solid",
-                                fontWeight: 700,
-                                fontSize: "14px",
-                                borderRadius:'5px',
-                                ...getTagStyle(element?.result),
-                              }} color="#108ee9">
-                              {element.result === '1' ? "L" : element.result === '2' ? "H" : "-"}
-                            </Tag>
-                          </div>
-                        ))
-                      ) : null}
-                    </div>
-                </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Low</div>
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <div style={{height:'100%'}} className='gx-d-flex gx-align-items-center gx-justify-content-center gx-h-full'>
-                          <img style={{width:'35px', height:'50px'}} src='/images/cards/7.jpg'/>
-                        </div>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">High</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col> 
-                  </>
-                )}
-                {eventId == 3031 && (
-                  <>
-
-                <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Divider orientation="left" className="custom-divider">
-                      LAST WINNERS
-                    </Divider>
-                    <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
-                        casinoData?.result.map((element, index) => (
-                          <div key={index}>
-                            <Tag style={{
-                                borderRadius: 0,
-                                borderWidth: 1,
-                                borderStyle: "solid",
-                                fontWeight: 700,
-                                fontSize: "14px",
-                                borderRadius:'5px',
-                                ...getTagStyle(element?.result),
-                              }} color="#108ee9" className={`${element && element.result && element.result === "1" ? "text-[#F75500]" : element && element.result && element.result === "2" ? "text-[#FFF523]" : "text-[#33c6ff]"} font-[700] text-[14px]`}>
-                              {element && element.result && element.result === "1" ? "A" : element && element.result && element.result === "2" ? "B" : element && element.result && element.result === "3" ? "C" : "-"}
-                              {/* <Tag style={{ borderRadius: '0' }} color="#108ee9">
-                              {element.result === '1' ? "dragon" : element.result === '2' ? "tiger" : "-"} */}
-                            </Tag>
-                          </div>
-                        ))
-                      ) : null}
-                    </div>
-                </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    {/* <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Amar</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Akbar</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">4545</div>
-                            <div className="bet-amount">454545</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Anthony</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row> */}
-                  </Col>  
-                  </>
-                )}
-                {eventId == 3030 && (
-                  <>
-
-                  
-                <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Divider orientation="left" className="custom-divider">
-                      LAST WINNERS
-                    </Divider>
-                    <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
-                        casinoData?.result.map((element, index) => (
-                          <div key={index}>
-                            <Tag style={{
-                                borderRadius: 0,
-                                borderWidth: 1,
-                                borderStyle: "solid",
-                                fontWeight: 700,
-                                fontSize: "14px",
-                                borderRadius:'5px',
-                                ...getTagStyle(element?.result),
-                              }} color="#108ee9">
-                              {element.result === '1' ? "A" : element.result === '3' ? "B" : "T"}
-                            </Tag>
-                          </div>
-                        ))
-                      ) : null}
-                    </div>
-                </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Player A</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Player B</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">4545</div>
-                            <div className="bet-amount">454545</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col>  
-                  </>
-                )}
-                {eventId == 3059 && (
-                  <>
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                    <Divider orientation="left" className="custom-divider">
-                      LAST WINNERS
-                    </Divider>
-                    <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
-                        casinoData?.result.map((element, index) => (
-                          <div key={index}>
-                            <Tag style={{
-                                borderRadius: 0,
-                                borderWidth: 1,
-                                borderStyle: "solid",
-                                fontWeight: 700,
-                                fontSize: "14px",
-                                borderRadius:'5px',
-                                ...getTagStyle(element?.result),
-                              }} color="#108ee9">
-                              {element.result === '1' ? "D" : element.result === '2' ? "T" : "-"}
-                            </Tag>
-                          </div>
-                        ))
-                      ) : null}
-                    </div>
-                </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Dragon</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tie</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">4545</div>
-                            <div className="bet-amount">454545</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tiger</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col>  
-                  </>
-                )}
-                {eventId == 3056 && (
-                  <>
-
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
                           casinoData?.result.map((element, index) => (
                             <div key={index}>
                               <Tag style={{
@@ -1998,23 +1703,121 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
-                              }}color="#108ee9" className={`${element && element.result && element.result === "1" ? "text-[#F75500]" : element && element.result && element.result === "2" ? "text-[#FFF523]" : "text-[#33c6ff]"} font-[700] text-[14px]`}>
-                                {element && element.result && element.result === "1" ? "A" : element && element.result && element.result === "2" ? "B" : element && element.result && element.result === "3" ? "C" : "-"}
+                              }} color="#108ee9">
+                                {element.result === '1' ? "L" : element.result === '2' ? "H" : "-"}
                               </Tag>
                             </div>
                           ))
                         ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Low</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">asa</div>
+                              <div className="bet-amount">1222</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                        {console.log(data, "datadatadata")
+                        }
+                        {data?.filter(item => item.name === 'LOW Card').map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <div style={{ height: '100%' }} className='gx-d-flex gx-align-items-center gx-justify-content-center gx-h-full'>
+                            <img style={{ width: '35px', height: '50px' }} src='/images/cards/7.jpg' />
+                          </div>
+                        </Col>
+
+                        {data?.filter(item => item.name === 'HIGH Card').map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">High</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">tr</div>
+                              <div className="bet-amount">rttttttttttttt</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                      </Row>
+                    </Col>
+                  </>
+                )}
+                {eventId == 3031 && (
+                  <>
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
+                                borderRadius: 0,
+                                borderWidth: 1,
+                                borderStyle: "solid",
+                                fontWeight: 700,
+                                fontSize: "14px",
+                                borderRadius: '5px',
+                                ...getTagStyle(element?.result),
+                              }} color="#108ee9" className={`${element && element.result && element.result === "1" ? "text-[#F75500]" : element && element.result && element.result === "2" ? "text-[#FFF523]" : "text-[#33c6ff]"} font-[700] text-[14px]`}>
+                                {element && element.result && element.result === "1" ? "A" : element && element.result && element.result === "2" ? "B" : element && element.result && element.result === "3" ? "C" : "-"}
+                                {/* <Tag style={{ borderRadius: '0' }} color="#108ee9">
+                              {element.result === '1' ? "dragon" : element.result === '2' ? "tiger" : "-"} */}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
                         <Card
                           bordered={false}
                           className="main-bet-card"
@@ -2057,447 +1860,612 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                             <div className="bet-amount">rttttttttttttt</div>
                           </div>
                         </Card>
-                      </Col>
-                    </Row>
-                  </Col>
+                      </Col> */}
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Col>
                   </>
                 )}
-                {eventId == 3035 && (
+                {eventId == 3030 && (
                   <>
-                  
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                    {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag style={{
+
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
                               }} color="#108ee9">
-                            {element.result === '1' ? "D" : element.result === '2' ? "T" : "-"}
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Dragon</div>
+                                {element.result === '1' ? "A" : element.result === '3' ? "B" : "T"}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Player A</div>
 
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tie</div>
+                            <div className="bet-card-body">
+                              <div className="bet-rate">asa</div>
+                              <div className="bet-amount">1222</div>
+                            </div>
+                          </Card>
+                        </Col>
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">4545</div>
-                            <div className="bet-amount">454545</div>
-                          </div>
-                        </Card>
-                      </Col>
+                        <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Player B</div>
 
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tiger</div>
+                            <div className="bet-card-body">
+                              <div className="bet-rate">4545</div>
+                              <div className="bet-amount">454545</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                      </Row>
+                    </Col>
+                  </>
+                )}
+                {eventId == 3059 && (
+                  <>
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
+                                borderRadius: 0,
+                                borderWidth: 1,
+                                borderStyle: "solid",
+                                fontWeight: 700,
+                                fontSize: "14px",
+                                borderRadius: '5px',
+                                ...getTagStyle(element?.result),
+                              }} color="#108ee9">
+                                {element.result === '1' ? "D" : element.result === '2' ? "T" : "-"}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col>
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Dragon</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">asa</div>
+                              <div className="bet-amount">1222</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Tie</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">4545</div>
+                              <div className="bet-amount">454545</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Tiger</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">tr</div>
+                              <div className="bet-amount">rttttttttttttt</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                      </Row>
+                    </Col>
+                  </>
+                )}
+                {eventId == 3056 && (
+                  <>
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
+                                borderRadius: 0,
+                                borderWidth: 1,
+                                borderStyle: "solid",
+                                fontWeight: 700,
+                                fontSize: "14px",
+                                borderRadius: '5px',
+                                ...getTagStyle(element?.result),
+                              }} color="#108ee9" className={`${element && element.result && element.result === "1" ? "text-[#F75500]" : element && element.result && element.result === "2" ? "text-[#FFF523]" : "text-[#33c6ff]"} font-[700] text-[14px]`}>
+                                {element && element.result && element.result === "1" ? "A" : element && element.result && element.result === "2" ? "B" : element && element.result && element.result === "3" ? "C" : "-"}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.slice(0, 3)?.map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Amar</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">b1 ka data </div>
+                              <div className="bet-amount">0</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Akbar</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">b1 ka data </div>
+                              <div className="bet-amount">0</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Anthony</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">b1 ka data</div>
+                              <div className="bet-amount">0</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                      </Row>
+                    </Col>
+                  </>
+                )}
+                {eventId == 3035 && (
+                  <>
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
+                                borderRadius: 0,
+                                borderWidth: 1,
+                                borderStyle: "solid",
+                                fontWeight: 700,
+                                fontSize: "14px",
+                                borderRadius: '5px',
+                                ...getTagStyle(element?.result),
+                              }} color="#108ee9">
+                                {element.result === '1' ? "D" : element.result === '2' ? "T" : "-"}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={8} lg={8} md={8} sm={8} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Dragon</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">asa</div>
+                              <div className="bet-amount">1222</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Tie</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">4545</div>
+                              <div className="bet-amount">454545</div>
+                            </div>
+                          </Card>
+                        </Col>
+
+                        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">Tiger</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">tr</div>
+                              <div className="bet-amount">rttttttttttttt</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                      </Row>
+                    </Col>
                   </>
                 )}
                 {eventId == 3054 && (
                   <>
 
-                <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag style={{
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
                               }} color="#108ee9">
-                            {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"}
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">0</div>
+                                {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
 
-                          <div className="bet-card-body">
-                            <div className="bet-amount">1</div>
-                          </div>
-                        </Card>
-                      </Col>
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {/* <Col xl={6} lg={6} md={6} sm={6} xs={6}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">0</div>
 
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">1</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">2</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">2</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">0</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">4</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">4</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">5</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">4</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">6</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">4</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">7</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">7</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">8</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">4</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">9</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">9</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div style={{textOverflow:'ellipsis', whiteSpace:'nowrap'}} className="bet-card-header">LINE_1</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">9</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div style={{textOverflow:'ellipsis', whiteSpace:'nowrap'}} className="bet-card-header">LINE_2</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">6</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">ODD</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">6</div>
-                          </div>
-                        </Card>
-                      </Col>
-                      
-                      <Col xl={6} lg={6} md={6} sm={6} xs={6}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">EVEN</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-amount">6</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col>
+                            <div className="bet-card-body">
+                              <div className="bet-amount">1</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={6} lg={6} md={6} sm={6} xs={6}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Col>
                   </>
                 )}
 
                 {/* new add  */}
                 {eventId == 3043 && (
                   <>
-                  
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      
-                    {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag style={{
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
                               }} color="#108ee9">
-                            {element &&
-                              element.result &&
-                              element.result == "1"
-                              ? "A"
-                              : "B"
-                            }
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">ANDAR</div>
+                                {element &&
+                                  element.result &&
+                                  element.result == "1"
+                                  ? "A"
+                                  : "B"
+                                }
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
 
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">BAHAR</div>
+                        {data?.filter(item => item.name === 'SA').map((item, idx) => (
+                          <Col key={idx} xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">ANDER</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row>
-                  </Col>
+                        {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">ANDAR</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">asa</div>
+                              <div className="bet-amount">1222</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+
+                        {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <Card
+                            bordered={false}
+                            className="main-bet-card"
+                            bodyStyle={{ padding: 0 }}
+                          >
+                            <div className="bet-card-header">BAHAR</div>
+
+                            <div className="bet-card-body">
+                              <div className="bet-rate">tr</div>
+                              <div className="bet-amount">rttttttttttttt</div>
+                            </div>
+                          </Card>
+                        </Col> */}
+
+                        {data?.filter(item => item.name === 'SB').map((item, idx) => (
+                          <Col key={idx} xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">BAHAR</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Col>
                   </>
                 )}
 
                 {eventId == 3055 && (
                   <>
-              <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      
-                    {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag style={{
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
-                              }}  color="#108ee9">
+                              }} color="#108ee9">
 
 
-                            {element && element.result === "1" ? (
-                              "8"
-                            ) : element && element.result === "2" ? (
+                                {element && element.result === "1" ? (
+                                  "8"
+                                ) : element && element.result === "2" ? (
 
-                              "9"
+                                  "9"
 
-                            ) : element && element.result === "3" ? (
+                                ) : element && element.result === "3" ? (
 
-                              " 10"
+                                  " 10"
 
-                            ) : element && element.result === "4" ? (
+                                ) : element && element.result === "4" ? (
 
-                              "11"
+                                  "11"
 
-                            ) : (
-                              "-"
-                            )}
+                                ) : (
+                                  "-"
+                                )}
 
-                            {/* {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"} */}
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  {/* <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                                {/* {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"} */}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                         <Card
                           bordered={false}
                           className="main-bet-card"
@@ -2525,136 +2493,114 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                             <div className="bet-amount">rttttttttttttt</div>
                           </div>
                         </Card>
-                      </Col>
-                    </Row> */}
-                  </Col>
+                      </Col> */}
+                      </Row>
+                    </Col>
                   </>
                 )}
 
                 {eventId == 3034 && (
                   <>
 
-<Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      
-                    {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag style={{
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle(element?.result),
                               }} color="#108ee9">
-                            {element && element.result === '1' ? "8" : element && element.result === '2' ? "9" : element && element.result === '3' ? "10" : element && element.result === '4' ? "11" : "-"}
-                            {/* {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"} */}
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  {/* <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider> */}
-                    {/* <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Dragon</div>
+                                {element && element.result === '1' ? "8" : element && element.result === '2' ? "9" : element && element.result === '3' ? "10" : element && element.result === '4' ? "11" : "-"}
+                                {/* {element && element.result && element.result === "1" ? "R" : element && element.result && element.result === "0" ? "R" : element && element.result && element.result === "2" ? "R" : "R"} */}
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
 
-                          <div className="bet-card-body">
-                            <div className="bet-rate">asa</div>
-                            <div className="bet-amount">1222</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tie</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">4545</div>
-                            <div className="bet-amount">454545</div>
-                          </div>
-                        </Card>
-                      </Col>
-
-                      <Col xl={8} lg={8} md={8} sm={8} xs={8}>
-                        <Card
-                          bordered={false}
-                          className="main-bet-card"
-                          bodyStyle={{ padding: 0 }}
-                        >
-                          <div className="bet-card-header">Tiger</div>
-
-                          <div className="bet-card-body">
-                            <div className="bet-rate">tr</div>
-                            <div className="bet-amount">rttttttttttttt</div>
-                          </div>
-                        </Card>
-                      </Col>
-                    </Row> */}
-                  </Col>
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} sm={6} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Col>
                   </>
                 )}
 
                 {eventId == 3048 && (
                   <>
-                  
-                  <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    LAST WINNERS
-                  </Divider>
-                  <div style={{flexWrap:'wrap', gap:'1'}} className="gx-d-flex gx-align-items-center">
-                      {/* <div>Last 10 winners:</div> */}
-                      
-                    {casinoData?.result && casinoData?.result.length > 0 ? (
-                      casinoData?.result.map((element, index) => (
-                        <div key={index}>
-                          <Tag  style={{
+
+                    <Col className="gx-d-flex gx-flex-column" xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        LAST WINNERS
+                      </Divider>
+                      <div style={{ flexWrap: 'wrap', gap: '1' }} className="gx-d-flex gx-align-items-center">
+                        {/* <div>Last 10 winners:</div> */}
+
+                        {casinoData?.result && casinoData?.result.length > 0 ? (
+                          casinoData?.result.map((element, index) => (
+                            <div key={index}>
+                              <Tag style={{
                                 borderRadius: 0,
                                 borderWidth: 1,
                                 borderStyle: "solid",
                                 fontWeight: 700,
                                 fontSize: "14px",
-                                borderRadius:'5px',
+                                borderRadius: '5px',
                                 ...getTagStyle1(element?.result),
                               }} color="#108ee9">
-                            {element && element.result === '31' ? "D" : element && element.result === '11' ? "T" : element && element.result === '21' ? "L" : "-"}
+                                {element && element.result === '31' ? "D" : element && element.result === '11' ? "T" : element && element.result === '21' ? "L" : "-"}
 
-                          </Tag>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                  </Col>
-                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                  
-                  <Divider orientation="left" className="custom-divider">
-                    MAIN BETS
-                  </Divider>
-                    {/* <Row className="gx-w-full" gutter={[16, 16]}>
-                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                              </Tag>
+                            </div>
+                          ))
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+
+                      <Divider orientation="left" className="custom-divider">
+                        MAIN BETS
+                      </Divider>
+                      <Row className="gx-w-full" gutter={[16, 16]}>
+                        {data?.map((item, idx) => (
+                          <Col key={idx} xs={8}>
+                            <Card bordered={false} className="main-bet-card" bodyStyle={{ padding: 0 }}>
+                              <div className="bet-card-header">{item.name}</div>
+                              <div className="bet-card-body">
+                                <div className="bet-rate">{item.rate}</div>
+                                <div className="bet-amount">{0}</div>
+                              </div>
+                            </Card>
+                          </Col>
+                        ))}
+                        {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                         <Card
                           bordered={false}
                           className="main-bet-card"
@@ -2682,9 +2628,9 @@ const CasinoIframeResult = ({ diamondcasinobyeventid, eventId, gameName, betList
                             <div className="bet-amount">rttttttttttttt</div>
                           </div>
                         </Card>
-                      </Col>
-                    </Row> */}
-                  </Col>
+                      </Col> */}
+                      </Row>
+                    </Col>
 
                   </>
                 )}

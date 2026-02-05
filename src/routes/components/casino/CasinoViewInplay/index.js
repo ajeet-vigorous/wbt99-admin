@@ -6,7 +6,7 @@ import Basic from "./Basic";
 const CasinoInplayView = () => {
   return (
     <Row justify={"center"}>
-      <Col xl={22}>
+      <Col xl={24}>
         <Basic />
       </Col>
     </Row>

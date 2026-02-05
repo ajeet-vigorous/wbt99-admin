@@ -155,6 +155,12 @@ const SidebarContent = ({ sidebarCollapsed, setSidebarCollapsed }) => {
                     <Link to="/components/matka/inplay-matka">
                       <span className="gx-fs-lg gx-text-uppercase gx-text-truncate colorInheret gx-font-weight-semi-bold">Inplay Matka</span></Link>
                   </Menu.Item>
+                  <Menu.Item key="components/navigation/breadcrumb12">
+                    <Link to="/components/matka/completed-matka">
+                      <span className="gx-fs-lg gx-text-uppercase gx-text-truncate colorInheret gx-font-weight-semi-bold">Completed Matka</span></Link>
+                  </Menu.Item>
+
+                  
                   {/* <Menu.Item key="components/navigation/dropdown11">
                   <Link to="/components/casino/completedcasino">
                     <span className="gx-fs-lg gx-text-uppercase gx-text-truncate colorInheret gx-font-weight-semi-bold">Matka bb</span></Link>

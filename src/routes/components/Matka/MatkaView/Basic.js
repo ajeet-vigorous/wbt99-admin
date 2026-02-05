@@ -15,7 +15,7 @@ const Basic = () => {
     const [matkaList, setMatkaList] = useState([]);
     const [isGameType, setIsGameType] = useState(
         {
-            singlePatti: false,
+            singlePatti: true,
             harupAnderBaher: false,
             singal: false,
             jodi: false,
@@ -458,31 +458,8 @@ const Basic = () => {
                     </div>
 
                     <Row justify={"center"}>
-                        <Col xs={22} className="gx-p-3">
-                            {console.log(matkaList, "matkaListmatkaListmatkaList")}
-
-                            {/* <Select
-                                placeholder="Select Game Type"
-                                onChange={value => onChange(value)}
-                                className="gx-border-redius0 gx-bg-flex"
-                            >
-                                {matkaList[0]?.isHaroopAndarBahar ? (
-                                    <>
-                                        <Option key={4} value={'singalpatti'}>Singal Patti</Option>
-                                        <Option key={1} value={'harupanderbaher'}>Harup Ander Bahar</Option>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Option key={2} value={'singal'}>Singal</Option>
-                                        <Option key={3} value={'jodi'}>Jodi</Option>
-                                        <Option key={5} value={'singalpattis'}>Singal Patti</Option>
-                                        <Option key={6} value={'doublepatti'}>Double Patti</Option>
-                                        <Option key={7} value={'triplepatti'}>Triple Patti</Option>
-                                        <Option key={8} value={'oddeven'}>Odd Even</Option>
-                                    </>
-                                )}
-                            </Select> */}
-
+                        <Col xs={24} className="gx-p-3">
+                            
                             <Tabs
                                 defaultActiveKey=""
                                 onChange={(key) => onChange(key)}
@@ -524,7 +501,9 @@ const Basic = () => {
                                                 {card.toString().padStart(2, "0")}
                                             </div>
                                             {/* ${getMatkaPosition(card, "JODI") > 0 ? 'gx-text-green-0' : 'gx-text-red'} */}
-                                            <div style={{}} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
+                                            {console.log(matkaList[0], "matkaList[0]")
+                                            }
+                                            <div style={{}} className={`gx-py-1 gx-mt-2  gx-fs-md `}>
                                                 {getMatkaPosition(card, "JODI", matkaList.map((req, index) => {
                                                     return req?.name
                                                 }))}
@@ -540,7 +519,7 @@ const Basic = () => {
 
                         {isGameType.harupAnderBaher && (
                             <>
-                                <Col xs={22} className="gx-py-1">
+                                <Col xs={24} className="gx-py-1">
                                     <div className="gx-py-1 gx-px-1 gx-bg-grey gx-text-white gx-mb-3 gx-bg-flex gx-justify-content-start gx-fs-md gx-py-2 gx-px-2" style={{border: '1px dashed grey' }}>
                                         HARUP ANDAR {`[${isTotalProfitLoss?.haroopAndar}]`}
                                     </div>
@@ -553,7 +532,7 @@ const Basic = () => {
                                                 </div>
 
 
-                                                <div style={{ }} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
+                                                <div style={{ }} className={`gx-py-1 gx-mt-2  gx-fs-md `}>
                                                     {/* {getMatkaPosition(card, "HAROOP_ANDAR")} */}
                                                     {getMatkaPosition(card, "HAROOP_ANDAR", matkaList.map((req, index) => {
                                                         return req?.name
@@ -563,7 +542,7 @@ const Basic = () => {
                                         ))}
                                     </Row>
                                 </Col>
-                                <Col xs={22} className="gx-py-1">
+                                <Col xs={24} className="gx-py-1">
                                     <div className="gx-py-2 gx-px-2 gx-text-white gx-bg-grey gx-bg-flex gx-mb-3 gx-justify-content-start gx-fs-md" style={{  }}>
                                         HAPUR BAHAR {`[${isTotalProfitLoss?.haroopBahar}]`}
                                     </div>
@@ -576,7 +555,7 @@ const Basic = () => {
                                                 </div>
 
 
-                                                <div style={{  }} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
+                                                <div style={{  }} className={`gx-py-1 gx-mt-2  gx-fs-md `}>
                                                     {/* {getMatkaPosition(card, "HAROOP_BAHAR")} */}
 
                                                     {getMatkaPosition(card, "HAROOP_BAHAR", matkaList.map((req, index) => {
@@ -590,7 +569,7 @@ const Basic = () => {
                             </>)}
 
                         {isGameType.jodi && (
-                            <Col xs={22} className="">
+                            <Col xs={24} className="">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Jodi {`[${isTotalProfitLoss?.singlePatti}]`}
                                 </div>
@@ -617,7 +596,7 @@ const Basic = () => {
 
                         {/* Postion Print karni hai  */}
                         {isGameType.singal && (
-                            <Col xs={22} className="gx-py-1">
+                            <Col xs={24} className="gx-py-1">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Singal {`[${isTotalProfitLoss?.single}]`}
                                 </div>
@@ -643,7 +622,7 @@ const Basic = () => {
                         )}
 
                         {isGameType.singalpattis && (
-                            <Col xs={22} className="gx-py-1">
+                            <Col xs={24} className="gx-py-1">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Singal Patti {`[${isTotalProfitLoss?.singlePattis}]`}
                                 </div>
@@ -678,7 +657,7 @@ const Basic = () => {
 
 
                         {isGameType.doublepatti && (
-                            <Col xs={22} className="gx-py-1">
+                            <Col xs={24} className="gx-py-1">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Double Patti {`[${isTotalProfitLoss?.doublePatti}]`}
                                 </div>
@@ -712,7 +691,7 @@ const Basic = () => {
                         )}
 
                         {isGameType.triplepatti && (
-                            <Col xs={22} className="">
+                            <Col xs={24} className="">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Triple Patti {`[${isTotalProfitLoss?.triplePatti}]`}
                                 </div>
@@ -739,7 +718,7 @@ const Basic = () => {
 
 
                         {isGameType.oddeven && (
-                            <Col xs={22} className="">
+                            <Col xs={24} className="">
                                 <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Odd Even {`[${isTotalProfitLoss?.singlePatti}]`}
                                 </div>

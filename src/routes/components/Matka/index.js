@@ -10,6 +10,7 @@ const MatkaInplay = ({match}) => (
     <Route path={`${match.url}/view-matka/:eventIdMatka?/:matkaDate?`} component={asyncComponent(() => import('./MatkaView/'))}/>
     <Route path={`${match.url}/view-matka-details/:eventIdMatka?/:matkaDate?`} component={asyncComponent(() => import('./MatkaViewDetails/'))}/>
     <Route path={`${match.url}/matkaviewdetails/:eventId?/:date?`} component={asyncComponent(() => import('./MatkaDetails/'))}/>
+    <Route path={`${match.url}/completed-matka`} component={asyncComponent(() => import('./CompletedMatka/'))}/>
   </Switch>
 );
 

@@ -136,8 +136,8 @@ const Basic = () => {
                 <Card className="gx-card">
 
                  
-                    <div className="gx-bg-grey gx-px-5 gx-pt-2 gx-bg-flex gx-align-items-center">
-                        <span className="gx-fs-2xl gx-font-weight-normal gx-text-white gx-align-items-center gx-text-capitalize">{`Matka Bet List`}</span>
+                    <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex gx-align-items-center gx-align-items-center">
+                        <span className="gx-fs-lg gx-font-weight-normal gx-text-white  gx-text-uppercase">{`Matka Bet List`}</span>
                         <BackButton />
                     </div>
 

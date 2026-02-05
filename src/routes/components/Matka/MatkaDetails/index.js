@@ -7,9 +7,8 @@ import MatkaDetails from "./MatkaDetails";
 const MatkaDetailsList = () => {
   return (
     <Row justify={"center"}>
-      <Col xl={22} md={24} xs={24}>
+      <Col xs={24}>
         <MatkaDetails />
-
       </Col>
     </Row>
   );
