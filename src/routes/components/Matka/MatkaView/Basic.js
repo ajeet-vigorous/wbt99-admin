@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, DatePicker, Table, Button, Row, Col, Select } from "antd";
+import { Card, DatePicker, Table, Button, Row, Col, Select, Tabs } from "antd";
 import moment from "moment";
 import BackButton from "../../Hoc/BackButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { getMatkaBetList, getMatkaList } from "../../../../appRedux/actions/User";
 import { useParams } from "react-router-dom";
 import { result } from "lodash";
+import TabPane from "antd/lib/tabs/TabPane";
 
 const Basic = () => {
     const [matkaBetList, setMatkaBetList] = useState([]);
@@ -453,17 +454,15 @@ const Basic = () => {
 
 
                         </div>
-                        <BackButton />
+                        <BackButton className='backBtn' />
                     </div>
 
                     <Row justify={"center"}>
                         <Col xs={22} className="gx-p-3">
                             {console.log(matkaList, "matkaListmatkaListmatkaList")}
 
-                            <Select
-                                // showSearch
+                            {/* <Select
                                 placeholder="Select Game Type"
-                                // optionFilterProp="children"
                                 onChange={value => onChange(value)}
                                 className="gx-border-redius0 gx-bg-flex"
                             >
@@ -482,7 +481,29 @@ const Basic = () => {
                                         <Option key={8} value={'oddeven'}>Odd Even</Option>
                                     </>
                                 )}
-                            </Select>
+                            </Select> */}
+
+                            <Tabs
+                                defaultActiveKey=""
+                                onChange={(key) => onChange(key)}
+                                className="gx-bg-flex"
+                                >
+                                {matkaList[0]?.isHaroopAndarBahar ? (
+                                    <>
+                                    <TabPane tab="SINGAL PATTI" key="singalpatti" />
+                                    <TabPane tab="HARUP ANDAR BAHAR" key="harupanderbaher" />
+                                    </>
+                                ) : (
+                                    <>
+                                    <TabPane tab="Singal" key="singal" />
+                                    <TabPane tab="Jodi" key="jodi" />
+                                    <TabPane tab="Singal Patti" key="singalpattis" />
+                                    <TabPane tab="Double Patti" key="doublepatti" />
+                                    <TabPane tab="Triple Patti" key="triplepatti" />
+                                    <TabPane tab="Odd Even" key="oddeven" />
+                                    </>
+                                )}
+                            </Tabs>
 
                         </Col>
                     </Row>
@@ -492,18 +513,18 @@ const Basic = () => {
                     <Row justify={"center"} >
                         {isGameType.singlePatti && (
                             <Col xs={22} className="">
-                                <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
+                                {/* <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
                                     Single Patti {`[${isTotalProfitLoss?.singlePatti}]`}
-                                </div>
+                                </div> */}
 
                                 <Row className=""  >
                                     {cards.map((card, index) => (
-                                        <Col xl={2} md={2} xs={8} key={index} className="gx-text-center gx-px-3 gx-py-3 ">
-                                            <div className="gx-fs-lg gx-rounded-circle gx-py-3 gx-size-60 gx-bg-flex gx-align-items-center gx-justify-content-center  gx-text-black gx-bg-yellow">
+                                        <Col xl={6} lg={6} md={6} xs={6} key={index} className="gx-text-center gx-mb-3">
+                                            <div style={{backgroundColor:'rgb(240, 240, 240)', border:'1px solid rgb(217, 217, 217)', borderRadius:'6px', fontWeight:'500'}} className="gx-fs-md gx-w-full gx-py-2 gx-bg-flex gx-align-items-center gx-justify-content-center  gx-text-black">
                                                 {card.toString().padStart(2, "0")}
                                             </div>
                                             {/* ${getMatkaPosition(card, "JODI") > 0 ? 'gx-text-green-0' : 'gx-text-red'} */}
-                                            <div style={{ background: '#4C1088', border: '1px dashed grey' }} className={`gx-py-1 gx-mt-2 gx-text-white gx-fs-lg`}>
+                                            <div style={{}} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
                                                 {getMatkaPosition(card, "JODI", matkaList.map((req, index) => {
                                                     return req?.name
                                                 }))}
@@ -520,19 +541,19 @@ const Basic = () => {
                         {isGameType.harupAnderBaher && (
                             <>
                                 <Col xs={22} className="gx-py-1">
-                                    <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
-                                        Harup Ander {`[${isTotalProfitLoss?.haroopAndar}]`}
+                                    <div className="gx-py-1 gx-px-1 gx-bg-grey gx-text-white gx-mb-3 gx-bg-flex gx-justify-content-start gx-fs-md gx-py-2 gx-px-2" style={{border: '1px dashed grey' }}>
+                                        HARUP ANDAR {`[${isTotalProfitLoss?.haroopAndar}]`}
                                     </div>
 
                                     <Row className="" gutter={20} >
                                         {cardData.map((card, index) => (
-                                            <Col xl={2} md={2} xs={8} key={index} className="gx-text-center gx-px-3 gx-py-3 ">
-                                                <div className="gx-fs-lg gx-rounded-circle gx-py-3 gx-size-60 gx-bg-flex gx-align-items-center gx-justify-content-center  gx-text-black gx-bg-yellow">
+                                            <Col xl={6} md={6} xs={6} key={index}  className="gx-text-center gx-px-3 ">
+                                                <div style={{backgroundColor:'rgb(240, 240, 240)', border:'1px solid rgb(217, 217, 217)', borderRadius:'6px', fontWeight:'500'}} className="gx-fs-md  gx-w-full gx-py-2  gx-bg-flex gx-align-items-center gx-justify-content-center  gx-text-black">
                                                     {card.toString().padStart(2, "0")}
                                                 </div>
 
 
-                                                <div style={{ background: '#4C1088', border: '1px dashed grey' }} className={`gx-py-1 gx-mt-2 gx-text-white gx-fs-lg`}>
+                                                <div style={{ }} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
                                                     {/* {getMatkaPosition(card, "HAROOP_ANDAR")} */}
                                                     {getMatkaPosition(card, "HAROOP_ANDAR", matkaList.map((req, index) => {
                                                         return req?.name
@@ -543,19 +564,19 @@ const Basic = () => {
                                     </Row>
                                 </Col>
                                 <Col xs={22} className="gx-py-1">
-                                    <div className="gx-py-1 gx-px-1 gx-text-white gx-bg-flex gx-justify-content-center gx-fs-xl" style={{ background: '#4C1088', border: '1px dashed grey' }}>
-                                        Harup Bahar {`[${isTotalProfitLoss?.haroopBahar}]`}
+                                    <div className="gx-py-2 gx-px-2 gx-text-white gx-bg-grey gx-bg-flex gx-mb-3 gx-justify-content-start gx-fs-md" style={{  }}>
+                                        HAPUR BAHAR {`[${isTotalProfitLoss?.haroopBahar}]`}
                                     </div>
 
                                     <Row className="" gutter={20} >
                                         {cardData.map((card, index) => (
-                                            <Col xl={2} md={2} xs={8} key={index} className="gx-text-center gx-px-3 gx-py-3 ">
-                                                <div className="gx-fs-lg gx-rounded-circle gx-py-3 gx-size-60 gx-bg-flex gx-align-items-center gx-justify-content-center  gx-text-black gx-bg-yellow">
+                                            <Col xl={6} md={6} xs={6} key={index} className="gx-text-center">
+                                                <div style={{backgroundColor:'rgb(240, 240, 240)', border:'1px solid rgb(217, 217, 217)', borderRadius:'6px', fontWeight:'500'}} className="gx-fs-md gx-py-2 gx-bg-flex gx-w-full gx-align-items-center gx-justify-content-center  gx-text-black ">
                                                     {card.toString().padStart(2, "0")}
                                                 </div>
 
 
-                                                <div style={{ background: '#4C1088', border: '1px dashed grey' }} className={`gx-py-1 gx-mt-2 gx-text-white gx-fs-lg`}>
+                                                <div style={{  }} className={`gx-py-1 gx-mt-2 gx-text-green gx-fs-md`}>
                                                     {/* {getMatkaPosition(card, "HAROOP_BAHAR")} */}
 
                                                     {getMatkaPosition(card, "HAROOP_BAHAR", matkaList.map((req, index) => {

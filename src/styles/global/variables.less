@@ -577,3 +577,164 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     border-block-start: 1px solid rgba(5, 5, 5, 0.06);
 }
+
+
+
+
+
+.main-bet-card {
+  border: 1px solid #f0f0f0;
+  // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.bet-card-header {
+  background: #1b6ec2;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bet-card-body {
+  padding: 18px;
+  text-align: center;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+  border: 1px solid #f0f0f0;
+}
+.main-bet-card .bet-card-body:hover{
+  box-shadow: 0 1px 2px -2px rgba(0,0,0,0.16),0 3px 6px 0 rgba(0,0,0,0.12),0 5px 12px 4px rgba(0,0,0,0.09);
+  border: transparent;
+}
+
+.bet-rate {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(63, 134, 0);
+  margin-bottom: 10px;
+}
+
+.bet-amount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #52c41a;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.custom-divider.ant-divider-horizontal.ant-divider-with-text-left::before {
+  width: 40px;          /* 👈 chhoti line */
+  flex: none;
+}
+
+.custom-divider.ant-divider-horizontal.ant-divider-with-text-left::after {
+  flex: 1;              /* 👈 badi line */
+}
+
+.custom-divider {
+  color: #000;
+  font-weight: 500;
+}
+
+.timer{
+  color: #1677ff !important;
+  background: #e6f4ff;
+    border-color: #91caff !important;
+    padding-inline: 8px;
+    padding-block: 2px;
+    border-radius: 4px !important;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playerA{
+  top:  80px;
+  left:20%;
+  align-items: center;
+}
+.playerB{
+  top: 80px; 
+  right: 0%;
+  align-items: center;
+}
+@media (max-width: 1200px) {
+  .playerA{
+    top:  80px;
+    left:26%;
+    align-items: center;
+  }
+  .playerB{
+    top: 80px; 
+    right: -18%;
+    align-items: center;
+  }
+}
+
+@media (max-width: 992px) {
+
+  .playerA{
+    top:  80px;
+    left:31%;
+    flex-direction: row;
+  }
+  .playerB{
+    top: 133px;
+    left: 43%;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .playerA{
+    top:  80px;
+    left:22%;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+  }
+  .playerB{
+    top: 80px;
+    left: 80%;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+  }
+  .bet-card-header {
+    padding: 5px;
+  }
+}
+
+.ant-tabs-nav-list {
+  gap: 8px;
+}
+
+.ant-tabs-tab {
+  background: rgba(0,0,0,0.02);
+  padding: 6px 18px;
+  border: 1px solid #f0f0f0;
+}
+
+.ant-tabs-tab-active {
+  background: white;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #1677ff !important;
+  border-bottom: 0 !important;
+}
+.ant-tabs-tab + .ant-tabs-tab{
+  margin-left: 0 !important;
+}
+.ant-tabs-ink-bar{
+  background-color: unset !important;
+}
