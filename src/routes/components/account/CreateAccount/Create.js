@@ -157,6 +157,7 @@ const Create = () => {
         "downlineUserType": uplineUser
       };
 
+
       dispatch(getUserList(reqData))
       dispatch(userDominList())
     };
@@ -228,7 +229,7 @@ const Create = () => {
   };
 
   const onFinish = async (values) => {
-
+ 
     const updatedFieldsUser = {
       ...fieldsUser,
       password: values.password,
@@ -293,6 +294,7 @@ const Create = () => {
       transactionPassword: "1122",
       allowedDomains: userType === "subowner" ? updatedFieldsUser.selectDomain : null,
     };
+ 
     dispatch(userCreate(userCreateData));
 
   };
@@ -323,7 +325,7 @@ const Create = () => {
   console.log(showSelectUser, "showSelectUsershowSelectUser")
   return (
     <>
-      {(initialLoad) ? (
+      {(initialLoad && userType != 'subowner') ? (
         <Loader props={true} />
       ) : (
         <>
@@ -410,14 +412,15 @@ const Create = () => {
                     </Col>
 
                     <Col md={12} xs={12}>
+                      <label className="gx-mb-1">Reference <span className="gx-text-red">*</span></label>
                       <Form.Item
                         wrapperCol={{ span: 23 }}
                         name="reference"
                         labelAlign="left"
-                        // rules={[{ required: true, message: "Please input your reference!" },
-                        // ]}
+                        rules={[{ required: false, message: "Please input your reference!" },
+                        ]}
                       >
-                        <label className="gx-mb-1">Reference <span className="gx-text-red">*</span></label>
+
                         <Input placeholder='Enter reference' className="gx-border-redius gx-mt-2" />
                       </Form.Item>
                     </Col>

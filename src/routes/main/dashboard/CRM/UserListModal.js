@@ -3,7 +3,7 @@ import { Button, Col, Modal, Row } from "antd";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { userTypeInfo } from "../../../../constants/global";
 import ChartCard from "../../../../components/dashboard/Listing/ChartCard"
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 
 
 const UserListModal = ({ handleClose }) => {
@@ -38,9 +38,9 @@ const UserListModal = ({ handleClose }) => {
       <Row>
         {userTypeInfo && userTypeInfo.length > 0 ? userTypeInfo.map((item, index) => (
           userInfo.data.userPriority > item.priority ? (
-            <Col md={12} xs={24} key={index}>
+            <Col md={12} xs={12} key={index}>
               <Link to={`/components/general/button-${item.userType}/${item.priority}`}>
-                <ChartCard chartProperties={{ title: `${item.userType}`, desc: 'Master', icon: 'family', bgColor: 'primary' }} />
+                <ChartCard chartProperties={{ title: `${item.userType}`, desc: 'Master', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
               </Link>
             </Col>
           ) : null

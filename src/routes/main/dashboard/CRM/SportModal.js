@@ -3,7 +3,7 @@ import { Button, Col, Modal, Row } from "antd";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { userTypeInfo } from "../../../../constants/global";
 import ChartCard from "../../../../components/dashboard/Listing/ChartCard"
-import { CloseOutlined } from "@ant-design/icons";
+import { BarChartOutlined, CloseOutlined } from "@ant-design/icons";
 
 
 const SportModal = ({ handleClose }) => {
@@ -25,15 +25,15 @@ const SportModal = ({ handleClose }) => {
       closeIcon={<CloseOutlined className="gx-text-black" />}
     >
       <Row >
-        <Col md={12} xs={24}>
+        <Col md={12} xs={12}>
           <Link to="/components/navigation/breadcrumb">
-            <ChartCard chartProperties={{ icon: 'tag', title: `Active Games`, bgColor: 'primary' }} />
+            <ChartCard chartProperties={{ icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, title: `Active Games`, bgColor: 'primary' }} />
           </Link>
         </Col>
 
-        <Col md={12} xs={24}>
+        <Col md={12} xs={12}>
           <Link to="/components/navigation/dropdown">
-            <ChartCard chartProperties={{ title: 'Finished Games', icon: 'tag', bgColor: 'primary' }} />
+            <ChartCard chartProperties={{ title: 'Finished Games', icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
           </Link>
         </Col>
        

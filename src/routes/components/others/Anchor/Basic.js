@@ -23,7 +23,7 @@ const Basic = () => {
 
         <Col xs={24} sm={12} md={6} className="" >
           <Link to={`/components/statement/transaction/${userID}`} >
-            <Card className="gx-card gx-py-3 gx-my-auto gx-px-2 gx-bg-grey  gx-rounded-lg" >
+            <Card className="gx-card gx-py-3 gx-px-2 gx-bg-grey  gx-rounded-lg" >
               <h3 style={{ whiteSpace: "nowrap" }} className="gx-text-white gx-fs-lg  gx-font-weight-semi-bold gx-text-uppercase">Statements</h3>
             </Card>
           </Link>
