@@ -138,7 +138,7 @@ const CRM = () => {
   }
   return (
     <>
-      {loadingMatch ? <Loader props={loadingMatch} /> :
+      {/* {loadingMatch ? <Loader props={loadingMatch} /> : */}
         <>
           {modalOpen && <Rules />}
           {usermodal && <UserListModal handleClose={handleClose} />}
@@ -233,7 +233,7 @@ const CRM = () => {
           </Auxiliary>
 
         </>
-      }
+      {/* } */}
     </>
   );
 };

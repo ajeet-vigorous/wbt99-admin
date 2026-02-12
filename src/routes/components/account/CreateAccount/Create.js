@@ -414,8 +414,8 @@ const Create = () => {
                         wrapperCol={{ span: 23 }}
                         name="reference"
                         labelAlign="left"
-                        rules={[{ required: true, message: "Please input your reference!" },
-                        ]}
+                        // rules={[{ required: true, message: "Please input your reference!" },
+                        // ]}
                       >
                         <label className="gx-mb-1">Reference <span className="gx-text-red">*</span></label>
                         <Input placeholder='Enter reference' className="gx-border-redius gx-mt-2" />
