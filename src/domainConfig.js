@@ -2,8 +2,8 @@ const balaji12Settings = {
   title: "Welcome To WBT99",
   logo: "/assets/images/wbt99.png",
   favicon: "/assets/images/wbt99.png",
-  SOCKET_URL: "https://api.lion99.pro/",
-  apiurl: "https://api.lion99.pro/v1/",
+  SOCKET_URL: "https://api.wbt99.pro/",
+  apiurl: "https://api.wbt99.pro/v1/",
   domainName: "WBT99",
   sportFlag: false,
   websiteName: "WBT99.COM",
@@ -27,14 +27,14 @@ const balaji12Settings = {
 
 const domainSettings = {
  
-  "admin.balaji12.com": balaji12Settings,
-  "sowner.balaji99.com": balaji12Settings,
-  "sadmin.balaji99.com": balaji12Settings,
-  "admin.balaji99.com": balaji12Settings,
-  "madmin.balaji99.com": balaji12Settings,
-  "master.balaji99.com": balaji12Settings,
-  "super.balaji99.com": balaji12Settings,
-  "agent.balaji99.com": balaji12Settings,
+  "admin.wbt99.pro": balaji12Settings,
+  "sowner.wbt99.pro": balaji12Settings,
+  "sadmin.wbt99.pro": balaji12Settings,
+  "admin.wbt99.pro": balaji12Settings,
+  "madmin.wbt99.pro": balaji12Settings,
+  "master.wbt99.pro": balaji12Settings,
+  "super.wbt99.pro": balaji12Settings,
+  "agent.wbt99.pro": balaji12Settings,
   
   "localhost:3000": balaji12Settings,
 
