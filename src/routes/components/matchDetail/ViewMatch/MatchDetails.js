@@ -931,43 +931,17 @@ const MatchDetails = () => {
   const tossColumn = [
     {
       title: (
-        <div
-          style={{ display: "flex " }}
-          className="gx-bg-flex gx-justify-content-between minMax"
-        >
-          <div className="gx-bg-flex gx-justify-content-between gx-align-items-center minMax">
-            <div style={{ display: "flex " }}>
-              <div
-                style={{
-                  padding: "6px 8px",
-                  cursor: "pointer",
-                  backgroundColor: activesubTossTab === 1 ? "#fff" : "#eb6d88",
+        <div className="gx-bg-flex gx-justify-content-between gx-align-items-center " >
+          <div style={{ display: "flex " }}>
+            <div class="flex bg-pink-400 p-2">
+              <button class="px-5 py-2 bg-white gx-text-black gx-fs-xs gx-text-uppercase gx-font-weight-bold" onClick={() => handleTabTossClick(2)}>My Book</button>
+              <button class="px-5 py-2 mr-2 bg-white gx-text-black gx-fs-xs gx-text-uppercase gx-font-weight-bold" onClick={() => handleTabTossClick(1)}>Ttl Book</button>
+            </div>
+          </div>
 
-                  color: activesubTossTab === 1 ? "black" : "white ",
-                }}
-                onClick={() => handleTabTossClick(1)}
-              >
-                Ttl Book
-              </div>
-              <div
-                style={{
-                  padding: "6px 8px",
-                  cursor: "pointer",
-                  backgroundColor: activesubTossTab === 2 ? "#fff" : "#eb6d88",
-                  color: activesubTossTab === 2 ? "black" : "white",
-                }}
-                onClick={() => handleTabTossClick(2)}
-              >
-                My Book
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style={{ textWrap: "nowrap" }}>
-              Min: {isTossCoin?.min} Max: {isTossCoin?.max}
-            </div>
-            <div className="gx-text-center">Toss Data</div>
-          </div>
+
+
+
         </div>
       ),
       dataIndex: "runnerName",
@@ -977,7 +951,7 @@ const MatchDetails = () => {
         style: {
           background:
             column.key === "runnerName"
-              ? "linear-gradient(to right, #ef839b, #63b7f7)"
+              ? "gx-bg-grey"
               : "",
         },
       }),
@@ -985,18 +959,25 @@ const MatchDetails = () => {
       render: (text, record, index) => (
         <div className="">
           <div className=" gx-font-weight-semi-bold gx-text-uppercase">{text}</div>
-          <div className={` gx-font-weight-semi-bold   ${(record?.tossposition ? -1 * record?.tossposition : 0) >= 0 ? 'gx-text-primary' : 'gx-text-red'}`}>{record?.tossposition ? -1 * record?.tossposition : 0}</div>
+          <div className={`${-1 * record?.tossposition > 0 ? 'gx-text-primary' : -1 * record?.tossposition < 0 ? 'gx-text-red' : record?.tossposition == 0 ? "gx-text-black" : 'gx-text-primary'} `} >
+            {record?.tossposition ? (-1 * record?.tossposition.toFixed(2)) : 0}
+          </div>
         </div>
       ),
-    }
-    ,
+    },
+
+
+
+
+
+
     {
-      title: "Lagai",
+      title: "LAGAI",
       dataIndex: "khaai",
       className: "matchdtailsYesBackground",
       onHeaderCell: (column) => ({
         style: {
-          backgroundColor: column.key === "khaai" ? "#63b7f7" : "",
+          backgroundColor: column.key === "khaai" ? "gx-bg-grey" : "",
         },
       }),
       key: "khaai",
@@ -1014,13 +995,13 @@ const MatchDetails = () => {
       ),
     },
     {
-      title: "Lay",
+      title: "KHAI",
       dataIndex: "lgaai",
       key: "lgaai",
       width: "20%",
       onHeaderCell: (column) => ({
         style: {
-          backgroundColor: column.key === "lgaai" ? "#ef839b" : "",
+          backgroundColor: column.key === "lgaai" ? "gx-bg-grey" : "",
         },
       }),
       className: "matchdtailsNoBackground",
@@ -2127,7 +2108,7 @@ const MatchDetails = () => {
 
       )}
       {matchDetailsResponse?.scoreIframe || matchIframeUrl ? (
-        <div className="" style={{ height: `${activeTabs.tab1 ? "260px" : "80px"}` }}>
+        <div className="" style={{ height: `${activeTabs.tab1 ? "260px" : "120px"}` }}>
           <iframe
             style={{ width: "100%", height: "100%", border: "none" }}
             src={matchDetailsResponse?.scoreIframe ? matchDetailsResponse?.scoreIframe : matchIframeUrl}

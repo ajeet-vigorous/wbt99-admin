@@ -153,7 +153,8 @@ const Disabled = () => {
         exposure: item.exposure,
         otp: item?.otp,
         intCasinoStatus: item.intCasinoStatus,
-        matkaStatus: item?.matkaStatus
+        matkaStatus: item?.matkaStatus,
+        isOtpRequired: item?.isOtpRequired
 
       }));
       setUserLists(filteredData);
@@ -183,7 +184,8 @@ const Disabled = () => {
         exposure: item.exposure,
         otp: item?.otp,
         intCasinoStatus: item?.intCasinoStatus,
-        matkaStatus: item?.matkaStatus
+        matkaStatus: item?.matkaStatus,
+        isOtpRequired: item?.isOtpRequired
 
       }));
       setUserLists(filteredData);

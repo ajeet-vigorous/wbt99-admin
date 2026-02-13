@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Modal, InputNumber, Typography, Button } from "antd";
+import { Modal, Row, Col, Typography, Button } from "antd";
 import { coinUpdate, getuserSearchReport, userUpdate } from "../../../../appRedux/actions/User";
 import { useDispatch, useSelector } from "react-redux";
 
 const StatusModal = ({ visible, handleClose, data }) => {
     const dispatch = useDispatch();
+
     // Handle toggling bet block status
     const handleBetBlock = async (data) => {
         let reqData = {
@@ -35,6 +36,15 @@ const StatusModal = ({ visible, handleClose, data }) => {
         handleClose()
     };
 
+    const handleIsOtpRequiredBlock = async (data) => {
+        let reqData = {
+            "userId": data.key,
+            "isOtpRequired": !data.isOtpRequired
+        };
+        await dispatch(userUpdate(reqData));
+        handleClose()
+    };
+
     if (!visible || !data) {
         return null;
     }
@@ -44,40 +54,49 @@ const StatusModal = ({ visible, handleClose, data }) => {
             title={<span className="gx-text-uppercase">Block action for {data?.username}</span>}
             open={true}
             onCancel={() => handleClose()}
-            className="gx-px-3 gx-text-uppercase"
+            className="gx-text-uppercase"
             footer={
                 <>
                     <button style={{ border: "none" }} className="gx-bg-default gx-text-black gx-rounded-xs gx-mx-2 gx-py-2 gx-px-2" onClick={handleClose}> Cancel </button>
-                    <button style={{ border: "none" }} className="gx-bg-primary gx-text-white gx-rounded-xs gx-px-3 gx-py-2" onClick={handleClose}> Ok </button>
+                    <button style={{ border: "none" }} className="gx-bg-primary gx-text-white gx-rounded-xs gx-px-3 gx-py-2" onClick={handleClose}> OK </button>
                 </>
             }
         >
-            <button
-                type="button"
-                onClick={() => handleBetBlock(data)}
-                className={`gx-bg-default gx-fs-lg gx-text-black gx-rounded-xs gx-mx-1 gx-py-2 gx-px-2 gx-border-0`}
-            >
-                <span>{data.betStatus ? "Block Betting" : "Unblock Betting"}</span>
-            </button>
+            <Row  className="gx-w-100">
+                <Col sm={12} xs={12}>
+                    <div className=" gx-py-3 gx-pointer" onClick={() => handleBetBlock(data)}>
+                        <div className={`gx-px-4 gx-py-3 ${data.betStatus ? " gx-rounded-xs ant-tag-green" : " gx-rounded-xs ant-tag-red"}`}>
+                            {data.betStatus ? "Block Betting" : "Unblock Betting"}
+                        </div>
+                    </div>
+                </Col>
 
-            <button
-                type="button"
-                onClick={() => handleCasinoBlock(data)}
-                className={`gx-bg-default gx-fs-lg gx-text-black gx-rounded-xs gx-mx-1 gx-py-2 gx-px-2 gx-border-0`}
-            >
-                <span>{data.casinoStatus ? "Block Casino" : "Unblock Casino"}</span>
-            </button>
+                <Col sm={12} xs={12}>
+                    <div className=" gx-py-3 gx-pointer" onClick={() => handleCasinoBlock(data)}>
+                        <div className={`gx-px-4 gx-py-3 ${data.casinoStatus ? " gx-rounded-xs ant-tag-green" : " gx-rounded-xs ant-tag-red"}`}>
+                            {data.casinoStatus ? "Block Casino" : "Unblock Casino"}
+                        </div>
+                    </div>
+                </Col>
 
+                <Col sm={12} xs={12}>
+                    <div className=" gx-py-3 gx-pointer" onClick={() => handleINTCasinoBlock(data)}>
+                        <div className={`gx-px-4 gx-py-3 ${data.matkaStatus ? " gx-rounded-xs ant-tag-green" : " gx-rounded-xs ant-tag-red"}`}>
+                            {data.matkaStatus ? "Block Matka" : "Unblock Matka"}
+                        </div>
+                    </div>
+                </Col>
 
-            <button
-                type="button"
-                onClick={() => handleINTCasinoBlock(data)}
-                className={`gx-bg-default gx-fs-lg gx-text-black gx-rounded-xs gx-mx-1 gx-py-2 gx-px-2 gx-border-0`}
-            >
-                <span>{data.matkaStatus ? "Block Matka" : "Unblock Matka"}</span>
-            </button>
+                <Col sm={12} xs={12}>
+                    <div className=" gx-py-3 gx-pointer" onClick={() => handleIsOtpRequiredBlock(data)}>
+                        <div className={`gx-px-4 gx-py-3 ${data.isOtpRequired ? " gx-rounded-xs ant-tag-green" : " gx-rounded-xs ant-tag-red"}`}>
+                            {data.isOtpRequired ? "OTP INACTIVE" : "OTP ACTIVE"}
+                        </div>
+                    </div>
+                </Col>
+            </Row>
 
-            <div className="gx-mb-5"></div>
+      
         </Modal>
     );
 };

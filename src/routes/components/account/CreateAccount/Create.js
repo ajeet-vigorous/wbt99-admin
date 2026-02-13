@@ -1,13 +1,14 @@
 
 
 import React, { useEffect, useState } from "react";
-import { Form, Input, Select, Row, Col, Button, Card, Switch } from "antd";
+import { Form, Input, Select, Row, Col, Button, Card, Switch, message } from "antd";
 import BackButton from "../../Hoc/BackButton";
 import { useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDetails, getUserList, userCreate, userDetailsClear, userDominList } from "../../../../appRedux/actions/User";
 import Loader from "../../../../components/loader";
 import { internationalCasino, matkaVisible } from "../../../../constants/global";
+import { apiCall } from "../../../../appRedux/sagas/HTTP";
 
 
 const getDownlineUserType = (param) => {
@@ -86,6 +87,7 @@ const Create = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [userLists, setUserLists] = useState([]);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const [parentDetails, setParentDetails] = useState({});
   const [fieldsUser, setFieldsUser] = useState({
@@ -120,7 +122,7 @@ const Create = () => {
 
 
   const dispatch = useDispatch()
-  const { loading, userListItems, userDetails, checkRedirect, domainListData } = useSelector(state => state.UserReducer);
+  const { loading, userListItems, userDetails, checkRedirect, domainListData, userCreateDataList } = useSelector(state => state.UserReducer);
   const history = useHistory()
 
 
@@ -228,6 +230,32 @@ const Create = () => {
     }));
   };
 
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      message.success(`successfull copy`)
+
+    });
+  };
+
+
+  const domain = window.location.origin
+    .replace(/^https?:\/\//, '')
+    .replace(/^[^.]+\./, '');
+
+  const userTypeMap = {
+    subowner: 'sowner.',
+    superadmin: 'sadmin.',
+    admin: 'admin.',
+    subadmin: 'madmin.',
+    master: 'master.',
+    superagent: 'super.',
+    agent: 'agent.',
+    client: ''
+  };
+
+  const link = `${userTypeMap[userType] || ''}${domain}`;
+
   const onFinish = async (values) => {
 
     const updatedFieldsUser = {
@@ -295,8 +323,27 @@ const Create = () => {
       allowedDomains: userType === "subowner" ? updatedFieldsUser.selectDomain : null,
     };
 
-    dispatch(userCreate(userCreateData));
+    try {
+      setLoader(true)
+      const res = await apiCall("POST", "user/create", userCreateData);
+      if (res?.data?.error === false) {
+        copyToClipboard(`Name: ${res?.data.data.username}, Password: ${userCreateData.password}, OTP: ${res?.data.data.otp} Website: ${link}`);
+        message.success(res.data.message)
+        window.location.href = `/components/general/button-${userType}/${userId}/${userPriority}`
+        setLoader(false)
+      } else {
+        message.error(res?.data?.message);
+      }
 
+    } catch (error) {
+      message.error("Something went wrong");
+      console.error(error, "eeeeeeeeee");
+    }
+    finally {
+      setLoader(false);   // ✅ always run hoga
+    }
+
+    // dispatch(userCreate(userCreateData));
   };
 
 
@@ -322,7 +369,7 @@ const Create = () => {
 
     return Promise.resolve();
   };
-  console.log(showSelectUser, "showSelectUsershowSelectUser")
+
   return (
     <>
       {(initialLoad && userType != 'subowner') ? (
@@ -918,12 +965,10 @@ const Create = () => {
                   <Row className="gx-bg-flex gx-px-3 gx-justify-content-center">
                     <Form.Item
                       wrapperCol={{ span: 23 }}>
-                      <button disabled={!isFormValid} type="button" className={`gx-rounded-xs gx-py-2 gx-px-4 gx-border-0 ${!isFormValid ? "gx-text-light-grey" : "gx-bg-primary"}`}>
+                      <button disabled={!isFormValid || loader} type="submit" className={`gx-rounded-xs gx-pointer gx-py-2 gx-px-4 gx-border-0 ${(!isFormValid || loader) ? "gx-text-light-grey" : "gx-bg-primary gx-text-white"}`}>
                         Submit
                       </button>
-                      {/* <Button htmlType="submit" size="small" className={`${!isFormValid ? "gx-border-redius btn" : "gx-border-redius btn gx-bg-primary"} `} >
 
-                      </Button> */}
                     </Form.Item>
                   </Row>
                 </Form>

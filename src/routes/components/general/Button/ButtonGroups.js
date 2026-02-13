@@ -519,7 +519,7 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
             className="gx-bg-primary gx-px-2 gx-py-1 gx-rounded-xs"
             onClick={(e) => e.preventDefault()}
           >
-            <DownOutlined className="gx-fs-lg gx-pl-2  gx-font-weight-bold gx-text-white" />
+            <DownOutlined className="gx-fs-lg gx-pl-1  gx-font-weight-bold gx-text-white" />
           </span>
         </Dropdown>
       ),

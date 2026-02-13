@@ -497,7 +497,7 @@ const UserReducer = (state = INIT_STATE, action) => {
         ...state,
         loading: false,
         showMessage: true,
-        // userCreate: action.payload,
+        userCreateDataList: action.payload,
         alertMessage: action.payload.message,
         checkRedirect: true,
 

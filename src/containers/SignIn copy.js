@@ -65,24 +65,27 @@ const SignIn = () => {
       password: fieldslogin.password,
       host: window.location.host,
     };
+
+    // ✅ Agar OTP required hai tab hi add karo
     if (loginChek) {
       data.otp = fieldslogin.otp;
     }
+
     try {
       const res = await apiCall("POST", "user/login", data);
+
       if (res?.data?.error === false) {
+        message.success(res?.data?.message);
+
         if (res?.data?.data?.isOtp) {
           setLoginCheck(true);
-          // message.success(res?.data?.message);
           console.log(res.data, "OTP Required");
         } else {
           localStorage.setItem('user_id', JSON.stringify(res.data));
           localStorage.setItem('token', JSON.stringify(res.data.token));
           localStorage.setItem('modalopen', true)
-          setTimeout(() => {
-            window.location.href = '/main/dashboard'
-            message.success(res?.data?.message);
-          }, 100)
+
+          console.log(res.data, "Login Success");
         }
 
       } else {
@@ -91,7 +94,7 @@ const SignIn = () => {
 
     } catch (error) {
       message.error("Something went wrong");
-      console.error(error, "eeeeeeeeee");
+      console.error(error);
     }
   };
 
