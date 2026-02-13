@@ -81,7 +81,7 @@ const SignIn = () => {
           localStorage.setItem('modalopen', true)
           setTimeout(() => {
             window.location.href = '/main/dashboard'
-            message.success(res?.data?.message);
+            message.success(res?.data?.message || "Login Successfull");
           }, 100)
         }
 

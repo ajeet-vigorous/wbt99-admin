@@ -2108,7 +2108,7 @@ const MatchDetails = () => {
 
       )}
       {matchDetailsResponse?.scoreIframe || matchIframeUrl ? (
-        <div className="" style={{ height: `${activeTabs.tab1 ? "260px" : "120px"}` }}>
+        <div className="" style={{ height: `${activeTabs.tab1 ? "310px" : "140px"}` }}>
           <iframe
             style={{ width: "100%", height: "100%", border: "none" }}
             src={matchDetailsResponse?.scoreIframe ? matchDetailsResponse?.scoreIframe : matchIframeUrl}
