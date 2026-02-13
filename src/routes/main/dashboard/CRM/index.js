@@ -139,100 +139,100 @@ const CRM = () => {
   return (
     <>
       {/* {loadingMatch ? <Loader props={loadingMatch} /> : */}
-        <>
-          {modalOpen && <Rules />}
-          {usermodal && <UserListModal handleClose={handleClose} />}
-          {ledgermodal && <LedgerModal handleClose={handleClose} />}
-          {cashTransactionModal && <CashTransactionModal handleClose={handleClose} />}
-          {settingmodal && <SettingModal handleClose={handleClose} />}
-          {sportModal && <SportModal handleClose={handleClose} />}
-          <Auxiliary>
-            <Row className="">
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                {/* <Link to="/components/details/client-details"> */}
-                <div onClick={() => setUserModal(true)} >
+      <>
+        {modalOpen && <Rules />}
+        {usermodal && <UserListModal handleClose={handleClose} />}
+        {ledgermodal && <LedgerModal handleClose={handleClose} />}
+        {cashTransactionModal && <CashTransactionModal handleClose={handleClose} />}
+        {settingmodal && <SettingModal handleClose={handleClose} />}
+        {sportModal && <SportModal handleClose={handleClose} />}
+        <Auxiliary>
+          <Row className="">
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              {/* <Link to="/components/details/client-details"> */}
+              <div onClick={() => setUserModal(true)} >
 
-                  <ChartCard chartProperties={{ icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, title: `${users?.data?.userType === 'subadmin' ? 'mini admin' : users?.data?.userType}`, bgColor: 'primary' }} />
-                </div>
-                {/* </Link> */}
-              </Col>
+                <ChartCard chartProperties={{ icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, title: `${users?.data?.userType === 'subadmin' ? 'mini admin' : users?.data?.userType}`, bgColor: 'primary' }} />
+              </div>
+              {/* </Link> */}
+            </Col>
 
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                {/* <Link to="/components/navigation/breadcrumb"> */}
-                <div onClick={() => setSportModal(true)} >
-                  <ChartCard chartProperties={{ title: "Sport's Details", icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
-                </div>
-                {/* </Link> */}
-              </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              {/* <Link to="/components/navigation/breadcrumb"> */}
+              <div onClick={() => setSportModal(true)} >
+                <ChartCard chartProperties={{ title: "Sport's Details", icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
+              </div>
+              {/* </Link> */}
+            </Col>
 
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                {/* <Link to="/components/event/lader-details"> */}
-                <div onClick={() => setLedgerModal(true)} >
-                  <ChartCard chartProperties={{ title: 'Ledger', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }}
-                  />
-                </div>
-                {/* </Link> */}
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                {/* <Link to="/components/case/case-transection-details"> */}
-                <div onClick={() => setCashTransactionModal(true)} >
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              {/* <Link to="/components/event/lader-details"> */}
+              <div onClick={() => setLedgerModal(true)} >
+                <ChartCard chartProperties={{ title: 'Ledger', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }}
+                />
+              </div>
+              {/* </Link> */}
+            </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              {/* <Link to="/components/case/case-transection-details"> */}
+              <div onClick={() => setCashTransactionModal(true)} >
+                <ChartCard chartProperties={{ title: 'Cash Transaction', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
+              </div>
+              {/* </Link> */}
+            </Col>
 
-                  <ChartCard chartProperties={{ title: 'Reports', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
-                </div>
-                {/* </Link> */}
-              </Col>
-
-            </Row>
-            <Row >
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                {/* <Link to="/components/others/anchor"> */}
-                <div onClick={() => setSettingModal(true)} >
+          </Row>
+          <Row >
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <Link to="/components/others/anchor">
+                <div  >
+                  {/* onClick={() => setSettingModal(true)} */}
                   <ChartCard chartProperties={{ title: 'Settings', icon: <SettingOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
                 </div>
 
-                {/* </Link> */}
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={12} xs={12} onClick={() => dispatch(userSignOut())}>
-                <ChartCard chartProperties={{ title: 'Logout', icon: <LogoutOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
-              </Col>
-            </Row>
+              </Link>
+            </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12} onClick={() => dispatch(userSignOut())}>
+              <ChartCard chartProperties={{ title: 'Logout', icon: <LogoutOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
+            </Col>
+          </Row>
 
-            <Row >
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ title: `${users?.data?.username}`, icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: `You are ${users?.data?.userType === 'subadmin' ? "mini admin" : users?.data?.userType}`, }} />
-              </Col>
+          <Row >
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ title: `${users?.data?.username}`, icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: `You are ${users?.data?.userType === 'subadmin' ? "mini admin" : users?.data?.userType}`, }} />
+            </Col>
 
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ prize: `${storedBalance ? storedBalance : users.data.balance.toFixed(2)}`, icon: <TrophyOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Coins', }} />
-              </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ prize: `${storedBalance ? storedBalance : users.data.balance.toFixed(2)}`, icon: <TrophyOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Coins', }} />
+            </Col>
 
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ title: `${nextLowerPriorityData?.nextLowerPriorityCount ? nextLowerPriorityData?.nextLowerPriorityCount : 0}`, icon: <TeamOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Members', }} />
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ title: `${users?.data?.matchShare}`, icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'My Share' }} />
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ title: `${100 - users.data.matchShare}%`, icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Company Share' }} />
-              </Col>
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ bgColor: 'primary', desc: 'Match Comminssion', percent: `${users?.data?.matchCommission}%` }} />
-              </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ title: `${nextLowerPriorityData?.nextLowerPriorityCount ? nextLowerPriorityData?.nextLowerPriorityCount : 0}`, icon: <TeamOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Members', }} />
+            </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ title: `${users?.data?.matchShare}`, icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'My Share' }} />
+            </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ title: `${100 - users.data.matchShare}%`, icon: <BarChartOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary', desc: 'Company Share' }} />
+            </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ bgColor: 'primary', desc: 'Match Comminssion', percent: `${users?.data?.matchCommission}%` }} />
+            </Col>
 
-              <Col xl={6} lg={12} md={12} sm={12} xs={12}>
-                <ChartCard chartProperties={{ bgColor: 'primary', desc: 'Session Comminssion', percent: `${users?.data?.sessionCommission}%`, }} />
-              </Col>
+            <Col xl={6} lg={12} md={12} sm={12} xs={12}>
+              <ChartCard chartProperties={{ bgColor: 'primary', desc: 'Session Comminssion', percent: `${users?.data?.sessionCommission}%`, }} />
+            </Col>
 
-              <Col xl={6} lg={11} md={12} sm={12} xs={12}>
-                <Link to="/components/rules/rules-regulation">
-                  <ChartCard chartProperties={{ title: 'Rules', icon: <InfoCircleOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
-                </Link>
-              </Col>
-            </Row>
-            <Simple />
-          </Auxiliary>
+            <Col xl={6} lg={11} md={12} sm={12} xs={12}>
+              <Link to="/components/rules/rules-regulation">
+                <ChartCard chartProperties={{ title: 'Rules', icon: <InfoCircleOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
+              </Link>
+            </Col>
+          </Row>
+          <Simple />
+        </Auxiliary>
 
-        </>
+      </>
       {/* } */}
     </>
   );

@@ -18,7 +18,7 @@ const Basic = () => {
   return (
     <>
 
-      <Row className="gx-w-100 gx-p-4">
+      <Row className=" gx-p-3">
 
 
         <Col xs={24} sm={12} md={6} className="" >

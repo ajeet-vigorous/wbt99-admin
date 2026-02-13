@@ -9,7 +9,7 @@ const Input = () => {
 
   return (
     <Row>
-      <Col lg={22} md={12} sm={24} xs={24}>
+      <Col  xs={24}>
         <Basic/>
       </Col>
 

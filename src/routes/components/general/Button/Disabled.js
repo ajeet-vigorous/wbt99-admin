@@ -152,7 +152,8 @@ const Disabled = () => {
         casinoStatus: item.casinoStatus,
         exposure: item.exposure,
         otp: item?.otp,
-        intCasinoStatus: item.intCasinoStatus
+        intCasinoStatus: item.intCasinoStatus,
+        matkaStatus: item?.matkaStatus
 
       }));
       setUserLists(filteredData);
@@ -181,7 +182,8 @@ const Disabled = () => {
         casinoStatus: item.casinoStatus,
         exposure: item.exposure,
         otp: item?.otp,
-        intCasinoStatus: item?.intCasinoStatus
+        intCasinoStatus: item?.intCasinoStatus,
+        matkaStatus: item?.matkaStatus
 
       }));
       setUserLists(filteredData);
@@ -255,15 +257,15 @@ const Disabled = () => {
         </div>}
 
       <Card className="gx-card gx-w-100">
-        <div className="gx-bg-grey gx-px-5 gx-py-3 gx-bg-flex">
-          <span className="gx-fs-lg gx-font-weight-bold gx-text-white gx-align-items-center gx-pt-1 gx-text-uppercase">{`${userType === "subadmin" ? "Mini Admin" : userType} Details`}</span>
+        <div className="gx-bg-grey gx-px-5 gx-py-2 gx-bg-flex  gx-align-items-center">
+          <span className="gx-fs-lg gx-font-weight-bold gx-text-white  gx-text-uppercase">{`${userType === "subadmin" ? "Mini Admin" : userType} Details`}</span>
           <BackButton />
         </div>
         <div className="gx-px-3 gx-py-3 gx-bg-flex gx-justify-content-around ">
-          <button type="button" class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
+          <button type="button" className="gx-rounded-xs gx-py-2 gx-px-3 gx-bg-primary gx-border-0">
             <Link to={`/components/account/create-account/${userType}/${userId}/${userPriority}`} className="gx-text-white gx-py-2"><PlusOutlined /> Create </Link>
           </button>
-          <button type="button" class="btn btn-primary btn-color-primary btn-variant-solid btn-lg">
+          <button type="button" className="gx-rounded-xs gx-py-2 gx-px-3 gx-bg-primary gx-border-0">
             <Link to={`/components/plusminus/limitplusminus/${userType}/${userId}/${userPriority}`} className="gx-text-white gx-py-3"><PlusOutlined /> Update </Link>
           </button>
 

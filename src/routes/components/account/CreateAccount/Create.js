@@ -229,7 +229,7 @@ const Create = () => {
   };
 
   const onFinish = async (values) => {
- 
+
     const updatedFieldsUser = {
       ...fieldsUser,
       password: values.password,
@@ -294,7 +294,7 @@ const Create = () => {
       transactionPassword: "1122",
       allowedDomains: userType === "subowner" ? updatedFieldsUser.selectDomain : null,
     };
- 
+
     dispatch(userCreate(userCreateData));
 
   };
@@ -918,9 +918,12 @@ const Create = () => {
                   <Row className="gx-bg-flex gx-px-3 gx-justify-content-center">
                     <Form.Item
                       wrapperCol={{ span: 23 }}>
-                      <Button htmlType="submit" size="small" className={`${!isFormValid ? "gx-border-redius btn" : "gx-border-redius btn gx-bg-primary"} `} disabled={!isFormValid}>
+                      <button disabled={!isFormValid} type="button" className={`gx-rounded-xs gx-py-2 gx-px-4 gx-border-0 ${!isFormValid ? "gx-text-light-grey" : "gx-bg-primary"}`}>
                         Submit
-                      </Button>
+                      </button>
+                      {/* <Button htmlType="submit" size="small" className={`${!isFormValid ? "gx-border-redius btn" : "gx-border-redius btn gx-bg-primary"} `} >
+
+                      </Button> */}
                     </Form.Item>
                   </Row>
                 </Form>

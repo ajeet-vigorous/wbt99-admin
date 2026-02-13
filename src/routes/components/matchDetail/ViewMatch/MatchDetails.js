@@ -2127,14 +2127,14 @@ const MatchDetails = () => {
 
       )}
       {matchDetailsResponse?.scoreIframe || matchIframeUrl ? (
-
-        <iframe
-          style={{ width: "100%", height: "100%", border: "none" }}
-          src={matchDetailsResponse?.scoreIframe ? matchDetailsResponse?.scoreIframe : matchIframeUrl}
-          title="Score-I-frame"
-          className=""
-        ></iframe>
-
+        <div className="" style={{ height: `${activeTabs.tab1 ? "260px" : "80px"}` }}>
+          <iframe
+            style={{ width: "100%", height: "100%", border: "none" }}
+            src={matchDetailsResponse?.scoreIframe ? matchDetailsResponse?.scoreIframe : matchIframeUrl}
+            title="Score-I-frame"
+            className=""
+          ></iframe>
+        </div>
       ) : null}
 
 

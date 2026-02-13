@@ -24,6 +24,11 @@ const Status = ({ visible, handleClose, data }) => {
 
   };
 
+
+
+
+    
+
   if (!visible) {
     return null;
   }

@@ -30,8 +30,12 @@ const UserListModal = ({ handleClose }) => {
       open={true}
       onCancel={handleClose}
       className="gx-px-3"
+      title={<h3 style={{ margin: 0 }} className="gx-fs-lg gx-text-uppercase gx-font-weight-bold gx-text-white">{userInfo.data.userType} Deatils</h3>}
       footer={
-        <Button className="gx-bg-grey gx-text-white gx-border-redius0" onClick={() => handleClose()} > Close </Button >
+        <>
+          <button className="gx-border-0 gx-bg-default gx-text-black gx-rounded-xs gx-mx-2 gx-py-2 gx-px-2" onClick={() => handleClose()} > Cancel </button>
+           <button className="gx-border-0  gx-bg-primary  gx-text-white gx-rounded-xs gx-px-3 gx-py-2" onClick={() => handleClose()} > OK </button>
+        </>
       }
       closeIcon={<CloseOutlined className="gx-text-black" />}
     >
@@ -40,7 +44,7 @@ const UserListModal = ({ handleClose }) => {
           userInfo.data.userPriority > item.priority ? (
             <Col md={12} xs={12} key={index}>
               <Link to={`/components/general/button-${item.userType}/${item.priority}`}>
-                <ChartCard chartProperties={{ title: `${item.userType}`, desc: 'Master', icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
+                <ChartCard chartProperties={{ title: `${item.userType} Master`, icon: <UserOutlined className="gx-mr-0 gx-fs-xl" />, bgColor: 'primary' }} />
               </Link>
             </Col>
           ) : null

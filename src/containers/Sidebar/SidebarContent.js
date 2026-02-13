@@ -276,10 +276,11 @@ const SidebarContent = ({ sidebarCollapsed, setSidebarCollapsed }) => {
               </Menu.Item>
 
               {settings?.oldDataFlag === true && <Menu.Item key="components/rrr">
-                <a href={settings?.oldDataLink} target="_blank">
+                {/* <a href={settings?.oldDataLink} target="_blank"> */}
                   <span> <BarChartOutlined className="gx-mr-0 gx-fs-lg" />
                     <span className="gx-fs-lg gx-text-uppercase gx-text-truncate colorInheret gx-font-weight-semi-bold">Old Data</span>
-                  </span></a>
+                  </span>
+                  {/* </a> */}
               </Menu.Item>}
 
             </MenuItemGroup>

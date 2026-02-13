@@ -16,11 +16,11 @@ const balaji12Settings = {
   noFancyMatchDetails: false,
   internationalCasino: false,
   virtuleGame: false,
-  oldDataFlag: false,
-  isMatchOddsFlag: true,
+  oldDataFlag: true,
+  isMatchOddsFlag: false,
   isBookmakerFlag: true,
   isTossFlag: true,
-  isTiedFlag: true,
+  isTiedFlag: false,
   tvFlag: true,
   oldDataLink: 'https://oldadmin.antpro99.pro/signin'
 }

@@ -74,6 +74,7 @@ PASSWORD : ${currentPassword}
       open={visible}
       title={`RESET PASSWORD FOR ${data?.username}`}
       onCancel={handleClose}
+      
       footer={null}
     >
       <Form

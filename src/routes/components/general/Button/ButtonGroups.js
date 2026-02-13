@@ -17,12 +17,15 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import Exposuremodal from "./Exposuremodal";
 import { UserTypeData, internationalCasino } from "../../../../constants/global";
 import settings from "../../../../domainConfig";
+import StatusModal from "./StatusModal";
 
 
 const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePageChange, getUserListFun, loader, searchText, setSearchText, handleReset, handleSearch }) => {
 
   const { userListCall, loading, checkRedirect, userListChnage } = useSelector((state) => state.UserReducer);
   const { userType } = useParams();
+
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
 
 
   useEffect(() => {
@@ -122,28 +125,29 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
   //   };
   // };
 
-  // const handleStatus = (record) => {
-  //   const newRecord = {
-  //     key: record.key,
-  //     status: record.status,
-  //     username: record.username
-  //   };
-  //   setStatusMenu({
-  //     show: true,
-  //     data: newRecord,
-  //   });
-  // };
+  const handleStatus = (record) => {
+    // const newRecord = {
+    //   key: record.key,
+    //   status: record.status,
+    //   username: record.username
+    // };
+    setStatusMenu({
+      show: true,
+      data: record,
+    });
+  };
   // const { userUpdateData } = useSelector((state) => state.UserReducer);
 
 
 
 
-  const handleStatus = async (data) => {
+  const handleStatus1 = async (data) => {
     let reqData = {
       "userId": data.key,
       "status": data.status === 1 ? 0 : data.status === 0 ? 1 : null,
     };
     await dispatch(userUpdate(reqData));
+
 
   };
 
@@ -467,24 +471,24 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
         <Menu.Item key="2" className="gx-fs-md gx-font-weight-bold gx-text-uppercase gx-py-2 gx-text-light-black" onClick={() => handleWithdrawal(record)}> Withdrawn</Menu.Item>
         <Menu.Item key="9" className="gx-text-uppercase" ><Link to={`/components/feedBack/alert/${record.key}`}> Login Report </Link></Menu.Item>
         <Menu.Item key="8" className="gx-text-uppercase" ><Link to={`/components/statement/account-operations/${record.key}`}>Account Operations</Link></Menu.Item>
+        <Menu.Item key="3" className="gx-text-uppercase" onClick={() => handleStatus1(record)}> {record.status === 0 ? "Active" : "Inactive"}</Menu.Item>
+        <Menu.Item key="2" className="gx-text-uppercase" onClick={() => handleStatus(record)}> Block Actions</Menu.Item>
 
 
 
 
-        <Menu.Item key="3" className="gx-text-uppercase" onClick={() => handleStatus(record)}> {record.status === 0 ? "Active" : "Inactive"}</Menu.Item>
-        {/* {record?.userType === "client" && (<> */}
-        <Menu.Item key="4" className="gx-text-uppercase" onClick={() => handleBetBlock(record)}>{record.betStatus ? "Block Betting" : "UnBlock Betting"}</Menu.Item>
+        {/* <Menu.Item key="4" className="gx-text-uppercase" onClick={() => handleBetBlock(record)}>{record.betStatus ? "Block Betting" : "UnBlock Betting"}</Menu.Item>
         <Menu.Item key="5" className="gx-text-uppercase" onClick={() => handleCasinoBlock(record)}>{record.casinoStatus ? "Block Casino" : "UnBlock Casino"}</Menu.Item>
         {internationalCasino === true && (
-          <Menu.Item key="12" className="gx-text-uppercase" onClick={() => handleINTCasinoBlock(record)}>{record.intCasinoStatus ? "Block IntCasino" : "UnBlock IntCasino"}</Menu.Item>)}
+          <Menu.Item key="12" className="gx-text-uppercase" onClick={() => handleINTCasinoBlock(record)}>{record.intCasinoStatus ? "Block IntCasino" : "UnBlock IntCasino"}</Menu.Item>)} */}
         {/* </>)} */}
 
         <Menu.Item key="6" className="gx-text-uppercase"> <Link to={`/components/edit/edit-account/${record.key}`}>Edit</Link></Menu.Item>
         <Menu.Item key="7" className="gx-text-uppercase"><Link to={`/components/statement/transaction/${record.key}`}> Statement </Link></Menu.Item>
-        {record?.userType !== "client" && (<>
+        {/* {record?.userType !== "client" && (<>
           <Menu.Item key="10" className="gx-text-uppercase"><Link to={`/components/general/button-${downlineUserType}/${record.key}/${Number(record.userPriority) - 1}`}>Downline</Link></Menu.Item>
-          {/* // <Link to={`/components/general/button-${downlineUserType}/${record.key}/${record.userPriority}`}></Link> */}
-        </>)}
+         
+        </>)} */}
         {/* <Menu.Item key="11" onClick={() => handleSendLoginDetails(record)}>Send Login Details</Menu.Item> */}
         <Menu.Item onClick={() => handleResetPassword(record)} key="11" className="gx-text-uppercase"> Reset Password</Menu.Item>
       </Menu>
@@ -512,10 +516,10 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
       render: (record) => (
         <Dropdown overlay={menu(record)} trigger={["click"]}>
           <span
-            className="gx-bg-primary gx-px-2 gx-py-1"
+            className="gx-bg-primary gx-px-2 gx-py-1 gx-rounded-xs"
             onClick={(e) => e.preventDefault()}
           >
-            <DownOutlined className="gx-fs-lg gx-font-weight-bold gx-text-white" />
+            <DownOutlined className="gx-fs-lg gx-pl-2  gx-font-weight-bold gx-text-white" />
           </span>
         </Dropdown>
       ),
@@ -659,25 +663,6 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
     },
   ];
 
-
-  // // show the data conditinll near table colume
-  // if (userType === "client") {
-  //   const pwdColumnIndex = columns.findIndex(col => col.title === "PASSWORD");
-  //   if (pwdColumnIndex !== -1) {
-  //     columns.splice(pwdColumnIndex + 1, 0, {
-  //       title: "Exposure",
-  //       dataIndex: "exposure",
-  //       render: (value, record) => {
-  //         return Number(value) !== 0 ? (
-  //           <span onClick={() => handleExposure(record.key)} style={{ color: '#038FDE', fontWeight: 'bold' }} className="gx-font-bold">{Math.abs(value).toFixed(2)}</span>
-  //         ) : (
-  //           <span>{value}</span>
-  //         );
-  //       },
-  //     });
-  //   }
-  // }
-
   const styles = {
     display: 'flex',
     justifyContent: 'center',
@@ -721,13 +706,14 @@ const ButtonGroups = ({ userLists, currentPage, totalItems, pageSize, handlePage
       <Table className="gx-table-responsive gx-font-weight-bold gx-fs-sm gx-text-uppercase" columns={columns} dataSource={userLists} bordered pagination={false} size="small" rowClassName={(row, index) => index % 2 !== 0 ? 'gx-bg-light-grey' : ''} />
       <TablePagination currentPage={currentPage} totalItems={totalItems} pageSize={pageSize} onPageChange={handlePageChange} />
       <Info data={infoMenu.data} visible={infoMenu.visible} handleClose={() => handleClose()} partnerInfoModal={partnerInfoModal?.data} />
-      <Status getUserListFun={getUserListFun} data={statusMenu.data} setStatusMenu={setStatusMenu} visible={statusMenu.show} handleClose={() => handleClose()} />
+      {/* <Status getUserListFun={getUserListFun} data={statusMenu.data} setStatusMenu={setStatusMenu} visible={statusMenu.show} handleClose={() => handleClose()} /> */}
       <ResetPassword data={resetPasswordMenu.data} visible={resetPasswordMenu.show} handleClose={() => handleClose()} />
       <LoginDtails data={sendLoginDetails.data} visible={sendLoginDetails.show} handleClose={() => handleClose()} />
       <Deposit searchText={searchText} loader={loader} data={depositMenu.data} visible={depositMenu.show} handleClose={() => handleClose()} getUserListFun={getUserListFun} />
       <Withdrawal searchText={searchText} data={withdrawalMenu.data} visible={withdrawalMenu.show} handleClose={() => handleClose()} getUserListFun={getUserListFun} />
       <NotificationContainer style={{ marginRight: 400 }} />
       <Exposuremodal data={exposureModal.data} visible={exposureModal.show} handleClose={() => handleClose()} />
+      <StatusModal data={statusMenu.data} visible={statusMenu.show} handleClose={() => handleClose()} getUserListFun={getUserListFun} />
 
     </>
   );

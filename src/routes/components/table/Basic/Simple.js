@@ -32,7 +32,10 @@ columns = [
     title: 'Open Date',
     dataIndex: 'opendate',
     key: 'opendate',
-    render: (value, row) => <span className="">{row.opendate}</span>
+    render: (value, row) => {
+      const formattedDate = moment(row.opendate, "DD-MM-YYYY hh:mm:ss").format('DD-MM-YYYY hh:mm A'); // Format as required
+      return <span>{formattedDate}</span>;
+    }
   },
   {
     title: 'Competition',
@@ -65,7 +68,7 @@ columns = [
     dataIndex: '',
     key: 'x',
     render: (text, record) => (
-      <>
+      <div className="gx-bg-flex gx-align-items-center">
         {record?.status === 'INPLAY' ?
           <a
             href={`/components/matchviewdetail/match-view-details/${record.marketId}/${record.eventId}`}
@@ -88,10 +91,10 @@ columns = [
             className="link-button gx-font-weight-semi-bold gx-text-blue"
             onClick={() => alert('MATCH WILL BE STARTED SOON')}
           >
-            Details
+            View
           </span>
         }
-      </>
+      </div>
     ),
   }
 ];
@@ -186,22 +189,7 @@ const Simple = () => {
       setMatchData(data);
     }
   }, [matchList]);
-  // useEffect(() => {
-  //   if (matchList) {
-  //     const data = matchList?.map((item, index) => ({
-  //       key: item._id,
-  //       sn: index + 1,
-  //       name: item.matchName,
-  //       opendate: item.matchDate,
-  //       competition: item.seriesName,
-  //       inplay: item.status,
-  //       matchName: item.matchName,
-  //       marketId: item.marketId,
-  //       eventId: item.eventId
-  //     }));
-  //     setMatchData(data)
-  //   }
-  // }, [matchList])
+
 
   const contentStyle = {
     padding: 50,
@@ -213,7 +201,7 @@ const Simple = () => {
   return (
     <>
       <Card title="Active Matches">
-        <Table className="gx-table-responsive gx-text-uppercase gx-text-nowrap"
+        <Table className="gx-table-responsive gx-text-uppercase gx-text-nowrap ledger-table"
           columns={columns}
           dataSource={matchData}
           bordered

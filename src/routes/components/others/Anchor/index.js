@@ -5,11 +5,8 @@ import Static from "./Static";
 const Anchor = () => {
   return (
     <>
-      <Row className="gx-px-2 gx-bg-flex gx-bg-white">
         <Basic />
         {/* <Static /> */}
-
-      </Row>
 
     </>
   );
