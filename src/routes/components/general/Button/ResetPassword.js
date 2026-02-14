@@ -67,6 +67,7 @@ NEW PASSWORD
 LINK : ${link}
 USERNAME : ${data?.username}
 PASSWORD : ${currentPassword}
+${data?.userId?.userType !== "client" && `OTP : ${data?.userId?.otp}`}
 `;
 
   return (
@@ -167,6 +168,9 @@ PASSWORD : ${currentPassword}
           <div className="">USERNAME : {data?.username}</div>
           <br />
           <div className="">PASSWORD : {currentPassword}</div>
+          <br />
+      
+        {data?.userId?.userType !== "client" && <div className="">OTP : {data?.userId?.otp}</div>}
         </div>
         <div className="gx-mb-5"></div>
         <div className='gx-bg-flex gx-justify-content-end'
