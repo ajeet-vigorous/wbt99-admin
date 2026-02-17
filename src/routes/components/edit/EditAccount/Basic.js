@@ -401,44 +401,43 @@ const Basic = () => {
 
               {/* //domain setting  */}
 
-              {/* {userDetails.userType === "client" ? null
-                :
-                <>
-                  <Row className="gx-bg-flex">
+              {userDetails.userType === "client" ? null
+              :
+              <>
+                <Row className="gx-bg-flex">
 
-                    {userDetails.userType !== "subowner" ? null :
-                      <Col xs={12}>
-                        <Form.Item
-                        wrapperCol={{ span: 23 }}
-                          name="selectDomain"
-                          label="Select Domain"
-                          labelAlign="left"
-                          rules={[{ required: true, message: "Please select Domains!" }]}
+                  {userDetails.userType !== "subowner" ? null :
+                    <Col md={12} xs={24}>
+                                            <div className="gx-py-3">{`Domain`}<span className="gx-text-red">*</span></div>
+                      <Form.Item
+                        name="selectDomain"
+                        labelAlign="left"
+                        rules={[{ required: true, message: "Please select Domains!" }]}
+                      >
+
+                        <Select
+                          // mode="multiple"
+                          // placeholder="Select"
+                          mode="tags" // Allows both selection and text entry
+                          placeholder="Select or Enter"
+                          className="gx-border-redius0"
+                        // getPopupContainer={trigger => trigger.parentElement}
                         >
-
-                          <Select
-                            // mode="multiple"
-                            // placeholder="Select"
-                            mode="tags" // Allows both selection and text entry
-                            placeholder="Select or Enter"
-                            className="gx-border-redius"
-                          // getPopupContainer={trigger => trigger.parentElement}
-                          >
-                            {domainListData?.map((item, index) => (
-                              <Option key={index} value={item?.domainUrl} className="gx-border-redius">
+                           {domainListData?.map((item, index) => (
+                              <Option key={index} value={item?.domainUrl} className="gx-border-redius0">
                                 {item?.domainUrl}
                               </Option>
                             ))}
-                          </Select>
-                        </Form.Item>
-                      </Col>}
+                        </Select>
+                      </Form.Item>
+                    </Col>}
 
 
-                  </Row>
+                </Row>
 
 
-                </>
-              } */}
+              </>
+            }
 
 
               {/* {userDetails?.userType === "client" ? null :
