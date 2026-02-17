@@ -90,7 +90,7 @@ const SignIn = () => {
       }
 
     } catch (error) {
-      message.error("Something went wrong");
+      message.error(error?.data?.message || "Something went wrong");
       console.error(error, "eeeeeeeeee");
     }
   };

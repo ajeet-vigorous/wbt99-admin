@@ -67,7 +67,7 @@ NEW PASSWORD
 LINK : ${link}
 USERNAME : ${data?.username}
 PASSWORD : ${currentPassword}
-${data?.userId?.userType !== "client" && `OTP : ${data?.userId?.otp}`}
+${data?.userId?.userType !== "client" ? `OTP : ${data?.userId?.otp}` : ""}
 `;
 
   return (
