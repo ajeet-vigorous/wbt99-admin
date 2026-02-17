@@ -1,4 +1,4 @@
-const balaji12Settings = {
+const Rolex99Settings = {
   title: "Welcome To Rolex99",
   logo: "/assets/images/rolex991.png",
   favicon: "/assets/images/rolex991.png",
@@ -25,18 +25,55 @@ const balaji12Settings = {
   oldDataLink: 'https://oldadmin.antpro99.pro/signin'
 }
 
+const Wicket7Settings = {
+  title: "Welcome To 7Wickets",
+  logo: "/assets/images/7wickets.png",
+  favicon: "/assets/images/7wickets.png",
+  SOCKET_URL: "https://api.7wickets.pro/",
+  apiurl: "https://api.7wickets.pro/v1/",
+  domainName: "7wickets",
+  sportFlag: false,
+  websiteName: "7wickets.Pro",
+  matkaVisible: true,
+  websiteName2: "",
+  socketDomain: "7wickets.pro",
+  "--nav-dark-bg": "#808000",
+  "--nav-dark-text-color": "#fff",
+  "--white-color": "#fff",
+  noFancyMatchDetails: false,
+  internationalCasino: false,
+  virtuleGame: false,
+  oldDataFlag: true,
+  isMatchOddsFlag: false,
+  isBookmakerFlag: true,
+  isTossFlag: true,
+  isTiedFlag: false,
+  tvFlag: true,
+  oldDataLink: 'https://oldadmin.antpro99.pro/signin'
+}
+
 const domainSettings = {
  
-  "admin.rolex99.co": balaji12Settings,
-  "sowner.rolex99.co": balaji12Settings,
-  "sadmin.rolex99.co": balaji12Settings,
-  "admin.rolex99.co": balaji12Settings,
-  "madmin.rolex99.co": balaji12Settings,
-  "master.rolex99.co": balaji12Settings,
-  "super.rolex99.co": balaji12Settings,
-  "agent.rolex99.co": balaji12Settings,
+  "admin.rolex99.co": Rolex99Settings,
+  "sowner.rolex99.co": Rolex99Settings,
+  "sadmin.rolex99.co": Rolex99Settings,
+  "admin.rolex99.co": Rolex99Settings,
+  "madmin.rolex99.co": Rolex99Settings,
+  "master.rolex99.co": Rolex99Settings,
+  "super.rolex99.co": Rolex99Settings,
+  "agent.rolex99.co": Rolex99Settings,
+
+
+    "admin.7wickets.pro": Wicket7Settings,
+  "sowner.7wickets.pro": Wicket7Settings,
+  "sadmin.7wickets.pro": Wicket7Settings,
+  "admin.7wickets.pro": Wicket7Settings,
+  "madmin.7wickets.pro": Wicket7Settings,
+  "master.7wickets.pro": Wicket7Settings,
+  "super.7wickets.pro": Wicket7Settings,
+  "agent.7wickets.pro": Wicket7Settings,
   
-  "localhost:3000": balaji12Settings,
+  "localhost:3000": Wicket7Settings,
 
 };
 
