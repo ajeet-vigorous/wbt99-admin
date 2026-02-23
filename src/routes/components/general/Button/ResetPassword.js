@@ -60,6 +60,7 @@ const ResetPassword = ({ visible, handleClose, data }) => {
     setButtonText('Copied');
     message.success('Password reset & copied!');
     handleClose();
+    
   };
 
   const copyText = `

@@ -100,7 +100,7 @@ const Basic = () => {
         isDeclared: item.isDeclare ? "Yes" : "No",
         gameName: item.gameName,
         wonTeamName: item.wonTeamName,
-        totalProfit: item.totalProfit ? item.totalProfit : "0.00",
+        totalProfit: item.cricTotalProfitLoss ? item.cricTotalProfitLoss : "0.00",
         declaredDate: item?.updatedAt
       }))
       setUserLists(filteredData);
@@ -268,7 +268,7 @@ const Basic = () => {
       key: "x",
       // render: (value) => Number.parseFloat(Math.abs(value)).toFixed(2),
       render: (value) => (
-        <span className={`${-1 * value >= 0 ? "gx-text-green-0" : "gx-text-red"}`}>
+        <span className={`${value >= 0 ? "gx-text-green-0" : "gx-text-red"}`}>
           {Number.parseFloat(value ? Math.abs(value) : 0).toFixed(2)}
         </span>
       ),

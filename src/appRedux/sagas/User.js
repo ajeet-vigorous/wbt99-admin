@@ -294,6 +294,7 @@ function* userUpadeSaga({ payload }) {
       // });
       yield delay(1000)
       yield put(userUpdateSuccess(response.data));
+      window.location.reload();
     } else {
       msg = response.data.message;
       message.error(msg)
