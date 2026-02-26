@@ -167,7 +167,8 @@ const Simple = () => {
       if (settings.domainName === "PLR11") {
         sortedMatchList = matchListData.filter(item => item?.sportId === 4).slice().sort((a, b) => moment(a.matchDate, "DD-MM-YYYY HH:mm:ss").isBefore(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss")) ? -1 : 1);
       } else {
-        sortedMatchList = matchListData.slice().sort((a, b) => moment(a.matchDate, "DD-MM-YYYY HH:mm:ss").isBefore(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss")) ? -1 : 1);
+        sortedMatchList = matchListData.filter(item => item?.sportId === 4).slice().sort((a, b) => moment(a.matchDate, "DD-MM-YYYY HH:mm:ss").isBefore(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss")) ? -1 : 1);
+        // sortedMatchList = matchListData.slice().sort((a, b) => moment(a.matchDate, "DD-MM-YYYY HH:mm:ss").isBefore(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss")) ? -1 : 1);
       }
 
       const dateSortedList = sortMatchData(sortedMatchList);

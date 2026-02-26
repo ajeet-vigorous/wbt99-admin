@@ -85,8 +85,8 @@ const Basic = () => {
       let sortedMatchList;
 
       sortedMatchList = Object.values(sportList?.matchData).sort((a, b) =>
-        moment(a.matchDate, "DD-MM-YYYY HH:mm:ss")
-          .diff(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss"))
+        moment(b.matchDate, "DD-MM-YYYY HH:mm:ss")
+          .diff(moment(a.matchDate, "DD-MM-YYYY HH:mm:ss"))
       );
       const dateSortedList = sortMatchData(sortedMatchList);
 

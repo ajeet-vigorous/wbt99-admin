@@ -70,7 +70,7 @@ const Simple = () => {
   useEffect(() => {
     let adminMatchList = JSON.parse(localStorage.getItem('matchList')) || matchList;
     if (adminMatchList) {
-      const sortedMatchList = adminMatchList.slice().sort((a, b) =>
+      const sortedMatchList = adminMatchList?.filter(item => item?.sportId === 4)?.slice().sort((a, b) =>
         moment(a.matchDate, "DD-MM-YYYY HH:mm:ss").diff(moment(b.matchDate, "DD-MM-YYYY HH:mm:ss"))
       );
       const data = sortedMatchList.map((item, index) => ({

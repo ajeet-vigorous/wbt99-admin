@@ -1880,6 +1880,8 @@ const MatchDetails = () => {
       run: key,
       pnl: value,
     }));
+    console.log(sessionPositionData, "runpldata");
+    
   const runplcolumn = [
     {
       title: "Run",
@@ -1890,6 +1892,11 @@ const MatchDetails = () => {
       title: "PnL",
       dataIndex: "pnl",
       key: "pnl",
+      render: (value) => (
+        <span style={{ color: value >= 0 ? "green" : "red" }}>
+          {value}
+        </span>
+      ),
     },
   ];
   const handleFancyBetList = async (session_id) => {
@@ -1920,6 +1927,12 @@ const MatchDetails = () => {
       title: "P&L",
       dataIndex: "pl",
       key: "pl",
+      render: (text, record) => (
+        <div className={`${Number(text) > 0 ? "gx-text-green-0" : Number(text) < 0 ? "gx-text-red" : "gx-text-black"}`}>
+          {text}
+        </div>
+
+      ),
     },
     {
       title: "Won By",
@@ -1959,6 +1972,8 @@ const MatchDetails = () => {
 
 
   const generateCompleteBetData = () => {
+
+    
     const data = [];
     if (!completeFancyList) {
       return;
