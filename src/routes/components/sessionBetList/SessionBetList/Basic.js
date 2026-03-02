@@ -30,7 +30,7 @@ const Basic = () => {
 
   const { marketId } = useParams();
   const { sportsBetsList, clientListByMarketId, userSearchList } = useSelector(state => state.UserReducer);
-
+  const users = JSON.parse(localStorage.getItem('user_id'));
   const pageSize = 50;
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -125,10 +125,12 @@ const Basic = () => {
         // createdAt: item.createdAt,
         createdAt: moment(item?.createdAt).format('DD-MM-YYYY hh:mm:ss'),
         decisionRun: item?.isDeclare === 0 ? "Pending" : item?.decisionRun,
+        status: item?.isDeclare === 1 ? "Declare" : "UnDeclare",
         deletedRemark: item.deletedRemark,
         profit: item.profit,
         loss: item.loss,
-        clientId: item.clientId
+        clientId: item.clientId,
+        ip: item?.ip
       }));
       setUserLists(filteredData);
     }
@@ -211,11 +213,18 @@ const Basic = () => {
       ),
     },
     {
-      title: 'Bet price',
+      title: 'Run',
       dataIndex: 'run',
       key: 'run',
 
       render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text)}</div>,
+    },
+    {
+      title: 'Odds',
+      dataIndex: 'odds',
+      key: 'odds',
+
+      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text * 100)}</div>,
     },
 
     {
@@ -239,8 +248,8 @@ const Basic = () => {
     // },
     {
       title: 'Status',
-      dataIndex: 'Status',
-      key: 'Status',
+      dataIndex: 'status',
+      key: 'status',
       // render: (text) => new Date(text).toLocaleDateString(),
     },
     {
@@ -256,7 +265,17 @@ const Basic = () => {
       key: 'date',
       // render: (text) => new Date(text).toLocaleDateString(),
     },
+    ...(users?.data?.userPriority >= 7
+      ? [
+        {
+          title: 'ip',
+          dataIndex: 'ip',
+          key: 'ip',
+        },
+      ]
+      : []),
   ];
+
 
 
   useEffect(() => {

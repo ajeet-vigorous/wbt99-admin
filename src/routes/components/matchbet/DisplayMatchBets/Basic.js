@@ -21,6 +21,7 @@ const Basic = () => {
   const { marketId } = useParams();
   const dispatch = useDispatch();
   const { sportsBetsList, clientListByMarketId, userSearchList } = useSelector(state => state.UserReducer);
+  const users = JSON.parse(localStorage.getItem('user_id'));
   useEffect(() => {
     getSportsBetsListFun();
     oddsPosition();
@@ -63,7 +64,9 @@ const Basic = () => {
           creatorName: item.userInfo.creatorName,
           createdAt: item.createdAt,
           oddsType: item.oddsType,
-          wonTeamName: item.wonTeamName ? item.wonTeamName : 'N/A'
+          wonTeamName: item.wonTeamName ? item.wonTeamName : 'N/A',
+          status: item?.isDeclare === 1 ? "Declare" : "UnDeclare",
+          ip: item?.ip
         };
       });
       setUserLists(filteredData);
@@ -182,7 +185,7 @@ const Basic = () => {
     },
 
     {
-      title: "Bet price",
+      title: "Odds",
       dataIndex: "odds",
       render: (value) => (
         Number.parseFloat(Math.abs(value) * 100).toFixed(2)
@@ -228,6 +231,15 @@ const Basic = () => {
       render: (createdAt) => moment(createdAt).utcOffset("+05:30").format("DD-MM-YYYY hh:mm:ss "),
     },
 
+    ...(users?.data?.userPriority >= 7
+      ? [
+        {
+          title: 'ip',
+          dataIndex: 'ip',
+          key: 'ip',
+        },
+      ]
+      : []),
 
   ];
 
