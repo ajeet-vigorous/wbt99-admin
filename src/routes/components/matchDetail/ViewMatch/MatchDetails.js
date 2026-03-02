@@ -960,7 +960,7 @@ const MatchDetails = () => {
         <div className="">
           <div className=" gx-font-weight-semi-bold gx-text-uppercase">{text}</div>
           <div className={`${-1 * record?.tossposition > 0 ? 'gx-text-primary' : -1 * record?.tossposition < 0 ? 'gx-text-red' : record?.tossposition == 0 ? "gx-text-black" : 'gx-text-primary'} `} >
-            {record?.tossposition ? (-1 * record?.tossposition.toFixed(2)) : 0}
+            {record?.tossposition ? (-1 * Number.parseFloat(record?.tossposition).toFixed(2)) : 0}
           </div>
         </div>
       ),
@@ -1880,7 +1880,7 @@ const MatchDetails = () => {
       run: key,
       pnl: value,
     }));
-    console.log(sessionPositionData, "runpldata");
+
     
   const runplcolumn = [
     {
@@ -2171,7 +2171,7 @@ const MatchDetails = () => {
               bordered
               style={{ marginTop: "16px" }}
             />}
-          {matchDetailsResponse?.isToss && socketDetails?.find(el => el.marketType === "To Win the Toss") && tossData?.length > 0 &&
+          {matchDetailsResponse?.isToss && tossData?.length > 0 &&
             <Table
               className="gx-w-100 gx-mx-0 gx-my-0"
               size="small"

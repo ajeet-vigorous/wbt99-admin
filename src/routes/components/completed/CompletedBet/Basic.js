@@ -129,8 +129,9 @@ const Basic = () => {
     if (sportsBetsList && sportsBetsList.data && sportsBetsList?.data?.fancyBetData) {
       const filteredData = sportsBetsList?.data?.fancyBetData?.map(
         (item, index) => ({
+
           key: `${index}`,
-          odds: item.odds,
+          odds: item?.odds,
           amount: item.amount,
           type: item.type === "Y" ? "Yes" : item.type === "N" ? "NO" : "",
           run: item.run,
@@ -141,7 +142,12 @@ const Basic = () => {
           createdAt: item.createdAt,
           decisionRun: item?.isDeclare === 0 ? "Decision Pending" : item?.decisionRun,
           deletedRemark: item.deletedRemark,
-          profitLoss: item.profitLoss
+          profitLoss: item.profitLoss,
+          ip: item?.ip,
+          status: item?.isDeclare === 1 ? "Declare" : "UnDeclare",
+
+
+
         })
       );
       setUserLists(filteredData);
@@ -223,11 +229,17 @@ const Basic = () => {
     },
 
     {
-      title: "Price",
+      title: "Run",
       dataIndex: "run",
       render: renderContent,
     },
 
+    {
+      title: 'Odds',
+      dataIndex: 'odds',
+      key: 'odds',
+      render: (text) => <div className="gx-text-nowrap">{Number.parseFloat(text * 100)}</div>,
+    },
 
 
 
