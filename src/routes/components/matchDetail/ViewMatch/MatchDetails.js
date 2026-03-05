@@ -12,6 +12,7 @@ import {
   getOddsPosition,
   getSessionPositionBySelectionId,
   getSportsBetsList,
+  plusMinusByMarketIdByUserWiseList,
   userPositionByMarketId,
 } from "../../../../appRedux/actions/User";
 import { Link, useHistory } from "react-router-dom";
@@ -61,6 +62,9 @@ const MatchDetails = () => {
   const [activesubMatchOddTab, setActivesubMatchOddTab] = useState(2);
   const [activesubTiedTab, setActivesubTiedTab] = useState(2);
   const [activesubTossTab, setActivesubTossTab] = useState(2);
+  const [plusMinusData, setPlusMinusData] = useState([]);
+  const [finalDataArray, setFinalDataArray] = useState([]);
+  const [totalData, setTotalData] = useState({});
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -73,7 +77,8 @@ const MatchDetails = () => {
     sessionPosition,
     oddsPossition,
     completeDataLoading,
-    userpositionbymarketId
+    userpositionbymarketId,
+    plusMinusByMarketIdByUserWiseListdata
   } = useSelector((state) => state.UserReducer);
 
   const intervalIdRef = useRef(null);
@@ -1700,7 +1705,7 @@ const MatchDetails = () => {
     handleFancyBetList(session_id);
   };
 
-  //  //////////////////////--------------------------match bets data----------------------/////////////////////////////////
+
   const mybets = [
     {
       title: "Rate",
@@ -1755,7 +1760,6 @@ const MatchDetails = () => {
   ];
 
   if (activeFancy) {
-    // Insert "Odds Type" before the "Type" column
     mybets.unshift({
       title: "Runs",
       dataIndex: "Runs",
@@ -1777,7 +1781,6 @@ const MatchDetails = () => {
 
   const generateOddsData = () => {
     const data = [];
-
     sportsbetListFinal.forEach((element, index) => {
       let profit = `${element.profit
         ? Number.parseFloat(Math.abs(element.profit)).toFixed(2)
@@ -1837,11 +1840,9 @@ const MatchDetails = () => {
   };
 
   const mybetsData = generateOddsData();
-
   const fetchBetLists = async () => {
     try {
       const BetListData = {
-        // fancyBet: true,
         isDeclare: false,
         oddsBet: true,
         marketId: marketId,
@@ -1849,14 +1850,6 @@ const MatchDetails = () => {
         size: pageSize,
       };
       dispatch(getSportsBetsList(BetListData));
-      // const userBetHistory = await httpPost("sports/betsList", BetListData);
-      // if (userBetHistory && userBetHistory.data) {
-      //   const { oddsBetData, fancyBetData, totalOddsCount } = userBetHistory.data;
-
-      //   // setFancyBetDatafinal(fancyBetData)
-      //   setOddsBetDatafinal(oddsBetData);
-      //   setOddsBetDataTotal(totalOddsCount);
-      // }
     } catch (error) {
       console.error("Error fetching bet lists:", error);
       throw error;
@@ -1871,17 +1864,16 @@ const MatchDetails = () => {
     setFancyBetDatafinalFiltered(filter);
   }, [activeFancy, fancyBetDatafinal, activeFancyRow]);
 
-  ////////////////////////////////////----------------------Runs And PL ----------------------////////////////////
   const [sessionPositionData, setSessionPositionData] = useState(null);
-  const runpldata =
-    sessionPositionData &&
+
+  const runpldata = sessionPositionData &&
     Object.entries(sessionPositionData)?.map(([key, value]) => ({
       key,
       run: key,
       pnl: value,
     }));
 
-    
+
   const runplcolumn = [
     {
       title: "Run",
@@ -1973,7 +1965,7 @@ const MatchDetails = () => {
 
   const generateCompleteBetData = () => {
 
-    
+
     const data = [];
     if (!completeFancyList) {
       return;
@@ -2076,6 +2068,229 @@ const MatchDetails = () => {
     }
     return setMyBetsDataFilter(filteredData)
   }
+
+
+
+
+  const userData = JSON.parse(localStorage.getItem("user_id"));
+
+  useEffect(() => {
+    getPlusMinusDataApi();
+    const interval = setInterval(() => {
+      getPlusMinusDataApi();
+    }, 60000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+
+  const getPlusMinusDataApi = async () => {
+    const userId = userData?.data?.userId;
+    const userType = userData?.data?.userType;
+
+    try {
+      const reqData = {
+        marketId: marketId,
+        userId: userId,
+        userType: userType,
+        isMatka: true,
+        fromDate: "",
+        toDate: ""
+      };
+
+      dispatch(plusMinusByMarketIdByUserWiseList(reqData));
+
+    } catch (error) {
+      console.error("Error fetching bet list:", error?.message || error);
+    }
+  };
+  useEffect(() => {
+    const plusMinusData = plusMinusByMarketIdByUserWiseListdata || [];
+
+    let totalMatchAmt = 0;
+    let totalSesionAmt = 0;
+    let totalMatchSessionAmt = 0;
+    let totalMatchComm = 0;
+    let totalSessionComm = 0;
+    let totalMatchSessionComm = 0;
+    let totalShareAmt = 0;
+    let totalLedgerAmt = 0;
+    let totalAmount = 0;
+    let finalDataArray = [];
+
+    if (plusMinusData.length > 0) {
+      plusMinusData.forEach((data) => {
+        let clientMatchAmt = -1 * data.clientOddsAmount;
+        let clientSessionAmt = -1 * data.clientSessionAmount;
+        let userMatchComm = -1 * data.userOddsComm;
+        let userSessionComm = -1 * data.userSessionComm;
+
+        let clientMatchSessionAmt = clientMatchAmt + clientSessionAmt;
+        let userMatchSessionComm = userMatchComm + userSessionComm;
+        let userTotalAmountAndComm = clientMatchSessionAmt + userMatchSessionComm;
+        let userShareAmt = data.userNetProfitLoss;
+        let userLedgerAmt = -1 * data.userLedgerAmt;
+
+        totalMatchAmt += clientMatchAmt;
+        totalSesionAmt += clientSessionAmt;
+        totalMatchSessionAmt += clientMatchSessionAmt;
+        totalMatchComm += userMatchComm;
+        totalSessionComm += userSessionComm;
+        totalMatchSessionComm += userMatchSessionComm;
+        totalShareAmt += userShareAmt;
+        totalLedgerAmt += userLedgerAmt;
+        totalAmount += userTotalAmountAndComm;
+
+        finalDataArray.push({
+          clientMatchAmt,
+          clientSessionAmt,
+          userMatchComm,
+          userSessionComm,
+          clientMatchSessionAmt,
+          userMatchSessionComm,
+          userTotalAmountAndComm,
+          userShareAmt,
+          userLedgerAmt,
+          name: data.userData?.name,
+          username: data.userData?.username,
+          userType: data.userData?.userType,
+          userId: data.userData?.id,
+          creatorId: data.userData?.creatorId,
+        });
+      });
+
+      // Sort alphabetically by name
+      finalDataArray.sort((a, b) => {
+        if (!a.name) return 1;
+        if (!b.name) return -1;
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    setPlusMinusData(plusMinusData);
+    setFinalDataArray(finalDataArray);
+    setTotalData({
+      totalMatchAmt,
+      totalSesionAmt,
+      totalMatchSessionAmt,
+      totalMatchComm,
+      totalSessionComm,
+      totalMatchSessionComm,
+      totalShareAmt,
+      totalLedgerAmt,
+      totalAmount,
+    });
+  }, [plusMinusByMarketIdByUserWiseListdata]);
+
+  const columnsPlusMinus = [
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">Total</span>,
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => `${record.name} (${record.username})`,
+    },
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">Session Amt.</span>,
+      dataIndex: "clientSessionAmt",
+      key: "clientSessionAmt",
+      render: (value) => (
+        <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+          {Number.parseFloat(value).toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">Total</span>,
+      dataIndex: "clientMatchSessionAmt",
+      key: "clientMatchSessionAmt",
+      render: (value) => (
+        <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+          {Number.parseFloat(value).toFixed(2)}
+        </span>
+      ),
+    },
+    // {
+    //   title: "Match(+/-)",
+    //   dataIndex: "clientMatchAmt",
+    //   key: "clientMatchAmt",
+    //   render: (value) => (
+    //     <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+    //       {Number.parseFloat(value).toFixed(2)}
+    //     </span>
+    //   ),
+    // },
+
+
+    // {
+    //   title: "M.Comm",
+    //   dataIndex: "userMatchComm",
+    //   key: "userMatchComm",
+    //   render: (value) => (
+    //     <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+    //       {Number.parseFloat(value).toFixed(2)}
+    //     </span>
+    //   ),
+    // },
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">Session Comm</span>,
+      dataIndex: "userSessionComm",
+      key: "userSessionComm",
+      render: (value) => (
+        <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+          {Number.parseFloat(value).toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">total Comm</span>,
+      dataIndex: "userMatchSessionComm",
+      key: "userMatchSessionComm",
+      render: (value) => (
+        <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+          {Number.parseFloat(value).toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">total amount</span>,
+      dataIndex: "userTotalAmountAndComm",
+      key: "userTotalAmountAndComm",
+      render: (value) => (
+        <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+          {Number.parseFloat(value).toFixed(2)}
+        </span>
+      ),
+    },
+  ];
+
+  if (userData?.data?.userType !== "agent") {
+    columnsPlusMinus.push(
+      {
+        title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">My share</span>,
+        dataIndex: "userLedgerAmt",
+        key: "userLedgerAmt",
+        render: (value) => (
+          <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+            {Number.parseFloat(value).toFixed(2)}
+          </span>
+        ),
+      },
+      {
+        title: <span className="gx-fs-md gx-font-weight-semi-bold gx-text-uppercase">net pl</span>,
+        dataIndex: "userShareAmt",
+        key: "userShareAmt",
+        render: (value) => (
+          <span style={{ color: value > 0 ? "#3AAA4A" : "#E05755" }}>
+            {Number.parseFloat(value).toFixed(2)}
+          </span>
+        ),
+      }
+    );
+  }
+
+  const dataSource2 = finalDataArray?.map((item, index) => ({ ...item, key: index })) || [];
+
 
   return (
     <div className="gx-w-100 gx-px-1">
@@ -2206,6 +2421,9 @@ const MatchDetails = () => {
             bordered
             style={{ marginTop: "16px" }}
           />
+
+
+
           {/* <Table
             className="gx-w-100 gx-mx-0 gx-my-0 gx-table-responsive"
             size="small"
@@ -2255,6 +2473,99 @@ const MatchDetails = () => {
           }
         </Col>
       </Row>
+
+      <Row className="gx-px-1 gx-py-0">
+        <div className="gx-bg-grey gx-w-100 gx-bg-flex gx-align-items-center gx-px-2  gx-fs-xl gx-text-uppercase  gx-text-white">
+          <div className="gx-fs-lg gx-font-weight-semi-bold gx-py-3">Clients Session PL</div>
+        </div>
+
+        <Table
+          columns={columnsPlusMinus}
+          dataSource={dataSource2}
+          size="small"
+          pagination={false}
+          className="gx-w-100 gx-text-white gx-text-nowrap gx-text-uppercase"
+          bordered
+          scroll={{ x: true }}
+          rowClassName={(record, index) =>
+            index % 2 === 0 ? "evenRow" : "oddRow"
+          }
+          summary={() => (
+            <Table.Summary fixed>
+              <Table.Summary.Row>
+                {/* First column: TOTAL label */}
+                <Table.Summary.Cell index={0}>
+                  <strong>TOTAL</strong>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={1}>
+                  <span style={{ color: totalData.totalSesionAmt > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalSesionAmt || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+                {/* Numeric columns */}
+
+                <Table.Summary.Cell index={2}>
+                  <span style={{ color: totalData.totalMatchSessionAmt > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalMatchSessionAmt || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+                {/* <Table.Summary.Cell index={3}>
+                  <span style={{ color: totalData.totalMatchAmt > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalMatchAmt || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+
+
+
+
+                <Table.Summary.Cell index={4}>
+                  <span style={{ color: totalData.totalMatchComm > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalMatchComm || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell> */}
+
+                <Table.Summary.Cell index={5}>
+                  <span style={{ color: totalData.totalSessionComm > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalSessionComm || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+
+                <Table.Summary.Cell index={6}>
+                  <span style={{ color: totalData.totalMatchSessionComm > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalMatchSessionComm || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+
+                <Table.Summary.Cell index={7}>
+                  <span style={{ color: totalData.totalAmount > 0 ? "#3AAA4A" : "#E05755" }}>
+                    {Number.parseFloat(totalData.totalAmount || 0).toFixed(2)}
+                  </span>
+                </Table.Summary.Cell>
+
+                {/* Optional columns for non-agents */}
+                {userData?.data?.userType !== "agent" && (
+                  <>
+                    <Table.Summary.Cell index={8}>
+                      <span style={{ color: totalData.totalLedgerAmt > 0 ? "#3AAA4A" : "#E05755" }}>
+                        {Number.parseFloat(totalData.totalLedgerAmt || 0).toFixed(2)}
+                      </span>
+                    </Table.Summary.Cell>
+
+                    <Table.Summary.Cell index={9}>
+                      <span style={{ color: totalData.totalShareAmt > 0 ? "#3AAA4A" : "#E05755" }}>
+                        {Number.parseFloat(totalData.totalShareAmt || 0).toFixed(2)}
+                      </span>
+                    </Table.Summary.Cell>
+                  </>
+                )}
+              </Table.Summary.Row>
+            </Table.Summary>
+          )}
+        />
+
+
+      </Row>
+
 
       <Row className="gx-px-1 gx-py-0">
         <div className="gx-bg-grey gx-w-100 gx-bg-flex gx-align-items-center gx-px-2 gx-py-2 gx-fs-xl gx-text-uppercase  gx-text-white">
