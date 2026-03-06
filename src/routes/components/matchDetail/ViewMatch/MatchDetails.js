@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Col, Row, Spin, Table, Select } from "antd";
+import { Button, Col, Row, Spin, Table, Select, Modal, Tabs } from "antd";
 import { Option } from "antd/lib/mentions";
 
 import { io } from "socket.io-client";
@@ -65,6 +65,14 @@ const MatchDetails = () => {
   const [plusMinusData, setPlusMinusData] = useState([]);
   const [finalDataArray, setFinalDataArray] = useState([]);
   const [totalData, setTotalData] = useState({});
+
+
+
+
+
+  const [fancyModalVisible, setFancyModalVisible] = useState(false);
+  const [selectedFancySessionId, setSelectedFancySessionId] = useState(null);
+  const [selectedFancyName, setSelectedFancyName] = useState("");
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -1332,6 +1340,7 @@ const MatchDetails = () => {
               onClick={() =>
                 setFancyBetToggle(record.session_name, record.session_id)
               }
+              
             >
               B
             </Button>
@@ -1689,18 +1698,39 @@ const MatchDetails = () => {
     }
   };
 
+  // const setFancyBetToggle = (session_name, session_id) => {
+  //   setLoader(true);
+  //   setTimeout(() => {
+  //     setLoader(false);
+  //   }, 2000);
+  //   // call leader
+
+  //   setActiveFancy(true);
+  //   setActiveFancyId(session_id)
+  //   setCurrentPageFancy(1)
+  //   setCurrentPage(1)
+  //   // setActiveFancyRow(session_name)
+  //   handleFancyList(session_id);
+  //   handleFancyBetList(session_id);
+  // };
+
   const setFancyBetToggle = (session_name, session_id) => {
+
     setLoader(true);
     setTimeout(() => {
       setLoader(false);
     }, 2000);
-    // call leader
+
 
     setActiveFancy(true);
     setActiveFancyId(session_id)
     setCurrentPageFancy(1)
     setCurrentPage(1)
-    // setActiveFancyRow(session_name)
+
+
+    setSelectedFancySessionId(session_id);
+    setSelectedFancyName(session_name);
+    setFancyModalVisible(true);
     handleFancyList(session_id);
     handleFancyBetList(session_id);
   };
@@ -1759,9 +1789,62 @@ const MatchDetails = () => {
     },
   ];
 
+  const ModalFancyColume = [
+    {
+      title: <span>Rate</span>,
+      dataIndex: "Rate",
+      key: "Rate",
+    },
+    {
+      title: <span>Amount</span>,
+      dataIndex: "Amount",
+      key: "Amount",
+    },
+    {
+      title: <span>Type</span>,
+      dataIndex: "Type",
+      key: "Type",
+    },
+
+
+
+
+    {
+      title: <span>Team</span>,
+      dataIndex: "Team",
+      key: "Team",
+    },
+    {
+      title: <span>Client</span>,
+      dataIndex: "Client",
+      key: "Client",
+    },
+    {
+      title: <span>Agent</span>,
+      dataIndex: "Agent",
+      key: "Agent",
+    },
+
+    {
+      title: <span>Date</span>,
+      dataIndex: "Date",
+      key: "Date",
+    },
+    {
+      title: <span>Loss</span>,
+      dataIndex: "Loss",
+      key: "Loss",
+    },
+    {
+      title: <span>Profit</span>,
+      dataIndex: "Profit",
+      key: "Profit",
+    },
+  ];
+
   if (activeFancy) {
     mybets.unshift({
-      title: "Runs",
+      title: <span>Runs</span>,
       dataIndex: "Runs",
       key: "Runs",
     });
@@ -1769,7 +1852,7 @@ const MatchDetails = () => {
     const pwdColumnIndex = mybets.findIndex(col => col.title === "Type");
     if (pwdColumnIndex !== -1) {
       mybets.splice(pwdColumnIndex + 1, 0, {
-        title: "Odds Type",
+        title: <span>odds Type</span>,
         dataIndex: "oddsType",
         key: "oddsType",
       })
@@ -2567,7 +2650,7 @@ const MatchDetails = () => {
       </Row>
 
 
-      <Row className="gx-px-1 gx-py-0">
+      {!activeFancy && <Row className="gx-px-1 gx-py-0">
         <div className="gx-bg-grey gx-w-100 gx-bg-flex gx-align-items-center gx-px-2 gx-py-2 gx-fs-xl gx-text-uppercase  gx-text-white">
           {/* {activeFancy ? "Fancy Bets" : "Match Bets"}{" "}
           {activeFancy
@@ -2624,25 +2707,27 @@ const MatchDetails = () => {
             </div>
           </>
         ) : (
-          <Table
-            rowClassName={(record, index) => {
-              if (!activeFancy) {
-                return record.Type === "Khaai"
-                  ? "matchdtailsNoBackground"
-                  : "matchdtailsYesBackground";
-              } else {
-                return record.Type === "NO"
-                  ? "matchdtailsNoBackground"
-                  : "matchdtailsYesBackground";
-              }
-            }}
-            pagination={false}
-            className="gx-w-100 gx-text-white gx-text-nowrap"
-            dataSource={myBetsDataFilter && myBetsDataFilter.length > 0 ? myBetsDataFilter : mybetsData}
-            columns={mybets}
-            bordered
-            scroll={{ x: true }}
-          />
+          <>
+            <Table
+              rowClassName={(record, index) => {
+                if (!activeFancy) {
+                  return record.Type === "Khaai"
+                    ? "matchdtailsNoBackground"
+                    : "matchdtailsYesBackground";
+                } else {
+                  return record.Type === "NO"
+                    ? "matchdtailsNoBackground"
+                    : "matchdtailsYesBackground";
+                }
+              }}
+              pagination={false}
+              className="gx-w-100 gx-text-white gx-text-nowrap"
+              dataSource={myBetsDataFilter && myBetsDataFilter.length > 0 ? myBetsDataFilter : mybetsData}
+              columns={mybets}
+              bordered
+              scroll={{ x: true }}
+            />
+          </>
         )}
 
         {!activeFancy ? (
@@ -2660,7 +2745,7 @@ const MatchDetails = () => {
             onPageChange={handlePageChangeFancy}
           />
         }
-      </Row>
+      </Row>}
 
 
 
@@ -2671,7 +2756,7 @@ const MatchDetails = () => {
 
 
 
-
+      {/* 
       {activeFancy && (
         <Row>
           <Table
@@ -2684,7 +2769,7 @@ const MatchDetails = () => {
             scroll={{ x: true }}
           />
         </Row>
-      )}
+      )} */}
       <Row className="gx-px-1 gx-py-0 gx-my-3">
         <div className="gx-bg-grey gx-w-100 gx-bg-flex gx-align-items-center gx-px-2 gx-py-3 gx-mb-1 gx-text-uppercase gx-text-white">
           <span className="gx-fs-lg">{`Completed Fancy`}</span>{" "}
@@ -2698,14 +2783,7 @@ const MatchDetails = () => {
             Refresh
           </Button>
         </div>
-        {/* 
 
-        <Col xl={10} xs={24}>
-          <div className="gx-fs-lg gx-py-2 gx-font-weight-semi-bold">Total :
-            <span className={`gx-px-2 ${totalSelfProfitLoss > 0 ? 'gx-text-green-0' : totalSelfProfitLoss < 0 ? 'gx-text-red' : 'gx-text-black'}`}> {totalSelfProfitLoss}</span>
-
-          </div>
-        </Col> */}
 
         <Table
           pagination={false}
@@ -2717,6 +2795,74 @@ const MatchDetails = () => {
           size="small"
         />
       </Row>
+
+
+      <Modal
+        title={`${selectedFancyName}`}
+        open={fancyModalVisible}
+        onCancel={() => setFancyModalVisible(false)}
+        footer={null}
+        width={550}
+        destroyOnClose
+      >
+
+        <Tabs
+          defaultActiveKey="1"
+          items={[
+            {
+              key: "1",
+              label: "BOOK",
+              children: (
+                <Table
+                  size="small"
+                  pagination={false}
+                  dataSource={runpldata}
+                  columns={runplcolumn}
+                  scroll={{ x: true }}
+                  rowKey="run"
+                  className="gx-text-nowrap"
+                />
+              ),
+            },
+            {
+              key: "2",
+              label: "BETS",
+              children: (
+                <>
+                  {showLoder ? (
+                    <div style={{ textAlign: "center", padding: 40 }}>
+                      <Spin tip="Loading bets..." />
+                    </div>
+                  ) : (
+                    <Table
+                      rowClassName={(record) =>
+                        record.Type === "NO" ? "matchdtailsNoBackground" : "matchdtailsYesBackground"
+                      }
+                      pagination={false}
+                      dataSource={myBetsDataFilter && myBetsDataFilter.length > 0 ? myBetsDataFilter : mybetsData}
+                      columns={mybets}
+                      scroll={{ x: true }}
+                      size="small"
+                      className="gx-text-nowrap"
+                    />
+                  )}
+
+                  {/* <div style={{ marginTop: 16 }}>
+                    <TablePagination
+                      currentPage={currentPageFancy}
+                      totalItems={fancyCountTotal}
+                      pageSize={pageSizefancy}
+                      onPageChange={handlePageChangeFancy}
+                    />
+                  </div> */}
+                </>
+              ),
+            },
+
+          ]}
+        />
+
+      </Modal>
     </div>
   );
 };
